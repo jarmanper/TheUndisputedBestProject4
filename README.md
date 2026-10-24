@@ -5,5 +5,6 @@
 | Name | Mechanic |
 | ---- | -------- |
 | Rickey Johnson | Combat |
-| | |
-| | |
+| Rhaiyn Newby   | Marking |
+| Jarman Perry   | Suspend |
+| Daniel Animashaun | Explosion |
