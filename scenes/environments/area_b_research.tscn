@@ -35,13 +35,13 @@
 [ext_resource type="PackedScene" path="res://scenes/props/pipe_valve.tscn" id="33_4rdt8"]
 [ext_resource type="Material" path="res://assets/materials/fog_industrial.tres" id="34_uofu5"]
 
-[node name="AreaBResearch" type="Node3D" unique_id=1714690565]
+[node name="AreaBResearch" type="Node3D" unique_id=810954470]
 
 [node name="Model" type="Node3D" parent="." unique_id=906764560 instance=ExtResource("1_7xnf5")]
 
-[node name="Lights" type="Node3D" parent="." unique_id=489394266]
+[node name="Lights" type="Node3D" parent="." unique_id=467841124]
 
-[node name="fluor_light" type="OmniLight3D" parent="Lights" unique_id=233002801]
+[node name="fluor_light" type="OmniLight3D" parent="Lights" unique_id=252364808]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.85, -11.225)
 light_color = Color(0.82, 0.9, 1, 1)
 light_energy = 0.95
@@ -53,7 +53,7 @@ distance_fade_shadow = 18.0
 omni_range = 5.5
 omni_attenuation = 1.2
 
-[node name="fluor_light2" type="OmniLight3D" parent="Lights" unique_id=741009088]
+[node name="fluor_light2" type="OmniLight3D" parent="Lights" unique_id=143544650]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.85, -14.508333)
 light_color = Color(0.82, 0.9, 1, 1)
 light_energy = 0.95
@@ -67,7 +67,7 @@ omni_attenuation = 1.2
 script = ExtResource("2_3yfp3")
 flicker = 0.7755800149201479
 
-[node name="fluor_light3" type="OmniLight3D" parent="Lights" unique_id=1247958086]
+[node name="fluor_light3" type="OmniLight3D" parent="Lights" unique_id=1239080735]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.85, -17.791666)
 light_color = Color(0.82, 0.9, 1, 1)
 light_energy = 0.95
@@ -79,7 +79,7 @@ distance_fade_shadow = 18.0
 omni_range = 5.5
 omni_attenuation = 1.2
 
-[node name="fluor_light4" type="OmniLight3D" parent="Lights" unique_id=1375956709]
+[node name="fluor_light4" type="OmniLight3D" parent="Lights" unique_id=1470511735]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.85, -21.075)
 light_color = Color(0.82, 0.9, 1, 1)
 light_energy = 0.95
@@ -93,7 +93,7 @@ omni_attenuation = 1.2
 script = ExtResource("2_3yfp3")
 flicker = 0.3019083783661783
 
-[node name="fluor_light5" type="OmniLight3D" parent="Lights" unique_id=1466984079]
+[node name="fluor_light5" type="OmniLight3D" parent="Lights" unique_id=1304991358]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.3, 2.85, -14.25)
 light_color = Color(0.82, 0.9, 1, 1)
 light_energy = 0.95
@@ -107,7 +107,7 @@ omni_attenuation = 1.2
 script = ExtResource("2_3yfp3")
 flicker = 0.3674661377156323
 
-[node name="fluor_light6" type="OmniLight3D" parent="Lights" unique_id=1697367448]
+[node name="fluor_light6" type="OmniLight3D" parent="Lights" unique_id=1022127275]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.3, 2.85, -9.25)
 light_color = Color(0.82, 0.9, 1, 1)
 light_energy = 0.95
@@ -121,7 +121,7 @@ omni_attenuation = 1.2
 script = ExtResource("2_3yfp3")
 flicker = 0.7443931193640037
 
-[node name="fluor_light7" type="OmniLight3D" parent="Lights" unique_id=2012421235]
+[node name="fluor_light7" type="OmniLight3D" parent="Lights" unique_id=376818557]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.3, 2.85, -11.75)
 light_color = Color(0.82, 0.9, 1, 1)
 light_energy = 0.95
@@ -135,7 +135,7 @@ omni_attenuation = 1.2
 script = ExtResource("2_3yfp3")
 flicker = 0.6213970485286733
 
-[node name="fluor_light8" type="OmniLight3D" parent="Lights" unique_id=1652347901]
+[node name="fluor_light8" type="OmniLight3D" parent="Lights" unique_id=2042520661]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.3, 2.85, -9.25)
 light_color = Color(0.82, 0.9, 1, 1)
 light_energy = 0.95
@@ -149,7 +149,7 @@ omni_attenuation = 1.2
 script = ExtResource("2_3yfp3")
 flicker = 0.3122198750238771
 
-[node name="fluor_light9" type="OmniLight3D" parent="Lights" unique_id=637985984]
+[node name="fluor_light9" type="OmniLight3D" parent="Lights" unique_id=630529302]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.3, 2.85, -11.75)
 light_color = Color(0.82, 0.9, 1, 1)
 light_energy = 0.95
@@ -161,7 +161,7 @@ distance_fade_shadow = 18.0
 omni_range = 5.5
 omni_attenuation = 1.2
 
-[node name="fluor_light10" type="OmniLight3D" parent="Lights" unique_id=585726464]
+[node name="fluor_light10" type="OmniLight3D" parent="Lights" unique_id=1066155480]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.3, 2.85, -11.75)
 light_color = Color(0.82, 0.9, 1, 1)
 light_energy = 0.95
@@ -175,7 +175,7 @@ omni_attenuation = 1.2
 script = ExtResource("2_3yfp3")
 flicker = 0.43015562034996346
 
-[node name="fluor_light11" type="OmniLight3D" parent="Lights" unique_id=657799752]
+[node name="fluor_light11" type="OmniLight3D" parent="Lights" unique_id=1355234076]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.3, 2.85, -14.25)
 light_color = Color(0.82, 0.9, 1, 1)
 light_energy = 0.95
@@ -187,7 +187,7 @@ distance_fade_shadow = 18.0
 omni_range = 5.5
 omni_attenuation = 1.2
 
-[node name="fluor_light12" type="OmniLight3D" parent="Lights" unique_id=1359135577]
+[node name="fluor_light12" type="OmniLight3D" parent="Lights" unique_id=608423147]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.3, 2.85, -16.75)
 light_color = Color(0.82, 0.9, 1, 1)
 light_energy = 0.95
@@ -199,7 +199,7 @@ distance_fade_shadow = 18.0
 omni_range = 5.5
 omni_attenuation = 1.2
 
-[node name="red_light" type="OmniLight3D" parent="Lights" unique_id=1201940458]
+[node name="red_light" type="OmniLight3D" parent="Lights" unique_id=1643845782]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.2, -28)
 light_color = Color(1, 0.08, 0.04, 1)
 light_energy = 2.0
@@ -213,7 +213,7 @@ omni_attenuation = 1.2
 script = ExtResource("2_3yfp3")
 pulse = 1.0
 
-[node name="fluor_light13" type="OmniLight3D" parent="Lights" unique_id=1847079217]
+[node name="fluor_light13" type="OmniLight3D" parent="Lights" unique_id=837062639]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.3, -27)
 light_color = Color(0.82, 0.9, 1, 1)
 light_energy = 0.95
@@ -227,218 +227,218 @@ omni_attenuation = 1.2
 script = ExtResource("2_3yfp3")
 flicker = 0.8
 
-[node name="Props" type="Node3D" parent="." unique_id=266784076]
+[node name="Props" type="Node3D" parent="." unique_id=1024050897]
 
-[node name="WallClock" type="Node3D" parent="Props" unique_id=1423666581 instance=ExtResource("3_yiol1")]
+[node name="WallClock" type="Node3D" parent="Props" unique_id=1385761565 instance=ExtResource("3_yiol1")]
 transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -1.45, 2.3, -9.5)
 
-[node name="WallClock2" type="Node3D" parent="Props" unique_id=944136728 instance=ExtResource("3_yiol1")]
+[node name="WallClock2" type="Node3D" parent="Props" unique_id=130345593 instance=ExtResource("3_yiol1")]
 transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -1.45, 2.3, -20.5)
 
-[node name="ElectricalPanel" type="Node3D" parent="Props" unique_id=1094460341 instance=ExtResource("4_xwmnr")]
+[node name="ElectricalPanel" type="Node3D" parent="Props" unique_id=1716572777 instance=ExtResource("4_xwmnr")]
 transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -1.5, 0, -15.5)
 
-[node name="CartTrolley" type="Node3D" parent="Props" unique_id=1498533529 instance=ExtResource("5_n7ynf")]
+[node name="CartTrolley" type="Node3D" parent="Props" unique_id=1385444106 instance=ExtResource("5_n7ynf")]
 transform = Transform3D(0.95533645, 0, 0.29552022, 0, 1, 0, -0.29552022, 0, 0.95533645, -0.8, 0, -13)
 
-[node name="IvStand" type="Node3D" parent="Props" unique_id=1127714313 instance=ExtResource("6_1mt3b")]
+[node name="IvStand" type="Node3D" parent="Props" unique_id=1866415620 instance=ExtResource("6_1mt3b")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 0, -19)
 
-[node name="OfficeChair" type="Node3D" parent="Props" unique_id=121141073 instance=ExtResource("7_1byjf")]
+[node name="OfficeChair" type="Node3D" parent="Props" unique_id=424996461 instance=ExtResource("7_1byjf")]
 transform = Transform3D(0.921061, 0.38941824, 0.00031010807, -1.4901161e-08, 0.00079631805, -0.9999997, -0.38941836, 0.92106074, 0.00073343515, 0.6, 0.25, -22.5)
 
-[node name="PapersScattered" type="Node3D" parent="Props" unique_id=1102517917 instance=ExtResource("8_a17fg")]
+[node name="PapersScattered" type="Node3D" parent="Props" unique_id=1693350029 instance=ExtResource("8_a17fg")]
 transform = Transform3D(0.36235774, 0, 0.93203914, 0, 1, 0, -0.93203914, 0, 0.36235774, 0, 0, -17)
 
-[node name="BloodTrail" type="Node3D" parent="Props" unique_id=1873996400 instance=ExtResource("9_jl6jk")]
+[node name="BloodTrail" type="Node3D" parent="Props" unique_id=1772805569 instance=ExtResource("9_jl6jk")]
 transform = Transform3D(0.95533645, 0, -0.29552022, 0, 1, 0, 0.29552022, 0, 0.95533645, -0.2, 0, -12.5)
 
-[node name="WarningSignPlate" type="Node3D" parent="Props" unique_id=1199964862 instance=ExtResource("10_trgs6")]
+[node name="WarningSignPlate" type="Node3D" parent="Props" unique_id=2105780037 instance=ExtResource("10_trgs6")]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 1.47, 1.6, -13.6)
 
-[node name="EmergencyBeacon" type="Node3D" parent="Props" unique_id=1529866065 instance=ExtResource("11_8vppq")]
+[node name="EmergencyBeacon" type="Node3D" parent="Props" unique_id=2028036649 instance=ExtResource("11_8vppq")]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 1.47, 2.6, -25.5)
 
-[node name="HangingLightBroken" type="Node3D" parent="Props" unique_id=1178707761 instance=ExtResource("12_18ojc")]
+[node name="HangingLightBroken" type="Node3D" parent="Props" unique_id=757626713 instance=ExtResource("12_18ojc")]
 transform = Transform3D(0.9523089, 0, -0.3051357, 0, 1, 0, 0.3051357, 0, 0.9523089, 3.3, 3.2, -9.55)
 
-[node name="LabTable" type="Node3D" parent="Props" unique_id=859753310 instance=ExtResource("13_8qaex")]
+[node name="LabTable" type="Node3D" parent="Props" unique_id=1600166372 instance=ExtResource("13_8qaex")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.5, 0, -11)
 
-[node name="LabTable2" type="Node3D" parent="Props" unique_id=997725284 instance=ExtResource("13_8qaex")]
+[node name="LabTable2" type="Node3D" parent="Props" unique_id=836652251 instance=ExtResource("13_8qaex")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.5, 0, -11)
 
-[node name="LabTable3" type="Node3D" parent="Props" unique_id=1932801702 instance=ExtResource("13_8qaex")]
+[node name="LabTable3" type="Node3D" parent="Props" unique_id=2045034425 instance=ExtResource("13_8qaex")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.5, 0, -14.8)
 
-[node name="LabTable4" type="Node3D" parent="Props" unique_id=690747598 instance=ExtResource("13_8qaex")]
+[node name="LabTable4" type="Node3D" parent="Props" unique_id=1458142503 instance=ExtResource("13_8qaex")]
 transform = Transform3D(0.9393727, 0, 0.3428978, 0, 1, 0, -0.3428978, 0, 0.9393727, 9.5, 0, -14.8)
 
-[node name="Microscope" type="Node3D" parent="Props" unique_id=358962241 instance=ExtResource("14_r0qn6")]
+[node name="Microscope" type="Node3D" parent="Props" unique_id=278397393 instance=ExtResource("14_r0qn6")]
 transform = Transform3D(0.9800666, 0, 0.19866931, 0, 1, 0, -0.19866931, 0, 0.9800666, 5, 0.92, -11)
 
-[node name="ChemBottles" type="Node3D" parent="Props" unique_id=1814761647 instance=ExtResource("15_duv6y")]
+[node name="ChemBottles" type="Node3D" parent="Props" unique_id=583380308 instance=ExtResource("15_duv6y")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.1, 0.92, -11.1)
 
-[node name="ComputerTerminal" type="Node3D" parent="Props" unique_id=135813764 instance=ExtResource("16_bsjqr")]
+[node name="ComputerTerminal" type="Node3D" parent="Props" unique_id=2133093820 instance=ExtResource("16_bsjqr")]
 transform = Transform3D(0.9887711, 0, 0.14943813, 0, 1, 0, -0.14943813, 0, 0.9887711, 9.2, 0.92, -11)
 
-[node name="Centrifuge" type="Node3D" parent="Props" unique_id=1665123558 instance=ExtResource("17_j6b5c")]
+[node name="Centrifuge" type="Node3D" parent="Props" unique_id=1505745441 instance=ExtResource("17_j6b5c")]
 transform = Transform3D(0.95533645, 0, -0.29552022, 0, 1, 0, 0.29552022, 0, 0.95533645, 10.1, 0.92, -11.1)
 
-[node name="ChemBottles2" type="Node3D" parent="Props" unique_id=1023395569 instance=ExtResource("15_duv6y")]
+[node name="ChemBottles2" type="Node3D" parent="Props" unique_id=833431964 instance=ExtResource("15_duv6y")]
 transform = Transform3D(0.16996717, 0, 0.98544973, 0, 1, 0, -0.98544973, 0, 0.16996717, 5.3, 0.92, -14.8)
 
-[node name="MonitorBroken" type="Node3D" parent="Props" unique_id=463032868 instance=ExtResource("18_e8c4h")]
+[node name="MonitorBroken" type="Node3D" parent="Props" unique_id=1367531765 instance=ExtResource("18_e8c4h")]
 transform = Transform3D(0.6216099, 0, 0.783327, 0, 1, 0, -0.783327, 0, 0.6216099, 9.6, 0.92, -14.8)
 
-[node name="LabBenchSink" type="Node3D" parent="Props" unique_id=1418126957 instance=ExtResource("19_ensjl")]
+[node name="LabBenchSink" type="Node3D" parent="Props" unique_id=222375487 instance=ExtResource("19_ensjl")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 5, 0, -17.6)
 
-[node name="LabBenchSink2" type="Node3D" parent="Props" unique_id=1513597809 instance=ExtResource("19_ensjl")]
+[node name="LabBenchSink2" type="Node3D" parent="Props" unique_id=874032389 instance=ExtResource("19_ensjl")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 9.8, 0, -17.6)
 
-[node name="StorageCabinet" type="Node3D" parent="Props" unique_id=1693740394 instance=ExtResource("20_bxij8")]
+[node name="StorageCabinet" type="Node3D" parent="Props" unique_id=1976014010 instance=ExtResource("20_bxij8")]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 13.5, 0, -9.5)
 
-[node name="StorageCabinet2" type="Node3D" parent="Props" unique_id=1185798143 instance=ExtResource("20_bxij8")]
+[node name="StorageCabinet2" type="Node3D" parent="Props" unique_id=2027316393 instance=ExtResource("20_bxij8")]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 13.5, 0, -10.6)
 
-[node name="ServerRack" type="Node3D" parent="Props" unique_id=547968802 instance=ExtResource("21_8xx81")]
+[node name="ServerRack" type="Node3D" parent="Props" unique_id=1999336026 instance=ExtResource("21_8xx81")]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 13.4, 0, -15.6)
 
-[node name="ServerRack2" type="Node3D" parent="Props" unique_id=1862473381 instance=ExtResource("21_8xx81")]
+[node name="ServerRack2" type="Node3D" parent="Props" unique_id=1085577482 instance=ExtResource("21_8xx81")]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 13.4, 0, -16.3)
 
-[node name="FilingCabinet" type="Node3D" parent="Props" unique_id=246866591 instance=ExtResource("22_k8put")]
+[node name="FilingCabinet" type="Node3D" parent="Props" unique_id=1580874789 instance=ExtResource("22_k8put")]
 transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 2.2, 0, -8.5)
 
-[node name="OfficeChair2" type="Node3D" parent="Props" unique_id=1122481201 instance=ExtResource("7_1byjf")]
+[node name="OfficeChair2" type="Node3D" parent="Props" unique_id=1888177672 instance=ExtResource("7_1byjf")]
 transform = Transform3D(-0.41614676, 0, 0.9092974, 0, 1, 0, -0.9092974, 0, -0.41614676, 8, 0, -12.6)
 
-[node name="OfficeChair3" type="Node3D" parent="Props" unique_id=588142993 instance=ExtResource("7_1byjf")]
+[node name="OfficeChair3" type="Node3D" parent="Props" unique_id=1923316422 instance=ExtResource("7_1byjf")]
 transform = Transform3D(0.9800666, -0.19866927, 0.00015818328, 0, 0.00079619884, 0.99999976, -0.19866934, -0.9800663, 0.000780344, 7, 0.25, -9.5)
 
-[node name="PapersScattered2" type="Node3D" parent="Props" unique_id=300508938 instance=ExtResource("8_a17fg")]
+[node name="PapersScattered2" type="Node3D" parent="Props" unique_id=1814506606 instance=ExtResource("8_a17fg")]
 transform = Transform3D(0.87758255, 0, 0.47942558, 0, 1, 0, -0.47942558, 0, 0.87758255, 7.5, 0, -13)
 
-[node name="ExamBed" type="Node3D" parent="Props" unique_id=115756107 instance=ExtResource("23_tsc05")]
+[node name="ExamBed" type="Node3D" parent="Props" unique_id=1056103329 instance=ExtResource("23_tsc05")]
 transform = Transform3D(0.99875027, 0, 0.049979165, 0, 1, 0, -0.049979165, 0, 0.99875027, 11.5, 0, -8.8)
 
-[node name="GasCylinders" type="Node3D" parent="Props" unique_id=464846861 instance=ExtResource("24_eri2i")]
+[node name="GasCylinders" type="Node3D" parent="Props" unique_id=84143614 instance=ExtResource("24_eri2i")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 3, 0, -17.6)
 
-[node name="ChemBottles3" type="Node3D" parent="Props" unique_id=1595658033 instance=ExtResource("15_duv6y")]
+[node name="ChemBottles3" type="Node3D" parent="Props" unique_id=1257874516 instance=ExtResource("15_duv6y")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 4.3, 0.95, -17.55)
 
-[node name="Microscope2" type="Node3D" parent="Props" unique_id=111157961 instance=ExtResource("14_r0qn6")]
+[node name="Microscope2" type="Node3D" parent="Props" unique_id=387559847 instance=ExtResource("14_r0qn6")]
 transform = Transform3D(-0.95533645, 0, -0.29552025, 0, 1, 0, 0.29552025, 0, -0.95533645, 5.6, 0.95, -17.5)
 
-[node name="Centrifuge2" type="Node3D" parent="Props" unique_id=26258907 instance=ExtResource("17_j6b5c")]
+[node name="Centrifuge2" type="Node3D" parent="Props" unique_id=2044545447 instance=ExtResource("17_j6b5c")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 9.2, 0.95, -17.45)
 
-[node name="ChemBottles4" type="Node3D" parent="Props" unique_id=1370722376 instance=ExtResource("15_duv6y")]
+[node name="ChemBottles4" type="Node3D" parent="Props" unique_id=1778116815 instance=ExtResource("15_duv6y")]
 transform = Transform3D(-0.41614676, 0, 0.9092974, 0, 1, 0, -0.9092974, 0, -0.41614676, 10.6, 0.95, -17.55)
 
-[node name="LabTable5" type="Node3D" parent="Props" unique_id=7428504 instance=ExtResource("13_8qaex")]
+[node name="LabTable5" type="Node3D" parent="Props" unique_id=2086177393 instance=ExtResource("13_8qaex")]
 transform = Transform3D(0.9553365, 0.29336673, 0.03561096, 0, 0.12050271, -0.99271286, -0.2955202, 0.94837487, 0.11512065, 12, 0.4, -13)
 
-[node name="DebrisPile" type="Node3D" parent="Props" unique_id=1972639222 instance=ExtResource("25_qjs41")]
+[node name="DebrisPile" type="Node3D" parent="Props" unique_id=592153170 instance=ExtResource("25_qjs41")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11.2, 0, -12)
 
-[node name="CardboardBoxes" type="Node3D" parent="Props" unique_id=1971908544 instance=ExtResource("26_yfsaa")]
+[node name="CardboardBoxes" type="Node3D" parent="Props" unique_id=924372045 instance=ExtResource("26_yfsaa")]
 transform = Transform3D(0.92106104, 0, 0.3894183, 0, 1, 0, -0.3894183, 0, 0.92106104, 2.5, 0, -13.2)
 
-[node name="CardboardBoxes2" type="Node3D" parent="Props" unique_id=475072986 instance=ExtResource("26_yfsaa")]
+[node name="CardboardBoxes2" type="Node3D" parent="Props" unique_id=1694240257 instance=ExtResource("26_yfsaa")]
 transform = Transform3D(-0.41614676, 0, 0.9092974, 0, 1, 0, -0.9092974, 0, -0.41614676, 12.9, 0, -17.2)
 
-[node name="BloodTrail2" type="Node3D" parent="Props" unique_id=1917488862 instance=ExtResource("9_jl6jk")]
+[node name="BloodTrail2" type="Node3D" parent="Props" unique_id=1782675835 instance=ExtResource("9_jl6jk")]
 transform = Transform3D(-0.5885012, 0, -0.80849636, 0, 1, 0, 0.80849636, 0, -0.5885012, 11, 0, -13.5)
 
-[node name="WallClock3" type="Node3D" parent="Props" unique_id=914107795 instance=ExtResource("3_yiol1")]
+[node name="WallClock3" type="Node3D" parent="Props" unique_id=566320475 instance=ExtResource("3_yiol1")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 7.5, 2.4, -17.95)
 
-[node name="HangingLightBroken2" type="Node3D" parent="Props" unique_id=494643493 instance=ExtResource("12_18ojc")]
+[node name="HangingLightBroken2" type="Node3D" parent="Props" unique_id=348172295 instance=ExtResource("12_18ojc")]
 transform = Transform3D(0.9456961, 0, 0.32505205, 0, 1, 0, -0.32505205, 0, 0.9456961, -9.3, 3.2, -20.55)
 
-[node name="RestraintChair" type="Node3D" parent="Props" unique_id=1418989184 instance=ExtResource("27_wl6y8")]
+[node name="RestraintChair" type="Node3D" parent="Props" unique_id=1964721876 instance=ExtResource("27_wl6y8")]
 transform = Transform3D(0.92106104, 0, -0.3894183, 0, 1, 0, 0.3894183, 0, 0.92106104, -8, 0, -22)
 
-[node name="SurgicalLamp" type="Node3D" parent="Props" unique_id=1552568428 instance=ExtResource("28_ms7x3")]
+[node name="SurgicalLamp" type="Node3D" parent="Props" unique_id=1653794424 instance=ExtResource("28_ms7x3")]
 transform = Transform3D(0.95533645, 0, 0.29552022, 0, 1, 0, -0.29552022, 0, 0.95533645, -8.4, 3.2, -21.8)
 
-[node name="ExamBed2" type="Node3D" parent="Props" unique_id=1215574193 instance=ExtResource("23_tsc05")]
+[node name="ExamBed2" type="Node3D" parent="Props" unique_id=1070673992 instance=ExtResource("23_tsc05")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -11.8, 0, -19.6)
 
-[node name="ExamBed3" type="Node3D" parent="Props" unique_id=1018025343 instance=ExtResource("23_tsc05")]
+[node name="ExamBed3" type="Node3D" parent="Props" unique_id=1154045192 instance=ExtResource("23_tsc05")]
 transform = Transform3D(0.99280864, 0, 0.119712204, 0, 1, 0, -0.119712204, 0, 0.99280864, -11.8, 0, -24.4)
 
-[node name="IvStand2" type="Node3D" parent="Props" unique_id=884219602 instance=ExtResource("6_1mt3b")]
+[node name="IvStand2" type="Node3D" parent="Props" unique_id=1916301916 instance=ExtResource("6_1mt3b")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10.4, 0, -19.3)
 
-[node name="CartTrolley2" type="Node3D" parent="Props" unique_id=1825907072 instance=ExtResource("5_n7ynf")]
+[node name="CartTrolley2" type="Node3D" parent="Props" unique_id=950694452 instance=ExtResource("5_n7ynf")]
 transform = Transform3D(0.45359606, 0, 0.8912074, 0, 1, 0, -0.8912074, 0, 0.45359606, -6.6, 0, -23)
 
-[node name="StorageCabinet3" type="Node3D" parent="Props" unique_id=1335160480 instance=ExtResource("20_bxij8")]
+[node name="StorageCabinet3" type="Node3D" parent="Props" unique_id=1739807216 instance=ExtResource("20_bxij8")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -4, 0, -25.2)
 
-[node name="OfficeDesk" type="Node3D" parent="Props" unique_id=65818017 instance=ExtResource("29_tbt1h")]
+[node name="OfficeDesk" type="Node3D" parent="Props" unique_id=1736774978 instance=ExtResource("29_tbt1h")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.4, 0, -19.2)
 
-[node name="ComputerTerminal2" type="Node3D" parent="Props" unique_id=380763314 instance=ExtResource("16_bsjqr")]
+[node name="ComputerTerminal2" type="Node3D" parent="Props" unique_id=1995171485 instance=ExtResource("16_bsjqr")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.6, 0.76, -19.3)
 
-[node name="PhotoFrame" type="Node3D" parent="Props" unique_id=1482492645 instance=ExtResource("30_x1yxt")]
+[node name="PhotoFrame" type="Node3D" parent="Props" unique_id=518027860 instance=ExtResource("30_x1yxt")]
 transform = Transform3D(0.92106104, 0, 0.3894183, 0, 1, 0, -0.3894183, 0, 0.92106104, -2.9, 0.76, -19.1)
 
-[node name="FilingCabinet2" type="Node3D" parent="Props" unique_id=915872198 instance=ExtResource("22_k8put")]
+[node name="FilingCabinet2" type="Node3D" parent="Props" unique_id=140248875 instance=ExtResource("22_k8put")]
 transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -13.5, 0, -22)
 
-[node name="PapersScattered3" type="Node3D" parent="Props" unique_id=1554308881 instance=ExtResource("8_a17fg")]
+[node name="PapersScattered3" type="Node3D" parent="Props" unique_id=1581522638 instance=ExtResource("8_a17fg")]
 transform = Transform3D(-0.5885012, 0, 0.80849636, 0, 1, 0, -0.80849636, 0, -0.5885012, -7, 0, -20)
 
-[node name="BloodTrail3" type="Node3D" parent="Props" unique_id=1304508158 instance=ExtResource("9_jl6jk")]
+[node name="BloodTrail3" type="Node3D" parent="Props" unique_id=1836818643 instance=ExtResource("9_jl6jk")]
 transform = Transform3D(-0.8568888, 0, 0.51550144, 0, 1, 0, -0.51550144, 0, -0.8568888, -8, 0, -21)
 
-[node name="MonitorBroken2" type="Node3D" parent="Props" unique_id=1534975160 instance=ExtResource("18_e8c4h")]
+[node name="MonitorBroken2" type="Node3D" parent="Props" unique_id=2052120390 instance=ExtResource("18_e8c4h")]
 transform = Transform3D(-0.8253355, 0, -0.5646424, 0, 1, 0, 0.5646424, 0, -0.8253355, -5, 0, -24.9)
 
-[node name="ChemBottles5" type="Node3D" parent="Props" unique_id=577902183 instance=ExtResource("15_duv6y")]
+[node name="ChemBottles5" type="Node3D" parent="Props" unique_id=1202090801 instance=ExtResource("15_duv6y")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.6, 0.87, -23)
 
-[node name="WarningSignPlate2" type="Node3D" parent="Props" unique_id=367425830 instance=ExtResource("10_trgs6")]
+[node name="WarningSignPlate2" type="Node3D" parent="Props" unique_id=1408827596 instance=ExtResource("10_trgs6")]
 transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -13.75, 1.6, -20.5)
 
-[node name="CoveredGurney" type="Node3D" parent="Props" unique_id=2138065135 instance=ExtResource("31_ryemp")]
+[node name="CoveredGurney" type="Node3D" parent="Props" unique_id=955559132 instance=ExtResource("31_ryemp")]
 transform = Transform3D(0.26749885, 0, 0.9635582, 0, 1, 0, -0.9635582, 0, 0.26749885, -5.4, 0, -20.6)
 
-[node name="CardboardBoxes3" type="Node3D" parent="Props" unique_id=1354350491 instance=ExtResource("26_yfsaa")]
+[node name="CardboardBoxes3" type="Node3D" parent="Props" unique_id=1216351065 instance=ExtResource("26_yfsaa")]
 transform = Transform3D(0.9800666, 0, 0.19866931, 0, 1, 0, -0.19866931, 0, 0.9800666, -13.2, 0, -25)
 
-[node name="ChemBarrel" type="Node3D" parent="Props" unique_id=1648428068 instance=ExtResource("32_48h6s")]
+[node name="ChemBarrel" type="Node3D" parent="Props" unique_id=1694221489 instance=ExtResource("32_48h6s")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.4, 0, -25)
 
-[node name="DebrisPile2" type="Node3D" parent="Props" unique_id=1601013583 instance=ExtResource("25_qjs41")]
+[node name="DebrisPile2" type="Node3D" parent="Props" unique_id=1367997644 instance=ExtResource("25_qjs41")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 0, -24)
 
-[node name="GasCylinders2" type="Node3D" parent="Props" unique_id=385347845 instance=ExtResource("24_eri2i")]
+[node name="GasCylinders2" type="Node3D" parent="Props" unique_id=1937671618 instance=ExtResource("24_eri2i")]
 transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -2, 0, -27)
 
-[node name="ChemBarrel2" type="Node3D" parent="Props" unique_id=621578483 instance=ExtResource("32_48h6s")]
+[node name="ChemBarrel2" type="Node3D" parent="Props" unique_id=1472580998 instance=ExtResource("32_48h6s")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.1, 0, -26.6)
 
-[node name="ChemBarrel3" type="Node3D" parent="Props" unique_id=569379721 instance=ExtResource("32_48h6s")]
+[node name="ChemBarrel3" type="Node3D" parent="Props" unique_id=1921528392 instance=ExtResource("32_48h6s")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.9, 0, -27.3)
 
-[node name="WarningSignPlate3" type="Node3D" parent="Props" unique_id=2078596126 instance=ExtResource("10_trgs6")]
+[node name="WarningSignPlate3" type="Node3D" parent="Props" unique_id=202306143 instance=ExtResource("10_trgs6")]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 2.57, 1.8, -28.5)
 
-[node name="PipeValve" type="Node3D" parent="Props" unique_id=1058838274 instance=ExtResource("33_4rdt8")]
+[node name="PipeValve" type="Node3D" parent="Props" unique_id=942311654 instance=ExtResource("33_4rdt8")]
 transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -2.5, 1.3, -28.8)
 
-[node name="ReflectionProbes" type="Node3D" parent="." unique_id=1511396881]
+[node name="ReflectionProbes" type="Node3D" parent="." unique_id=1600839172]
 
-[node name="B_corridor_probe" type="ReflectionProbe" parent="ReflectionProbes" unique_id=467728212]
+[node name="B_corridor_probe" type="ReflectionProbe" parent="ReflectionProbes" unique_id=303530393]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6, -16.15)
 size = Vector3(3.2, 3.4, 19.900002)
 box_projection = true
@@ -447,7 +447,7 @@ ambient_mode = 2
 ambient_color = Color(0.05, 0.06, 0.07, 1)
 ambient_color_energy = 0.4
 
-[node name="B_lab1_probe" type="ReflectionProbe" parent="ReflectionProbes" unique_id=1005880640]
+[node name="B_lab1_probe" type="ReflectionProbe" parent="ReflectionProbes" unique_id=260356161]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.8, 1.6, -13)
 size = Vector3(12.2, 3.4, 10.2)
 box_projection = true
@@ -456,7 +456,7 @@ ambient_mode = 2
 ambient_color = Color(0.05, 0.06, 0.07, 1)
 ambient_color_energy = 0.4
 
-[node name="B_lab2_probe" type="ReflectionProbe" parent="ReflectionProbes" unique_id=723944611]
+[node name="B_lab2_probe" type="ReflectionProbe" parent="ReflectionProbes" unique_id=1016624411]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.8, 1.6, -22)
 size = Vector3(12.2, 3.4, 7.2)
 box_projection = true
@@ -465,7 +465,7 @@ ambient_mode = 2
 ambient_color = Color(0.05, 0.06, 0.07, 1)
 ambient_color_energy = 0.4
 
-[node name="B_vestibule_probe" type="ReflectionProbe" parent="ReflectionProbes" unique_id=775181734]
+[node name="B_vestibule_probe" type="ReflectionProbe" parent="ReflectionProbes" unique_id=909638779]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.3, -28)
 size = Vector3(5.3999996, 4.7999997, 4.2)
 box_projection = true
@@ -474,9 +474,9 @@ ambient_mode = 2
 ambient_color = Color(0.05, 0.06, 0.07, 1)
 ambient_color_energy = 0.4
 
-[node name="FogVolumes" type="Node3D" parent="." unique_id=1727444751]
+[node name="FogVolumes" type="Node3D" parent="." unique_id=829393248]
 
-[node name="B_vestibule_fog" type="FogVolume" parent="FogVolumes" unique_id=757806083]
+[node name="B_vestibule_fog" type="FogVolume" parent="FogVolumes" unique_id=1725032957]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.3, -28)
 size = Vector3(5.2, 4.6, 4)
 material = ExtResource("34_uofu5")

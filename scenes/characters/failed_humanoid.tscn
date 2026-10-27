@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://scripts/visual/creature_visual.gd" id="1_te5x6"]
 [ext_resource type="PackedScene" path="res://assets/models/characters/failed_humanoid.glb" id="2_reyoq"]
 
-[node name="FailedHumanoid" type="Node3D" unique_id=1964771000]
+[node name="FailedHumanoid" type="Node3D" unique_id=1375615882]
 script = ExtResource("1_te5x6")
 
 [node name="Model" type="Node3D" parent="." unique_id=599493447 instance=ExtResource("2_reyoq")]

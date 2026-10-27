@@ -5,6 +5,8 @@ var scene_path := ""
 var wanted: Array = []
 ## If > 0: re-trigger every effect (vfx_player.play) this many seconds before each shot.
 var fx_delay := 0.0
+## Seconds to let the scene run (animations, sequences) before the first shot.
+var wait := 0.0
 
 
 func _ready() -> void:
@@ -22,6 +24,8 @@ func _ready() -> void:
 	cam.far = 300
 	add_child(cam)
 	cam.current = true
+	if wait > 0.0:
+		await get_tree().create_timer(wait).timeout
 	var views := scene.find_children("VIEW__*", "Node3D", true, false)
 	views.sort_custom(func(a, b): return String(a.name) < String(b.name))
 	for v in views:

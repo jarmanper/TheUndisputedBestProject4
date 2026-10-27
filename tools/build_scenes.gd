@@ -53,6 +53,8 @@ func _init() -> void:
 	build_facility(areas)
 	var characters := build_characters()
 	build_inspection(characters)
+	if characters.has("twin_monster"):
+		build_reveal(characters["twin_monster"])
 	print("TIMBUK scenes built: %d props, %d areas" % [prop_scenes.size(), areas.size()])
 	quit()
 
@@ -411,6 +413,90 @@ func build_characters() -> Dictionary:
 		save_scene(root, path)
 		out[name] = path
 	return out
+
+
+# ------------------------------------------------------------------ reveal
+
+func bpos(v: Vector3) -> Vector3:
+	return Vector3(v.x, v.z, -v.y)
+
+
+func build_reveal(twin_scene: String) -> void:
+	var root := Node3D.new()
+	root.name = "TwinReveal"
+	root.set_script(load("res://scripts/visual/reveal_sequence.gd"))
+	var we := WorldEnvironment.new()
+	we.name = "WorldEnvironment"
+	we.environment = load("res://assets/materials/env_facility.tres")
+	var cam_attr := CameraAttributesPractical.new()
+	cam_attr.dof_blur_far_enabled = true
+	cam_attr.dof_blur_far_distance = 9.0
+	cam_attr.dof_blur_far_transition = 6.0
+	cam_attr.dof_blur_amount = 0.06
+	we.camera_attributes = cam_attr
+	root.add_child(we)
+	var chamber: Node3D = load("res://scenes/environments/area_e_twin_chamber.tscn").instantiate()
+	root.add_child(chamber)
+	var twin: Node3D = load(twin_scene).instantiate()
+	twin.name = "Twin"
+	twin.position = bpos(Vector3(14.7, 106.8, -5.1))
+	twin.rotation.y = 0.0      # faces +Z = towards the chamber entrance
+	twin.set("animation", "reveal")
+	twin.set("desync", false)
+	root.add_child(twin)
+	# face key light + soft fill so the face always reads (never lost in darkness)
+	var face_c := bpos(Vector3(14.7, 106.7, -3.3))
+	var key := SpotLight3D.new()
+	key.name = "FaceKey"
+	key.light_color = Color(1.0, 0.88, 0.75)
+	key.light_energy = 6.0
+	key.spot_range = 6.0
+	key.spot_angle = 14.0
+	key.shadow_enabled = true
+	var kp := face_c + Vector3(-1.2, 1.4, 2.4)
+	key.transform = Transform3D(Basis.looking_at(face_c - kp, Vector3.UP), kp)
+	root.add_child(key)
+	var rim := SpotLight3D.new()
+	rim.name = "FaceRim"
+	rim.light_color = Color(0.45, 0.75, 1.0)
+	rim.light_energy = 5.0
+	rim.spot_range = 5.0
+	rim.spot_angle = 18.0
+	var rp := face_c + Vector3(1.4, 1.0, -1.6)
+	rim.transform = Transform3D(Basis.looking_at(face_c - rp, Vector3.UP), rp)
+	root.add_child(rim)
+	var cam := Camera3D.new()
+	cam.name = "RevealCamera"
+	cam.fov = 50
+	root.add_child(cam)
+	root.set("twin_path", NodePath("Twin"))
+	root.set("camera_path", NodePath("RevealCamera"))
+	root.set("shots", [
+		[0.0, bpos(Vector3(14.7, 93.6, -4.3)), bpos(Vector3(14.7, 106.8, -4.0))],
+		[3.0, bpos(Vector3(14.9, 99.0, -4.2)), bpos(Vector3(14.7, 106.8, -3.6))],
+		[6.5, bpos(Vector3(15.0, 104.4, -3.4)), face_c],
+		[11.0, bpos(Vector3(14.8, 105.8, -3.22)), face_c],
+		[16.0, bpos(Vector3(14.62, 105.95, -3.18)), face_c],
+	])
+	for i in 6:   # inspection/capture viewpoints along the sequence
+		pass
+	var v1 := Node3D.new()
+	v1.name = "VIEW__reveal_wide"
+	var e1 := bpos(Vector3(14.7, 99.0, -4.2))
+	v1.transform = Transform3D(Basis.looking_at(bpos(Vector3(14.7, 106.8, -3.6)) - e1, Vector3.UP), e1)
+	root.add_child(v1)
+	var v2 := Node3D.new()
+	v2.name = "VIEW__reveal_face"
+	var e2 := bpos(Vector3(14.78, 105.85, -3.22))
+	v2.transform = Transform3D(Basis.looking_at(face_c - e2, Vector3.UP), e2)
+	root.add_child(v2)
+	var v3 := Node3D.new()
+	v3.name = "VIEW__reveal_threeq"
+	var e3 := bpos(Vector3(15.9, 104.6, -3.6))
+	v3.transform = Transform3D(Basis.looking_at(bpos(Vector3(14.7, 106.8, -3.9)) - e3, Vector3.UP), e3)
+	root.add_child(v3)
+	own_shallow(root)
+	save_scene(root, "res://scenes/cinematics/twin_reveal.tscn")
 
 
 # ------------------------------------------------------------------ inspection

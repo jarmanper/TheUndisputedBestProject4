@@ -2,6 +2,6 @@
 
 [ext_resource type="PackedScene" path="res://assets/models/props/filing_cabinet.glb" id="1_nreji"]
 
-[node name="FilingCabinet" type="Node3D" unique_id=246866591]
+[node name="FilingCabinet" type="Node3D" unique_id=1580874789]
 
 [node name="Model" type="Node3D" parent="." unique_id=1613173529 instance=ExtResource("1_nreji")]

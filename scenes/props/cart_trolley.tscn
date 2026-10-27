@@ -2,6 +2,6 @@
 
 [ext_resource type="PackedScene" path="res://assets/models/props/cart_trolley.glb" id="1_b7wkp"]
 
-[node name="CartTrolley" type="Node3D" unique_id=1498533529]
+[node name="CartTrolley" type="Node3D" unique_id=1385444106]
 
 [node name="Model" type="Node3D" parent="." unique_id=305600076 instance=ExtResource("1_b7wkp")]
