@@ -3,6 +3,8 @@ extends Node
 
 var scene_path := ""
 var wanted: Array = []
+## If > 0: re-trigger every effect (vfx_player.play) this many seconds before each shot.
+var fx_delay := 0.0
 
 
 func _ready() -> void:
@@ -29,6 +31,12 @@ func _ready() -> void:
 		cam.global_transform = v.global_transform
 		for i in 45:   # let SSAO/SSIL/volumetric fog/probes settle
 			await get_tree().process_frame
+		if fx_delay > 0.0:
+			for n in scene.find_children("*", "Node3D", true, false):
+				if n.has_method("play") and n.get("loop") != null:
+					n.set("loop", false)
+					n.play()
+			await get_tree().create_timer(fx_delay).timeout
 		var img := get_viewport().get_texture().get_image()
 		img.save_png("res://.godot/captures/%s.png" % vname)
 		var t0 := Time.get_ticks_usec()

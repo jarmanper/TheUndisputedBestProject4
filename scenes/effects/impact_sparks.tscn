@@ -1,0 +1,144 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/visual/vfx_player.gd" id="1_ej8we"]
+[ext_resource type="Texture2D" path="res://assets/textures/vfx/spark.png" id="2_imqfb"]
+[ext_resource type="Texture2D" path="res://assets/textures/vfx/smoke_atlas.png" id="3_a2ehu"]
+[ext_resource type="Material" path="res://assets/materials/concrete.tres" id="4_4tl8w"]
+[ext_resource type="Texture2D" path="res://assets/textures/vfx/bullet_hole.png" id="5_5xvqh"]
+
+[sub_resource type="Gradient" id="Gradient_8ioqv"]
+offsets = PackedFloat32Array(0, 0.5, 1)
+colors = PackedColorArray(1, 0.95, 0.75, 1, 1, 0.55, 0.1, 1, 0.8, 0.2, 0, 0)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_4upu2"]
+gradient = SubResource("Gradient_8ioqv")
+use_hdr = true
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_7oyre"]
+particle_flag_align_y = true
+direction = Vector3(0, 1, 0)
+spread = 55.0
+initial_velocity_min = 2.5
+initial_velocity_max = 7.0
+color_ramp = SubResource("GradientTexture1D_4upu2")
+collision_mode = 1
+collision_friction = 0.0
+collision_bounce = 0.3
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_g7684"]
+transparency = 1
+blend_mode = 1
+depth_draw_mode = 2
+shading_mode = 0
+vertex_color_use_as_albedo = true
+albedo_texture = ExtResource("2_imqfb")
+disable_receive_shadows = true
+billboard_keep_scale = true
+proximity_fade_distance = 0.4
+
+[sub_resource type="QuadMesh" id="QuadMesh_8g05k"]
+material = SubResource("StandardMaterial3D_g7684")
+size = Vector2(0.01, 0.04)
+
+[sub_resource type="Gradient" id="Gradient_ce378"]
+colors = PackedColorArray(0.55, 0.52, 0.48, 0.5, 0.5, 0.48, 0.45, 0)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_4bdu8"]
+gradient = SubResource("Gradient_ce378")
+use_hdr = true
+
+[sub_resource type="Curve" id="Curve_02cqp"]
+_data = [Vector2(0, 0.3), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_54ddp"]
+curve = SubResource("Curve_02cqp")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_o43d6"]
+direction = Vector3(0, 1, 0)
+spread = 40.0
+initial_velocity_min = 0.3
+initial_velocity_max = 1.2
+gravity = Vector3(0, -0.2, 0)
+damping_min = 2.0
+damping_max = 2.0
+scale_curve = SubResource("CurveTexture_54ddp")
+color_ramp = SubResource("GradientTexture1D_4bdu8")
+anim_offset_max = 1.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_d4d0e"]
+transparency = 1
+depth_draw_mode = 2
+shading_mode = 0
+vertex_color_use_as_albedo = true
+albedo_texture = ExtResource("3_a2ehu")
+disable_receive_shadows = true
+billboard_mode = 3
+billboard_keep_scale = true
+particles_anim_h_frames = 2
+particles_anim_v_frames = 2
+particles_anim_loop = false
+proximity_fade_enabled = true
+proximity_fade_distance = 0.4
+
+[sub_resource type="QuadMesh" id="QuadMesh_bfivt"]
+material = SubResource("StandardMaterial3D_d4d0e")
+size = Vector2(0.25, 0.25)
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_jgonq"]
+direction = Vector3(0, 1, 0)
+initial_velocity_min = 1.5
+initial_velocity_max = 4.0
+angular_velocity_min = -720.0
+angular_velocity_max = 720.0
+scale_min = 0.5
+scale_max = 1.2
+
+[sub_resource type="BoxMesh" id="BoxMesh_ww12y"]
+material = ExtResource("4_4tl8w")
+size = Vector3(0.015, 0.01, 0.012)
+
+[node name="ImpactSparks" type="Node3D" unique_id=1884058281]
+script = ExtResource("1_ej8we")
+duration = 1.2
+
+[node name="Sparks" type="GPUParticles3D" parent="." unique_id=911286907]
+cast_shadow = 0
+emitting = false
+amount = 40
+lifetime = 0.5
+one_shot = true
+explosiveness = 0.95
+visibility_aabb = AABB(-8, -2, -8, 16, 14, 16)
+transform_align = 3
+process_material = SubResource("ParticleProcessMaterial_7oyre")
+draw_pass_1 = SubResource("QuadMesh_8g05k")
+
+[node name="Dust" type="GPUParticles3D" parent="." unique_id=1416402832]
+cast_shadow = 0
+emitting = false
+lifetime = 1.2
+one_shot = true
+explosiveness = 0.95
+visibility_aabb = AABB(-8, -2, -8, 16, 14, 16)
+process_material = SubResource("ParticleProcessMaterial_o43d6")
+draw_pass_1 = SubResource("QuadMesh_bfivt")
+
+[node name="Chips" type="GPUParticles3D" parent="." unique_id=2103764314]
+emitting = false
+amount = 10
+one_shot = true
+explosiveness = 1.0
+process_material = SubResource("ParticleProcessMaterial_jgonq")
+draw_pass_1 = SubResource("BoxMesh_ww12y")
+
+[node name="FlashLight" type="OmniLight3D" parent="." unique_id=1867759532]
+light_color = Color(1, 0.75, 0.4, 1)
+light_energy = 2.5
+omni_range = 2.0
+metadata/fade = 0.08
+
+[node name="Decal" type="Decal" parent="." unique_id=953581753]
+size = Vector3(0.12, 0.2, 0.12)
+texture_albedo = ExtResource("5_5xvqh")
+cull_mask = 1

@@ -315,8 +315,8 @@ func make_environment() -> Environment:
 	env.ssao_intensity = 2.2
 	env.ssil_enabled = true
 	env.ssil_intensity = 0.8
-	env.ssr_enabled = true
-	env.ssr_max_steps = 48
+	# SSR off: it smears additive VFX into glossy floors/walls; probes handle reflections
+	env.ssr_enabled = false
 	env.glow_enabled = true
 	env.glow_intensity = 0.55
 	env.glow_bloom = 0.04

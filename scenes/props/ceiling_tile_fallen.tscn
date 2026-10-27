@@ -2,6 +2,6 @@
 
 [ext_resource type="PackedScene" path="res://assets/models/props/ceiling_tile_fallen.glb" id="1_8fhrq"]
 
-[node name="CeilingTileFallen" type="Node3D" unique_id=1389532717]
+[node name="CeilingTileFallen" type="Node3D" unique_id=238310200]
 
 [node name="Model" type="Node3D" parent="." unique_id=1933847392 instance=ExtResource("1_8fhrq")]

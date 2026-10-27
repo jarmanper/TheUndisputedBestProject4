@@ -2,6 +2,6 @@
 
 [ext_resource type="PackedScene" path="res://assets/models/props/chem_bottles.glb" id="1_0a5vf"]
 
-[node name="ChemBottles" type="Node3D" unique_id=1408335118]
+[node name="ChemBottles" type="Node3D" unique_id=1814761647]
 
 [node name="Model" type="Node3D" parent="." unique_id=1091599530 instance=ExtResource("1_0a5vf")]

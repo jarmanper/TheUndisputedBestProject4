@@ -588,6 +588,101 @@ def monitor_screen():
           normal=np.ones((n, n, 3)) * np.array([0.5, 0.5, 1.0]), emit=np.clip(emit, 0, 1))
 
 
+# ====================================================================
+# VFX sprites (RGBA, written to assets/textures/vfx/)
+# ====================================================================
+
+VFX = os.path.join(OUT, "vfx")
+
+
+def vfx(name, rgba):
+    os.makedirs(VFX, exist_ok=True)
+    save_png(os.path.join(VFX, name + ".png"), rgba)
+
+
+def _radial(n):
+    yy, xx = np.mgrid[0:n, 0:n] / n
+    return np.sqrt((xx - 0.5) ** 2 + (yy - 0.5) ** 2) * 2, np.arctan2(yy - 0.5, xx - 0.5)
+
+
+@tex
+def vfx_sprites():
+    T.seed(50)
+    n = 256
+    r, ang = _radial(n)
+    # soft smoke puff (4 variants in a 2x2 atlas)
+    atlas = np.zeros((n * 2, n * 2, 4))
+    for k in range(4):
+        T.seed(60 + k)
+        nz = fbm(n, 2.2, lo=2) * 0.6 + fbm(n, 1.4, lo=6) * 0.4
+        edge = 1 - smooth(remap(r, 0.7, 0.98))          # alpha reaches 0 before the quad edge
+        a = smooth(remap(1 - r + (nz - 0.5) * 0.9, 0.25, 0.75)) * edge
+        shade = 0.55 + 0.45 * nz
+        tile = np.stack([shade, shade, shade, a], -1)
+        y0, x0 = (k // 2) * n, (k % 2) * n
+        atlas[y0:y0 + n, x0:x0 + n] = tile
+    vfx("smoke_atlas", atlas)
+    # fire / flame puff (white-hot core; colour comes from the particle gradient)
+    T.seed(70)
+    nz = fbm(n, 1.8, lo=3, stretch=(1, 0.5))
+    yy, xx = np.mgrid[0:n, 0:n] / n
+    edge = 1 - smooth(remap(r, 0.65, 0.98))
+    flame = smooth(remap(1 - r + (nz - 0.5) * 1.0, 0.3, 0.8)) * edge
+    core = smooth(remap(1 - r + (nz - 0.5) * 0.5, 0.6, 0.95)) * edge
+    vfx("fire", np.stack([np.ones_like(r), 0.4 + 0.6 * core, 0.15 + 0.85 * core * core, flame], -1))
+    # glow flare
+    g = np.exp(-r * r * 6) + np.exp(-r * 18) * 0.6
+    vfx("flare", np.stack([np.ones_like(r)] * 3 + [np.clip(g, 0, 1)], -1))
+    # spark streak (long thin)
+    streak = np.exp(-((xx - 0.5) ** 2) / 0.0008) * smooth(remap(0.5 - np.abs(yy - 0.5), 0.0, 0.45))
+    vfx("spark", np.stack([np.ones_like(r)] * 3 + [np.clip(streak, 0, 1)], -1))
+    # shockwave ring
+    ringv = np.exp(-((r - 0.8) ** 2) / 0.004) * (0.7 + 0.3 * fbm(n, 1.5, lo=8))
+    vfx("shockwave", np.stack([np.ones_like(r)] * 3 + [np.clip(ringv, 0, 1)], -1))
+    # muzzle flash star
+    star = np.clip((0.5 + 0.5 * np.cos(ang * 5)) ** 3 * np.exp(-r * 3.5) * 1.6 + np.exp(-r * r * 30), 0, 1)
+    vfx("muzzle", np.stack([np.ones_like(r), 0.75 + 0.25 * np.exp(-r * 4), 0.4 + 0.6 * np.exp(-r * 6), star], -1))
+    # scorch decal
+    T.seed(80)
+    nz = fbm(n * 2, 2.0, lo=3)
+    r2, ang2 = _radial(n * 2)
+    sc = smooth(remap(1 - r2 + (nz - 0.5) * 0.8 + 0.08 * np.cos(ang2 * 9), 0.2, 0.7))
+    soot = 0.04 + 0.08 * fbm(n * 2, 1.2, lo=20)
+    vfx("scorch", np.stack([soot, soot * 0.95, soot * 0.9, sc * 0.95], -1))
+    # bullet hole decal
+    hole = 1 - remap(r, 0.08, 0.12)
+    crack = (1 - remap(worley(n, 12)[1], 0, 0.02)) * smooth(remap(0.6 - r, 0, 0.4))
+    a = np.clip(hole + crack * 0.8 + smooth(remap(0.35 - r, 0, 0.3)) * 0.5, 0, 1)
+    c = 0.05 + 0.25 * (1 - hole) * (1 - crack)
+    vfx("bullet_hole", np.stack([c, c * 0.95, c * 0.9, a], -1))
+    # roman numeral ring for the suspend effect (white glyphs on transparent)
+    nn = 512
+    ink = np.zeros((nn, nn))
+    numerals = ["XII", "I", "II", "III", "IIII", "V", "VI", "VII", "VIII", "IX", "X", "XI"]
+    segs = []
+    for i, s_ in enumerate(numerals):
+        a_ = i / 12 * 2 * math.pi
+        h = 0.06
+        ss, w = text_segments(s_, 0, 0, h)
+        cx, cy = 0.5 + math.sin(a_) * 0.4, 0.5 - math.cos(a_) * 0.4
+        for x0, y0, x1, y1 in ss:
+            segs.append((x0 + cx - w / 2, y0 + cy - h / 2, x1 + cx - w / 2, y1 + cy - h / 2))
+    ink = np.maximum(draw_segments(nn, segs, 6), ring(nn, 0.5, 0.5, 0.47, 3))
+    tick = []
+    for i in range(60):
+        a_ = i / 60 * 2 * math.pi
+        tick.append((0.5 + math.sin(a_) * 0.45, 0.5 - math.cos(a_) * 0.45, 0.5 + math.sin(a_) * 0.47, 0.5 - math.cos(a_) * 0.47))
+    ink = np.maximum(ink, draw_segments(nn, tick, 2))
+    vfx("clock_ring", np.stack([np.ones((nn, nn))] * 3 + [np.clip(ink, 0, 1)], -1))
+    # tracker reticle: segmented ring + chevrons
+    rr, aa = _radial(nn)
+    seg_ring = np.exp(-((rr - 0.8) ** 2) / 0.0006) * (np.cos(aa * 6) > -0.3)
+    inner = np.exp(-((rr - 0.55) ** 2) / 0.0003)
+    chev = draw_segments(nn, [(0.5, 0.02, 0.44, 0.1), (0.5, 0.02, 0.56, 0.1), (0.5, 0.98, 0.44, 0.9), (0.5, 0.98, 0.56, 0.9),
+                              (0.02, 0.5, 0.1, 0.44), (0.02, 0.5, 0.1, 0.56), (0.98, 0.5, 0.9, 0.44), (0.98, 0.5, 0.9, 0.56)], 5)
+    vfx("reticle", np.stack([np.ones((nn, nn))] * 3 + [np.clip(seg_ring + inner * 0.7 + chev, 0, 1)], -1))
+
+
 def contact_sheet():
     """Small preview of every albedo so a human can eyeball them at once."""
     names = sorted(f[:-11] for f in os.listdir(OUT) if f.endswith("_albedo.png"))

@@ -2,6 +2,6 @@
 
 [ext_resource type="PackedScene" path="res://assets/models/props/containment_tank_broken.glb" id="1_kabi2"]
 
-[node name="ContainmentTankBroken" type="Node3D" unique_id=1713047568]
+[node name="ContainmentTankBroken" type="Node3D" unique_id=1386011291]
 
 [node name="Model" type="Node3D" parent="." unique_id=1150460397 instance=ExtResource("1_kabi2")]

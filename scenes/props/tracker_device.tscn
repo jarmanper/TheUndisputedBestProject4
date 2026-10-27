@@ -3,13 +3,13 @@
 [ext_resource type="PackedScene" path="res://assets/models/props/tracker_device.glb" id="1_fcakn"]
 [ext_resource type="Script" path="res://scripts/visual/light_flicker.gd" id="2_qc3wo"]
 
-[node name="TrackerDevice" type="Node3D" unique_id=311518343]
+[node name="TrackerDevice" type="Node3D" unique_id=103928424]
 
 [node name="Model" type="Node3D" parent="." unique_id=853355018 instance=ExtResource("1_fcakn")]
 
-[node name="Lights" type="Node3D" parent="." unique_id=902381592]
+[node name="Lights" type="Node3D" parent="." unique_id=889651980]
 
-[node name="tracker_light" type="OmniLight3D" parent="Lights" unique_id=1963500388]
+[node name="tracker_light" type="OmniLight3D" parent="Lights" unique_id=736846145]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.06, 0.02)
 light_color = Color(1, 0.2, 0.1, 1)
 light_energy = 0.2

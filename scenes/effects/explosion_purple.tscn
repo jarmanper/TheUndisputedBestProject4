@@ -1,0 +1,260 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/visual/vfx_player.gd" id="1_mqd5q"]
+[ext_resource type="Texture2D" path="res://assets/textures/vfx/flare.png" id="2_7g7yv"]
+[ext_resource type="Texture2D" path="res://assets/textures/vfx/fire.png" id="3_qdol8"]
+[ext_resource type="Texture2D" path="res://assets/textures/vfx/smoke_atlas.png" id="4_5px4q"]
+[ext_resource type="Texture2D" path="res://assets/textures/vfx/spark.png" id="5_iwnk4"]
+[ext_resource type="Material" path="res://assets/materials/rust.tres" id="6_jaf18"]
+[ext_resource type="Texture2D" path="res://assets/textures/vfx/shockwave.png" id="7_tj5nj"]
+[ext_resource type="Texture2D" path="res://assets/textures/vfx/scorch.png" id="8_fopyr"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_gbwjw"]
+transparency = 1
+blend_mode = 1
+depth_draw_mode = 2
+shading_mode = 0
+vertex_color_use_as_albedo = true
+albedo_color = Color(1.2, 0.48000002, 1.6, 1.6)
+albedo_texture = ExtResource("2_7g7yv")
+disable_receive_shadows = true
+billboard_mode = 1
+billboard_keep_scale = true
+proximity_fade_distance = 0.4
+
+[sub_resource type="QuadMesh" id="QuadMesh_p4blw"]
+material = SubResource("StandardMaterial3D_gbwjw")
+size = Vector2(3.5, 3.5)
+
+[sub_resource type="Gradient" id="Gradient_peopv"]
+offsets = PackedFloat32Array(0, 0.18, 0.55, 1)
+colors = PackedColorArray(2.2, 1.8700001, 2.2, 2.2, 1.2, 0.48000002, 1.6, 1.6, 0.225, 0.044999998, 0.35999998, 0.9, 0, 0, 0, 0)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_4jit0"]
+gradient = SubResource("Gradient_peopv")
+use_hdr = true
+
+[sub_resource type="Curve" id="Curve_wuetg"]
+_data = [Vector2(0, 0.5), 0.0, 0.0, 0, 0, Vector2(0.25, 1), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="CurveTexture" id="CurveTexture_y74gf"]
+curve = SubResource("Curve_wuetg")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_4ktxc"]
+emission_shape = 1
+emission_sphere_radius = 0.45
+angle_min = -180.0
+angle_max = 180.0
+direction = Vector3(0, 1, 0)
+spread = 180.0
+initial_velocity_min = 0.8
+initial_velocity_max = 3.2
+gravity = Vector3(0, 1.8, 0)
+damping_min = 3.0
+damping_max = 3.0
+scale_curve = SubResource("CurveTexture_y74gf")
+color_ramp = SubResource("GradientTexture1D_4jit0")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_u0ohr"]
+transparency = 1
+blend_mode = 1
+depth_draw_mode = 2
+shading_mode = 0
+vertex_color_use_as_albedo = true
+albedo_texture = ExtResource("3_qdol8")
+disable_receive_shadows = true
+billboard_mode = 3
+billboard_keep_scale = true
+particles_anim_h_frames = 1
+particles_anim_v_frames = 1
+particles_anim_loop = false
+proximity_fade_distance = 0.4
+
+[sub_resource type="QuadMesh" id="QuadMesh_pjv3h"]
+material = SubResource("StandardMaterial3D_u0ohr")
+size = Vector2(1.7, 1.7)
+
+[sub_resource type="Gradient" id="Gradient_srrf3"]
+offsets = PackedFloat32Array(0, 0.12, 1)
+colors = PackedColorArray(0.1, 0.09, 0.08, 0, 0.12, 0.11, 0.1, 0.85, 0.2, 0.2, 0.2, 0)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_168m7"]
+gradient = SubResource("Gradient_srrf3")
+use_hdr = true
+
+[sub_resource type="Curve" id="Curve_i42um"]
+_data = [Vector2(0, 0.4), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_wu4r7"]
+curve = SubResource("Curve_i42um")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_q1t3r"]
+emission_shape = 1
+emission_sphere_radius = 0.5
+angle_min = -180.0
+angle_max = 180.0
+direction = Vector3(0, 1, 0)
+spread = 70.0
+initial_velocity_min = 0.8
+initial_velocity_max = 2.5
+gravity = Vector3(0, 0.8, 0)
+damping_min = 1.2
+damping_max = 1.2
+scale_curve = SubResource("CurveTexture_wu4r7")
+color_ramp = SubResource("GradientTexture1D_168m7")
+anim_offset_max = 1.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4cjdu"]
+transparency = 1
+depth_draw_mode = 2
+shading_mode = 0
+vertex_color_use_as_albedo = true
+albedo_texture = ExtResource("4_5px4q")
+disable_receive_shadows = true
+billboard_mode = 3
+billboard_keep_scale = true
+particles_anim_h_frames = 2
+particles_anim_v_frames = 2
+particles_anim_loop = false
+proximity_fade_enabled = true
+proximity_fade_distance = 0.4
+
+[sub_resource type="QuadMesh" id="QuadMesh_v6557"]
+material = SubResource("StandardMaterial3D_4cjdu")
+size = Vector2(1.6, 1.6)
+
+[sub_resource type="Gradient" id="Gradient_nt1dp"]
+offsets = PackedFloat32Array(0, 0.6, 1)
+colors = PackedColorArray(2, 1.7, 2, 2, 0.75, 0.3, 1, 1, 0.25, 0.05, 0.4, 0)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_qdfvm"]
+gradient = SubResource("Gradient_nt1dp")
+use_hdr = true
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_bnpdr"]
+particle_flag_align_y = true
+direction = Vector3(0, 1, 0)
+spread = 75.0
+initial_velocity_min = 5.0
+initial_velocity_max = 14.0
+damping_min = 0.5
+damping_max = 0.5
+color_ramp = SubResource("GradientTexture1D_qdfvm")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_2snml"]
+transparency = 1
+blend_mode = 1
+depth_draw_mode = 2
+shading_mode = 0
+vertex_color_use_as_albedo = true
+albedo_texture = ExtResource("5_iwnk4")
+disable_receive_shadows = true
+billboard_keep_scale = true
+proximity_fade_distance = 0.4
+
+[sub_resource type="QuadMesh" id="QuadMesh_si6bv"]
+material = SubResource("StandardMaterial3D_2snml")
+size = Vector2(0.02, 0.08)
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_nhhei"]
+direction = Vector3(0, 1, 0)
+spread = 60.0
+initial_velocity_min = 4.0
+initial_velocity_max = 9.0
+angular_velocity_min = -540.0
+angular_velocity_max = 540.0
+scale_min = 0.5
+scale_max = 1.6
+
+[sub_resource type="BoxMesh" id="BoxMesh_e7i0r"]
+material = ExtResource("6_jaf18")
+size = Vector3(0.08, 0.05, 0.06)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_c7yvf"]
+transparency = 1
+blend_mode = 1
+cull_mode = 2
+depth_draw_mode = 2
+shading_mode = 0
+vertex_color_use_as_albedo = true
+albedo_color = Color(1.125, 0.45000002, 1.5, 1.5)
+albedo_texture = ExtResource("7_tj5nj")
+disable_receive_shadows = true
+billboard_keep_scale = true
+proximity_fade_distance = 0.4
+
+[sub_resource type="QuadMesh" id="QuadMesh_koj8q"]
+material = SubResource("StandardMaterial3D_c7yvf")
+size = Vector2(2, 2)
+
+[node name="ExplosionPurple" type="Node3D" unique_id=777479064]
+script = ExtResource("1_mqd5q")
+duration = 4.0
+
+[node name="FlashCore" type="MeshInstance3D" parent="." unique_id=170056249]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.8, 0)
+visible = false
+mesh = SubResource("QuadMesh_p4blw")
+metadata/fade = 0.18
+
+[node name="Fireball" type="GPUParticles3D" parent="." unique_id=442544260]
+cast_shadow = 0
+emitting = false
+amount = 48
+lifetime = 1.1
+one_shot = true
+explosiveness = 0.95
+visibility_aabb = AABB(-8, -2, -8, 16, 14, 16)
+process_material = SubResource("ParticleProcessMaterial_4ktxc")
+draw_pass_1 = SubResource("QuadMesh_pjv3h")
+
+[node name="Smoke" type="GPUParticles3D" parent="." unique_id=1400203082]
+cast_shadow = 0
+emitting = false
+amount = 28
+lifetime = 3.5
+one_shot = true
+explosiveness = 0.95
+visibility_aabb = AABB(-8, -2, -8, 16, 14, 16)
+process_material = SubResource("ParticleProcessMaterial_q1t3r")
+draw_pass_1 = SubResource("QuadMesh_v6557")
+
+[node name="Sparks" type="GPUParticles3D" parent="." unique_id=886891813]
+cast_shadow = 0
+emitting = false
+amount = 60
+lifetime = 1.4
+one_shot = true
+explosiveness = 0.95
+visibility_aabb = AABB(-8, -2, -8, 16, 14, 16)
+transform_align = 3
+process_material = SubResource("ParticleProcessMaterial_bnpdr")
+draw_pass_1 = SubResource("QuadMesh_si6bv")
+
+[node name="Debris" type="GPUParticles3D" parent="." unique_id=2007772472]
+emitting = false
+amount = 16
+lifetime = 2.0
+one_shot = true
+explosiveness = 1.0
+process_material = SubResource("ParticleProcessMaterial_nhhei")
+draw_pass_1 = SubResource("BoxMesh_e7i0r")
+
+[node name="Shockwave" type="MeshInstance3D" parent="." unique_id=1651593121]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0.1, 0)
+mesh = SubResource("QuadMesh_koj8q")
+metadata/max_scale = 4.0
+
+[node name="FlashLight" type="OmniLight3D" parent="." unique_id=1848395571]
+light_color = Color(0.75, 0.3, 1, 1)
+light_energy = 7.0
+shadow_enabled = true
+omni_range = 10.0
+metadata/fade = 0.7
+
+[node name="Scorch" type="Decal" parent="." unique_id=946234613]
+size = Vector3(3, 0.2, 3)
+texture_albedo = ExtResource("8_fopyr")
+cull_mask = 1

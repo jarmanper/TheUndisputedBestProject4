@@ -3,13 +3,13 @@
 [ext_resource type="PackedScene" path="res://assets/models/props/blast_door.glb" id="1_1hyyu"]
 [ext_resource type="Script" path="res://scripts/visual/light_flicker.gd" id="2_gg51j"]
 
-[node name="BlastDoor" type="Node3D" unique_id=497839452]
+[node name="BlastDoor" type="Node3D" unique_id=1915694118]
 
 [node name="Model" type="Node3D" parent="." unique_id=1386736192 instance=ExtResource("1_1hyyu")]
 
-[node name="Lights" type="Node3D" parent="." unique_id=478644066]
+[node name="Lights" type="Node3D" parent="." unique_id=1000754530]
 
-[node name="beacon_light" type="OmniLight3D" parent="Lights" unique_id=70284795]
+[node name="beacon_light" type="OmniLight3D" parent="Lights" unique_id=1354206068]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.9, 0.9)
 light_color = Color(1, 0.08, 0.04, 1)
 light_energy = 2.5

@@ -1,0 +1,77 @@
+[gd_scene format=3]
+
+[ext_resource type="Texture2D" path="res://assets/textures/vfx/flare.png" id="1_rw7ph"]
+[ext_resource type="Material" path="res://assets/materials/concrete_damaged.tres" id="2_hbxn2"]
+
+[sub_resource type="Gradient" id="Gradient_b1m2l"]
+offsets = PackedFloat32Array(0, 0.2, 0.8, 1)
+colors = PackedColorArray(0.8, 0.9, 1, 0, 0.8, 0.9, 1, 0.8, 0.8, 0.9, 1, 0.8, 0.8, 0.9, 1, 0)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_w6bkn"]
+gradient = SubResource("Gradient_b1m2l")
+use_hdr = true
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_o87bn"]
+emission_shape = 3
+emission_box_extents = Vector3(1.5, 1, 1.5)
+direction = Vector3(0, 1, 0)
+spread = 180.0
+initial_velocity_min = 0.005
+initial_velocity_max = 0.02
+gravity = Vector3(0, 0, 0)
+color_ramp = SubResource("GradientTexture1D_w6bkn")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0h4b3"]
+transparency = 1
+blend_mode = 1
+depth_draw_mode = 2
+shading_mode = 0
+vertex_color_use_as_albedo = true
+albedo_texture = ExtResource("1_rw7ph")
+disable_receive_shadows = true
+billboard_mode = 3
+billboard_keep_scale = true
+particles_anim_h_frames = 1
+particles_anim_v_frames = 1
+particles_anim_loop = false
+proximity_fade_distance = 0.4
+
+[sub_resource type="QuadMesh" id="QuadMesh_4ca88"]
+material = SubResource("StandardMaterial3D_0h4b3")
+size = Vector2(0.012, 0.012)
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_ts3nn"]
+emission_shape = 3
+emission_box_extents = Vector3(1.2, 0.8, 1.2)
+direction = Vector3(0, 1, 0)
+spread = 180.0
+initial_velocity_max = 0.02
+angular_velocity_min = -8.0
+angular_velocity_max = 8.0
+gravity = Vector3(0, 0, 0)
+scale_min = 0.4
+scale_max = 1.5
+
+[sub_resource type="BoxMesh" id="BoxMesh_dwgqp"]
+material = ExtResource("2_hbxn2")
+size = Vector3(0.06, 0.03, 0.05)
+
+[node name="SuspendedParticles" type="Node3D" unique_id=314490173]
+
+[node name="Dust" type="GPUParticles3D" parent="." unique_id=1891330017]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2, 0)
+cast_shadow = 0
+amount = 120
+lifetime = 10.0
+preprocess = 10.0
+visibility_aabb = AABB(-8, -2, -8, 16, 14, 16)
+process_material = SubResource("ParticleProcessMaterial_o87bn")
+draw_pass_1 = SubResource("QuadMesh_4ca88")
+
+[node name="Debris" type="GPUParticles3D" parent="." unique_id=1105818761]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2, 0)
+amount = 18
+lifetime = 12.0
+preprocess = 12.0
+process_material = SubResource("ParticleProcessMaterial_ts3nn")
+draw_pass_1 = SubResource("BoxMesh_dwgqp")

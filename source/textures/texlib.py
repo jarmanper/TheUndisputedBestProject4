@@ -26,7 +26,8 @@ def save_png(path, img):
         color_type, chans = 0, 1
         a = a[:, :, None]
     else:
-        color_type, chans = 2, a.shape[2]
+        chans = a.shape[2]
+        color_type = 6 if chans == 4 else 2
     h, w = a.shape[:2]
     raw = b"".join(b"\x00" + a[y].tobytes() for y in range(h))
 
