@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://scripts/visual/creature_visual.gd" id="1_t6log"]
 [ext_resource type="PackedScene" path="res://assets/models/characters/chemical_subject.glb" id="2_fgsti"]
 
-[node name="ChemicalSubject" type="Node3D" unique_id=1506519096]
+[node name="ChemicalSubject" type="Node3D" unique_id=772370324]
 script = ExtResource("1_t6log")
 
 [node name="Model" type="Node3D" parent="." unique_id=194840228 instance=ExtResource("2_fgsti")]

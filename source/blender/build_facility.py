@@ -539,6 +539,13 @@ def P(area, prop_name, loc, rz=0.0, rx=0.0, ry=0.0):
     EXTRA[area].append(empty(f"P__{prop_name}__{k}", loc, (rx, ry, rz)))
 
 
+def FX(area, effect, loc, rz=0.0):
+    """Marker for an ambient effect scene (scenes/effects/<effect>.tscn)."""
+    k = _COUNT["FX" + effect]
+    _COUNT["FX" + effect] += 1
+    EXTRA[area].append(empty(f"FX__{effect}__{k}", loc, (0, 0, rz)))
+
+
 def L(area, kind, loc, rot=(0, 0, 0), **props):
     k = _COUNT["L" + kind]
     _COUNT["L" + kind] += 1
@@ -1040,6 +1047,10 @@ def area_d():
         P(a, "wall_clock", (13.45, 81.0 + k * 2.2, -4.5 + (k % 2) * 0.5), rz=-math.pi / 2 + (k - 2) * 0.25)
     P(a, "debris_pile", (14.2, 86.0, -6))
     P(a, "blood_trail", (14.9, 91.0, -6), rz=0.0)
+    # time feels wrong here: dust and debris hang in the air
+    FX(a, "suspended_particles", (14.7, 84.0, -6.0))
+    FX(a, "suspended_particles", (14.7, 89.0, -6.0))
+    FX(a, "fire_green", (0.6, 75.3, -6.0))         # leaking chemical drum smoulders
     L(a, "chamber_spill", (14.7, 91.6, -3.6), energy=2.0, range=6.0, color=[1.0, 0.45, 0.15], flicker=0.2)
     V(a, "chamber_approach", (14.7, 80.0, -4.35), (14.7, 92.0, -4.6))
 
@@ -1151,6 +1162,9 @@ def area_e():
     P(a, "papers_scattered", (11.0, 97.5, zf), rz=0.9)
     P(a, "debris_pile", (22.0, 95.5, zf))
     P(a, "blood_trail", (14.6, 98.5, zf), rz=0.0)
+    FX(a, "suspended_particles", (cx, cy + 1.5, zf + 1.0))
+    FX(a, "suspended_particles", (cx - 6.0, cy - 4.0, zf))
+    FX(a, "suspended_particles", (cx + 6.0, cy - 2.0, zf))
     for x in (4.5, 25.0):
         P(a, "emergency_beacon", (x, 92.6, zf + 4.5), rz=math.pi)
     # lighting: key spot on the platform, rim lights, clock wash

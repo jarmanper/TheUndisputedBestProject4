@@ -2,6 +2,6 @@
 
 [ext_resource type="PackedScene" path="res://assets/models/props/security_gate.glb" id="1_xnr2y"]
 
-[node name="SecurityGate" type="Node3D" unique_id=1178220573]
+[node name="SecurityGate" type="Node3D" unique_id=1102143590]
 
 [node name="Model" type="Node3D" parent="." unique_id=179084967 instance=ExtResource("1_xnr2y")]

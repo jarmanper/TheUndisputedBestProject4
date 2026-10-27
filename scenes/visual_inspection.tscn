@@ -9,48 +9,48 @@
 [ext_resource type="Script" path="res://scripts/visual/free_look_camera.gd" id="7_vu8p5"]
 [ext_resource type="Script" path="res://scripts/visual/inspection_hud.gd" id="8_6wleo"]
 
-[node name="VisualInspection" type="Node3D" unique_id=1187974318]
+[node name="VisualInspection" type="Node3D" unique_id=1674197216]
 
-[node name="TimbukFacility" type="Node3D" parent="." unique_id=1245607981 instance=ExtResource("1_jk66i")]
+[node name="TimbukFacility" type="Node3D" parent="." unique_id=1626639986 instance=ExtResource("1_jk66i")]
 
-[node name="CreatureShowcase" type="Node3D" parent="." unique_id=2033758499]
+[node name="CreatureShowcase" type="Node3D" parent="." unique_id=630820406]
 
-[node name="AugmentedSubject" type="Node3D" parent="CreatureShowcase" unique_id=1532981063 instance=ExtResource("2_eb6yg")]
+[node name="AugmentedSubject" type="Node3D" parent="CreatureShowcase" unique_id=1564388338 instance=ExtResource("2_eb6yg")]
 transform = Transform3D(0.85165817, 0, -0.5240976, 0, 1, 0, 0.5240976, 0, 0.85165817, 5.2, 0, -45.6)
 script = ExtResource("3_lne4x")
 animation = "twitch"
 
-[node name="VIEW__creature_augmented_subject" type="Node3D" parent="CreatureShowcase" unique_id=364840365]
+[node name="VIEW__creature_augmented_subject" type="Node3D" parent="CreatureShowcase" unique_id=1395942475]
 transform = Transform3D(0.8516582, 0.05125532, -0.5215853, 0, 0.99520636, 0.09779727, 0.5240977, -0.08328985, 0.8475756, 3.6, 1.6, -43)
 
-[node name="ChemicalSubject" type="Node3D" parent="CreatureShowcase" unique_id=1506519096 instance=ExtResource("4_dsbbf")]
+[node name="ChemicalSubject" type="Node3D" parent="CreatureShowcase" unique_id=772370324 instance=ExtResource("4_dsbbf")]
 transform = Transform3D(0.9994801, 0, -0.03224131, 0, 1, 0, 0.03224131, 0, 0.9994801, 0.1, -6, -70.5)
 script = ExtResource("3_lne4x")
 
-[node name="VIEW__creature_chemical_subject" type="Node3D" parent="CreatureShowcase" unique_id=1526254397]
+[node name="VIEW__creature_chemical_subject" type="Node3D" parent="CreatureShowcase" unique_id=353346453]
 transform = Transform3D(0.9994801, 0.0020746933, -0.03217449, 0, 0.99792755, 0.064348914, 0.03224131, -0.06431546, 0.9974087, 0, -4.5, -67.4)
 
-[node name="FailedHumanoid" type="Node3D" parent="CreatureShowcase" unique_id=1375615882 instance=ExtResource("5_ymvvw")]
+[node name="FailedHumanoid" type="Node3D" parent="CreatureShowcase" unique_id=1703752037 instance=ExtResource("5_ymvvw")]
 transform = Transform3D(0.37139088, 0, 0.92847663, 0, 1, 0, -0.92847663, 0, 0.37139088, -10.6, 0, -22.2)
 script = ExtResource("3_lne4x")
 
-[node name="VIEW__creature_failed_humanoid" type="Node3D" parent="CreatureShowcase" unique_id=724625407]
+[node name="VIEW__creature_failed_humanoid" type="Node3D" parent="CreatureShowcase" unique_id=141760708]
 transform = Transform3D(0.37139082, -0.07162498, 0.92570984, 0, 0.99702007, 0.07714248, -0.9284766, -0.028650008, 0.3702841, -7.6, 1.55, -21)
 
-[node name="TwinMonster" type="Node3D" parent="CreatureShowcase" unique_id=2010452290 instance=ExtResource("6_y7adr")]
+[node name="TwinMonster" type="Node3D" parent="CreatureShowcase" unique_id=2087859913 instance=ExtResource("6_y7adr")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14.7, -5.1, -106.8)
 script = ExtResource("3_lne4x")
 
-[node name="VIEW__creature_twin_monster" type="Node3D" parent="CreatureShowcase" unique_id=535072060]
+[node name="VIEW__creature_twin_monster" type="Node3D" parent="CreatureShowcase" unique_id=2002741307]
 transform = Transform3D(1, 0, 0, 0, 0.9988681, 0.047565106, 0, -0.047565106, 0.9988681, 14.7, -3.6, -102.6)
 
-[node name="FreeLookCamera" type="Camera3D" parent="." unique_id=169051778]
+[node name="FreeLookCamera" type="Camera3D" parent="." unique_id=2057373590]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.7, 21)
 current = true
 fov = 70.0
 script = ExtResource("7_vu8p5")
 
-[node name="Flashlight" type="SpotLight3D" parent="FreeLookCamera" unique_id=67548601]
+[node name="Flashlight" type="SpotLight3D" parent="FreeLookCamera" unique_id=1434047635]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.15, -0.1, 0)
 visible = false
 light_color = Color(1, 0.95, 0.85, 1)
@@ -59,11 +59,11 @@ shadow_enabled = true
 spot_range = 18.0
 spot_angle = 24.0
 
-[node name="HUD" type="CanvasLayer" parent="." unique_id=698948004]
+[node name="HUD" type="CanvasLayer" parent="." unique_id=413808060]
 script = ExtResource("8_6wleo")
 camera_path = NodePath("../FreeLookCamera")
 
-[node name="Label" type="Label" parent="HUD" unique_id=1200553409]
+[node name="Label" type="Label" parent="HUD" unique_id=1094365841]
 offset_left = 16.0
 offset_top = 12.0
 offset_right = 16.0

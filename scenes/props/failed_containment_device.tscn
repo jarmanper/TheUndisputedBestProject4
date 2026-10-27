@@ -3,13 +3,13 @@
 [ext_resource type="PackedScene" path="res://assets/models/props/failed_containment_device.glb" id="1_h7l7v"]
 [ext_resource type="Script" path="res://scripts/visual/light_flicker.gd" id="2_ieltf"]
 
-[node name="FailedContainmentDevice" type="Node3D" unique_id=1439398088]
+[node name="FailedContainmentDevice" type="Node3D" unique_id=1143696907]
 
 [node name="Model" type="Node3D" parent="." unique_id=176119452 instance=ExtResource("1_h7l7v")]
 
-[node name="Lights" type="Node3D" parent="." unique_id=978972141]
+[node name="Lights" type="Node3D" parent="." unique_id=426621480]
 
-[node name="core_light" type="OmniLight3D" parent="Lights" unique_id=1538582332]
+[node name="core_light" type="OmniLight3D" parent="Lights" unique_id=1173603083]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.2, -0.5)
 light_color = Color(1, 0.45, 0.15, 1)
 light_energy = 3.0
@@ -24,7 +24,7 @@ omni_attenuation = 1.2
 script = ExtResource("2_ieltf")
 flicker = 0.5
 
-[node name="red_light" type="OmniLight3D" parent="Lights" unique_id=2139340453]
+[node name="red_light" type="OmniLight3D" parent="Lights" unique_id=1943880911]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, 0)
 light_color = Color(1, 0.1, 0.05, 1)
 light_energy = 2.0

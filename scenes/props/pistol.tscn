@@ -2,6 +2,6 @@
 
 [ext_resource type="PackedScene" path="res://assets/models/props/pistol.glb" id="1_12rx6"]
 
-[node name="Pistol" type="Node3D" unique_id=386699231]
+[node name="Pistol" type="Node3D" unique_id=1432192560]
 
 [node name="Model" type="Node3D" parent="." unique_id=224446667 instance=ExtResource("1_12rx6")]

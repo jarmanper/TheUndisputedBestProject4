@@ -43,9 +43,13 @@ func _ready() -> void:
 			await get_tree().create_timer(fx_delay).timeout
 		var img := get_viewport().get_texture().get_image()
 		img.save_png("res://.godot/captures/%s.png" % vname)
+		var vp_rid := get_viewport().get_viewport_rid()
+		RenderingServer.viewport_set_measure_render_time(vp_rid, true)
 		var t0 := Time.get_ticks_usec()
+		var gpu := 0.0
 		for i in 20:
 			await get_tree().process_frame
+			gpu += RenderingServer.viewport_get_measured_render_time_gpu(vp_rid)
 		var ms := (Time.get_ticks_usec() - t0) / 20000.0
-		print("captured %s  %.1f ms/frame (%.0f fps)" % [vname, ms, 1000.0 / ms])
+		print("captured %s  GPU %.1f ms (frame %.1f ms, window may be throttled)" % [vname, gpu / 20.0, ms])
 	get_tree().quit()

@@ -3,13 +3,13 @@
 [ext_resource type="PackedScene" path="res://assets/models/props/hanging_light_broken.glb" id="1_tcs2x"]
 [ext_resource type="Script" path="res://scripts/visual/light_flicker.gd" id="2_c7w2c"]
 
-[node name="HangingLightBroken" type="Node3D" unique_id=757626713]
+[node name="HangingLightBroken" type="Node3D" unique_id=1838569566]
 
 [node name="Model" type="Node3D" parent="." unique_id=886641143 instance=ExtResource("1_tcs2x")]
 
-[node name="Lights" type="Node3D" parent="." unique_id=768101632]
+[node name="Lights" type="Node3D" parent="." unique_id=1600658861]
 
-[node name="fluor_hanging_light" type="OmniLight3D" parent="Lights" unique_id=1725829562]
+[node name="fluor_hanging_light" type="OmniLight3D" parent="Lights" unique_id=236643070]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.45, 0)
 light_color = Color(0.8, 0.92, 1, 1)
 light_energy = 1.4

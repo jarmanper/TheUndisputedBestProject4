@@ -3,13 +3,13 @@
 [ext_resource type="PackedScene" path="res://assets/models/props/emergency_beacon.glb" id="1_cmj7r"]
 [ext_resource type="Script" path="res://scripts/visual/light_flicker.gd" id="2_4kuda"]
 
-[node name="EmergencyBeacon" type="Node3D" unique_id=2028036649]
+[node name="EmergencyBeacon" type="Node3D" unique_id=1338604869]
 
 [node name="Model" type="Node3D" parent="." unique_id=71499434 instance=ExtResource("1_cmj7r")]
 
-[node name="Lights" type="Node3D" parent="." unique_id=664351887]
+[node name="Lights" type="Node3D" parent="." unique_id=890231710]
 
-[node name="beacon_light" type="OmniLight3D" parent="Lights" unique_id=662872861]
+[node name="beacon_light" type="OmniLight3D" parent="Lights" unique_id=519352110]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.3)
 light_color = Color(1, 0.08, 0.04, 1)
 light_energy = 1.6

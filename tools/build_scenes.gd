@@ -216,6 +216,16 @@ func build_areas(prop_scenes: Dictionary) -> Array:
 			p.transform = rel_xform(m, root)
 			props.add_child(p, true)
 			p.owner = root
+		for m in markers(inst, "FX__"):
+			var ename := String(m.name).get_slice("__", 1)
+			var epath := "res://scenes/effects/%s.tscn" % ename
+			if not ResourceLoader.exists(epath):
+				missing["fx:" + ename] = true
+				continue
+			var e: Node3D = load(epath).instantiate()
+			e.transform = rel_xform(m, root)
+			props.add_child(e, true)
+			e.owner = root
 		if missing:
 			push_warning("%s: missing prop scenes %s" % [name, missing.keys()])
 		add_room_extras(root, inst)

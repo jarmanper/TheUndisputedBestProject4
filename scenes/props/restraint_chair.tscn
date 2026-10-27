@@ -2,6 +2,6 @@
 
 [ext_resource type="PackedScene" path="res://assets/models/props/restraint_chair.glb" id="1_oo5w5"]
 
-[node name="RestraintChair" type="Node3D" unique_id=1964721876]
+[node name="RestraintChair" type="Node3D" unique_id=1093203239]
 
 [node name="Model" type="Node3D" parent="." unique_id=6634031 instance=ExtResource("1_oo5w5")]
