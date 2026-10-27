@@ -5,13 +5,13 @@
 [ext_resource type="AudioStream" path="res://assets/audio/sfx/buzz_fluorescent_loop.wav" id="3_57x30"]
 [ext_resource type="AudioStream" path="res://assets/audio/sfx/electric_crackle_loop.wav" id="4_0wp2k"]
 
-[node name="HangingLightBroken" type="Node3D" unique_id=315370417]
+[node name="HangingLightBroken" type="Node3D" unique_id=1933125249]
 
 [node name="Model" type="Node3D" parent="." unique_id=886641143 instance=ExtResource("1_kc280")]
 
-[node name="Lights" type="Node3D" parent="." unique_id=808602320]
+[node name="Lights" type="Node3D" parent="." unique_id=851317914]
 
-[node name="fluor_hanging_light" type="OmniLight3D" parent="Lights" unique_id=116461278]
+[node name="fluor_hanging_light" type="OmniLight3D" parent="Lights" unique_id=1896650004]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.45, 0)
 light_color = Color(0.8, 0.92, 1, 1)
 light_energy = 1.4
@@ -26,7 +26,7 @@ omni_attenuation = 1.2
 script = ExtResource("2_ows2u")
 flicker = 0.6
 
-[node name="Audio_buzz_fluorescent_loop" type="AudioStreamPlayer3D" parent="Lights/fluor_hanging_light" unique_id=1979464826]
+[node name="Audio_buzz_fluorescent_loop" type="AudioStreamPlayer3D" parent="Lights/fluor_hanging_light" unique_id=748228461]
 stream = ExtResource("3_57x30")
 volume_db = -12.4
 unit_size = 1.2
@@ -35,7 +35,7 @@ max_distance = 9.0
 bus = &"SFX"
 attenuation_filter_cutoff_hz = 6000.0
 
-[node name="Audio_electric_crackle_loop" type="AudioStreamPlayer3D" parent="." unique_id=1675715557]
+[node name="Audio_electric_crackle_loop" type="AudioStreamPlayer3D" parent="." unique_id=603949799]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 stream = ExtResource("4_0wp2k")
 volume_db = -6.0

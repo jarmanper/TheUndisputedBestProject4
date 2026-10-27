@@ -13,14 +13,14 @@
 [ext_resource type="AudioStream" path="res://assets/audio/voices/twin_you_found_me.wav" id="11_n1rqx"]
 [ext_resource type="AudioStream" path="res://assets/audio/voices/twin_you_left_me_here.wav" id="12_hejti"]
 
-[node name="TwinMonster" type="Node3D" unique_id=765889455]
+[node name="TwinMonster" type="Node3D" unique_id=673248]
 script = ExtResource("1_fy8f0")
 
 [node name="Model" type="Node3D" parent="." unique_id=1044124171 instance=ExtResource("2_m6m72")]
 
-[node name="Lights" type="Node3D" parent="." unique_id=597067091]
+[node name="Lights" type="Node3D" parent="." unique_id=672766258]
 
-[node name="eye_light" type="OmniLight3D" parent="Lights" unique_id=605850126]
+[node name="eye_light" type="OmniLight3D" parent="Lights" unique_id=565099235]
 transform = Transform3D(0.99999994, 4.0194306e-09, -1.0120558e-09, -4.0194323e-09, 0.9999994, 9.685755e-08, 1.011968e-09, -1.2665987e-07, 0.9999993, -5.9606485e-08, 5.9604645e-07, 2.0116568e-07)
 light_color = Color(1, 0.25, 0.06, 1)
 light_energy = 0.8
@@ -34,7 +34,7 @@ omni_attenuation = 1.2
 script = ExtResource("3_r066k")
 flicker = 0.06
 
-[node name="gauge_light" type="OmniLight3D" parent="Lights" unique_id=1811383646]
+[node name="gauge_light" type="OmniLight3D" parent="Lights" unique_id=222393455]
 transform = Transform3D(1, -6.24188e-09, 1.4834971e-08, 6.2418724e-09, 0.9999997, 2.2351742e-08, -1.4835042e-08, -5.401671e-08, 0.99999964, 3.247956e-08, 4.7683716e-07, 1.4528632e-07)
 light_color = Color(1, 0.55, 0.15, 1)
 light_energy = 0.25
@@ -48,7 +48,7 @@ omni_attenuation = 1.2
 script = ExtResource("3_r066k")
 pulse = 0.3
 
-[node name="gauge_light2" type="OmniLight3D" parent="Lights" unique_id=6696800]
+[node name="gauge_light2" type="OmniLight3D" parent="Lights" unique_id=367686354]
 transform = Transform3D(1, -6.24188e-09, 1.4834971e-08, 6.2418724e-09, 0.9999997, 2.2351742e-08, -1.4835042e-08, -5.401671e-08, 0.99999964, 3.247956e-08, 4.7683716e-07, 1.4528632e-07)
 light_color = Color(1, 0.55, 0.15, 1)
 light_energy = 0.25
@@ -62,7 +62,7 @@ omni_attenuation = 1.2
 script = ExtResource("3_r066k")
 pulse = 0.7
 
-[node name="tower_light" type="OmniLight3D" parent="Lights" unique_id=476215433]
+[node name="tower_light" type="OmniLight3D" parent="Lights" unique_id=1020752227]
 transform = Transform3D(0.99999994, -2.5135574e-09, 9.33909e-10, 2.513552e-09, 0.99999964, -1.1920929e-07, -9.339232e-10, 8.940697e-08, 0.99999946, 8.7199425e-10, 2.3841858e-07, 4.656613e-09)
 light_color = Color(1, 0.15, 0.05, 1)
 light_energy = 0.3
@@ -76,7 +76,7 @@ omni_attenuation = 1.2
 script = ExtResource("3_r066k")
 pulse = 0.4
 
-[node name="tower_light2" type="OmniLight3D" parent="Lights" unique_id=2049199331]
+[node name="tower_light2" type="OmniLight3D" parent="Lights" unique_id=835587383]
 transform = Transform3D(0.99999994, -2.5135574e-09, 9.33909e-10, 2.513552e-09, 0.99999964, -1.1920929e-07, -9.339232e-10, 8.940697e-08, 0.99999946, 8.7199425e-10, 2.3841858e-07, 4.656613e-09)
 light_color = Color(1, 0.15, 0.05, 1)
 light_energy = 0.3
@@ -90,7 +90,7 @@ omni_attenuation = 1.2
 script = ExtResource("3_r066k")
 pulse = 0.4
 
-[node name="CreatureAudio" type="Node3D" parent="." unique_id=2126401181]
+[node name="CreatureAudio" type="Node3D" parent="." unique_id=1139391397]
 script = ExtResource("4_0vqct")
 loop_sound = ExtResource("5_y4f17")
 noises = Array[AudioStream]([ExtResource("6_xjcmi")])

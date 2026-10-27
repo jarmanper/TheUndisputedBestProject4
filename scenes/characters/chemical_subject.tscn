@@ -10,12 +10,12 @@
 [ext_resource type="AudioStream" path="res://assets/audio/voices/chemical_it_burns.wav" id="8_8sm8u"]
 [ext_resource type="AudioStream" path="res://assets/audio/voices/chemical_so_cold.wav" id="9_blr5t"]
 
-[node name="ChemicalSubject" type="Node3D" unique_id=1786230204]
+[node name="ChemicalSubject" type="Node3D" unique_id=1046578134]
 script = ExtResource("1_0jgku")
 
 [node name="Model" type="Node3D" parent="." unique_id=256920709 instance=ExtResource("2_sh5y0")]
 
-[node name="CreatureAudio" type="Node3D" parent="." unique_id=1999151506]
+[node name="CreatureAudio" type="Node3D" parent="." unique_id=157790118]
 script = ExtResource("3_260jc")
 loop_sound = ExtResource("4_jyt6q")
 noises = Array[AudioStream]([ExtResource("5_y70nv"), ExtResource("6_5urpt")])

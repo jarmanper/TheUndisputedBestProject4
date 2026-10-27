@@ -1,0 +1,7 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://assets/models/props/cubicle.glb" id="1_4qxc7"]
+
+[node name="Cubicle" type="Node3D" unique_id=389295002]
+
+[node name="Model" type="Node3D" parent="." unique_id=1680664317 instance=ExtResource("1_4qxc7")]

@@ -1,40 +1,49 @@
 [gd_scene format=3]
 
-[ext_resource type="Environment" path="res://assets/materials/env_facility.tres" id="1_xoswm"]
-[ext_resource type="PackedScene" path="res://scenes/environments/area_a_entrance.tscn" id="2_nw6np"]
-[ext_resource type="PackedScene" path="res://scenes/environments/area_b_research.tscn" id="3_2acbn"]
-[ext_resource type="PackedScene" path="res://scenes/environments/area_c_containment.tscn" id="4_npy06"]
-[ext_resource type="PackedScene" path="res://scenes/environments/area_d_lower.tscn" id="5_d1354"]
-[ext_resource type="PackedScene" path="res://scenes/environments/area_e_twin_chamber.tscn" id="6_4gynl"]
+[ext_resource type="Environment" path="res://assets/materials/env_facility.tres" id="1_npy06"]
+[ext_resource type="PackedScene" path="res://scenes/environments/area_a_entrance.tscn" id="2_d1354"]
+[ext_resource type="PackedScene" path="res://scenes/environments/area_b_research.tscn" id="3_4gynl"]
+[ext_resource type="PackedScene" path="res://scenes/environments/area_c_containment.tscn" id="4_a57tj"]
+[ext_resource type="PackedScene" path="res://scenes/environments/area_d_lower.tscn" id="5_sb10t"]
+[ext_resource type="PackedScene" path="res://scenes/environments/area_e_twin_chamber.tscn" id="6_utmr8"]
+[ext_resource type="PackedScene" path="res://scenes/environments/area_f_cell_block.tscn" id="7_8qvdp"]
+[ext_resource type="PackedScene" path="res://scenes/environments/area_g_west_wing.tscn" id="8_35cjv"]
+[ext_resource type="PackedScene" path="res://scenes/environments/area_h_east_wing.tscn" id="9_3cxcp"]
 
-[sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_a57tj"]
+[sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_whs13"]
 auto_exposure_enabled = true
 auto_exposure_scale = 0.3
 auto_exposure_speed = 0.8
 auto_exposure_min_sensitivity = 70.0
 auto_exposure_max_sensitivity = 220.0
 
-[node name="TimbukFacility" type="Node3D" unique_id=70278186]
+[node name="TimbukFacility" type="Node3D" unique_id=2085696847]
 
-[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=19068878]
-environment = ExtResource("1_xoswm")
-camera_attributes = SubResource("CameraAttributesPractical_a57tj")
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1018148611]
+environment = ExtResource("1_npy06")
+camera_attributes = SubResource("CameraAttributesPractical_whs13")
 
-[node name="Moonlight" type="DirectionalLight3D" parent="." unique_id=423145387]
+[node name="Moonlight" type="DirectionalLight3D" parent="." unique_id=406578577]
 transform = Transform3D(0.9396926, 0.17101006, -0.2961981, 0, 0.8660254, 0.5, 0.34202012, -0.4698463, 0.81379765, 0, 0, 0)
 light_color = Color(0.55, 0.65, 0.9, 1)
 light_energy = 0.28
 shadow_enabled = true
 directional_shadow_max_distance = 60.0
 
-[node name="Areas" type="Node3D" parent="." unique_id=1294274930]
+[node name="Areas" type="Node3D" parent="." unique_id=840622392]
 
-[node name="AreaAEntrance" type="Node3D" parent="Areas" unique_id=1777381377 instance=ExtResource("2_nw6np")]
+[node name="AreaAEntrance" type="Node3D" parent="Areas" unique_id=339315937 instance=ExtResource("2_d1354")]
 
-[node name="AreaBResearch" type="Node3D" parent="Areas" unique_id=970993170 instance=ExtResource("3_2acbn")]
+[node name="AreaBResearch" type="Node3D" parent="Areas" unique_id=1737660433 instance=ExtResource("3_4gynl")]
 
-[node name="AreaCContainment" type="Node3D" parent="Areas" unique_id=1872516052 instance=ExtResource("4_npy06")]
+[node name="AreaCContainment" type="Node3D" parent="Areas" unique_id=1105026151 instance=ExtResource("4_a57tj")]
 
-[node name="AreaDLower" type="Node3D" parent="Areas" unique_id=720476277 instance=ExtResource("5_d1354")]
+[node name="AreaDLower" type="Node3D" parent="Areas" unique_id=1209254891 instance=ExtResource("5_sb10t")]
 
-[node name="AreaETwinChamber" type="Node3D" parent="Areas" unique_id=365886580 instance=ExtResource("6_4gynl")]
+[node name="AreaETwinChamber" type="Node3D" parent="Areas" unique_id=1526964045 instance=ExtResource("6_utmr8")]
+
+[node name="AreaFCellBlock" type="Node3D" parent="Areas" unique_id=1793505929 instance=ExtResource("7_8qvdp")]
+
+[node name="AreaGWestWing" type="Node3D" parent="Areas" unique_id=1122488346 instance=ExtResource("8_35cjv")]
+
+[node name="AreaHEastWing" type="Node3D" parent="Areas" unique_id=713602649 instance=ExtResource("9_3cxcp")]

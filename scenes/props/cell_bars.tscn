@@ -1,0 +1,7 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://assets/models/props/cell_bars.glb" id="1_i88gt"]
+
+[node name="CellBars" type="Node3D" unique_id=171282563]
+
+[node name="Model" type="Node3D" parent="." unique_id=2301520 instance=ExtResource("1_i88gt")]

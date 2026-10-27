@@ -2,6 +2,6 @@
 
 [ext_resource type="PackedScene" path="res://assets/models/props/papers_scattered.glb" id="1_yvm1y"]
 
-[node name="PapersScattered" type="Node3D" unique_id=1960451707]
+[node name="PapersScattered" type="Node3D" unique_id=629813254]
 
 [node name="Model" type="Node3D" parent="." unique_id=911112599 instance=ExtResource("1_yvm1y")]

@@ -2,6 +2,6 @@
 
 [ext_resource type="PackedScene" path="res://assets/models/props/monitor_broken.glb" id="1_vaoms"]
 
-[node name="MonitorBroken" type="Node3D" unique_id=1336933063]
+[node name="MonitorBroken" type="Node3D" unique_id=919720695]
 
 [node name="Model" type="Node3D" parent="." unique_id=466145454 instance=ExtResource("1_vaoms")]

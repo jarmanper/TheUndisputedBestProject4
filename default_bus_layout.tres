@@ -1,4 +1,4 @@
-[gd_resource type="AudioBusLayout" format=3]
+[gd_resource type="AudioBusLayout" format=3 uid="uid://chdcjwitugymn"]
 
 [sub_resource type="AudioEffectReverb" id="AudioEffectReverb_j3pel"]
 room_size = 0.7

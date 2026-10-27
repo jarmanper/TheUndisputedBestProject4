@@ -2,6 +2,6 @@
 
 [ext_resource type="PackedScene" path="res://assets/models/props/chem_barrel.glb" id="1_fxxfh"]
 
-[node name="ChemBarrel" type="Node3D" unique_id=2033641816]
+[node name="ChemBarrel" type="Node3D" unique_id=1778766128]
 
 [node name="Model" type="Node3D" parent="." unique_id=574615722 instance=ExtResource("1_fxxfh")]

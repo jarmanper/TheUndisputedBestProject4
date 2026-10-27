@@ -5,13 +5,13 @@
 [ext_resource type="AudioStream" path="res://assets/audio/sfx/machine_hum_loop.wav" id="3_34fvx"]
 [ext_resource type="AudioStream" path="res://assets/audio/sfx/electric_crackle_loop.wav" id="4_4vl1j"]
 
-[node name="FailedContainmentDevice" type="Node3D" unique_id=1600319478]
+[node name="FailedContainmentDevice" type="Node3D" unique_id=1290309482]
 
 [node name="Model" type="Node3D" parent="." unique_id=176119452 instance=ExtResource("1_k0tri")]
 
-[node name="Lights" type="Node3D" parent="." unique_id=2137843345]
+[node name="Lights" type="Node3D" parent="." unique_id=525021466]
 
-[node name="core_light" type="OmniLight3D" parent="Lights" unique_id=1147877845]
+[node name="core_light" type="OmniLight3D" parent="Lights" unique_id=451408101]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.2, -0.5)
 light_color = Color(1, 0.45, 0.15, 1)
 light_energy = 3.0
@@ -26,7 +26,7 @@ omni_attenuation = 1.2
 script = ExtResource("2_ex8n6")
 flicker = 0.5
 
-[node name="red_light" type="OmniLight3D" parent="Lights" unique_id=807301948]
+[node name="red_light" type="OmniLight3D" parent="Lights" unique_id=835231883]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, 0)
 light_color = Color(1, 0.1, 0.05, 1)
 light_energy = 2.0
@@ -40,7 +40,7 @@ omni_attenuation = 1.2
 script = ExtResource("2_ex8n6")
 pulse = 0.8
 
-[node name="Audio_machine_hum_loop" type="AudioStreamPlayer3D" parent="." unique_id=1288159196]
+[node name="Audio_machine_hum_loop" type="AudioStreamPlayer3D" parent="." unique_id=2133357221]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 stream = ExtResource("3_34fvx")
 volume_db = -2.0
@@ -50,7 +50,7 @@ max_distance = 30.0
 bus = &"SFX"
 attenuation_filter_cutoff_hz = 6000.0
 
-[node name="Audio_electric_crackle_loop" type="AudioStreamPlayer3D" parent="." unique_id=685137110]
+[node name="Audio_electric_crackle_loop" type="AudioStreamPlayer3D" parent="." unique_id=659159743]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 stream = ExtResource("4_4vl1j")
 volume_db = -6.0

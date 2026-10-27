@@ -1,0 +1,35 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://assets/models/props/vending_machine.glb" id="1_36pc1"]
+[ext_resource type="Script" path="res://scripts/visual/light_flicker.gd" id="2_5vcek"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/computer_hum_loop.wav" id="3_r0vcu"]
+
+[node name="VendingMachine" type="Node3D" unique_id=529473387]
+
+[node name="Model" type="Node3D" parent="." unique_id=1641470932 instance=ExtResource("1_36pc1")]
+
+[node name="Lights" type="Node3D" parent="." unique_id=1648549481]
+
+[node name="screen_light" type="OmniLight3D" parent="Lights" unique_id=198771593]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.2, 1.2, 0.7)
+light_color = Color(0.6, 1, 0.6, 1)
+light_energy = 0.5
+light_volumetric_fog_energy = 1.5
+shadow_blur = 1.5
+distance_fade_enabled = true
+distance_fade_begin = 30.0
+distance_fade_shadow = 18.0
+omni_range = 2.5
+omni_attenuation = 1.2
+script = ExtResource("2_5vcek")
+flicker = 0.3
+
+[node name="Audio_computer_hum_loop" type="AudioStreamPlayer3D" parent="." unique_id=1287127849]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+stream = ExtResource("3_r0vcu")
+volume_db = -8.0
+unit_size = 1.5
+autoplay = true
+max_distance = 8.0
+bus = &"SFX"
+attenuation_filter_cutoff_hz = 6000.0

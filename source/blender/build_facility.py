@@ -28,8 +28,8 @@ from tlib import box, cyl, tube, torus, sphere, bezier_points, empty, collider  
 
 CELL = 0.1
 WALL = 0.3
-X0, Y0 = -17.0, -25.0
-NX, NY = 460, 1450
+X0, Y0 = -46.0, -25.0
+NX, NY = 900, 1450
 
 AREAS = {
     "A": "area_a_entrance",
@@ -37,6 +37,9 @@ AREAS = {
     "C": "area_c_containment",
     "D": "area_d_lower",
     "E": "area_e_twin_chamber",
+    "F": "area_f_cell_block",
+    "G": "area_g_west_wing",
+    "H": "area_h_east_wing",
 }
 
 # style -> (floor, wall, ceiling, lower band or None)
@@ -122,6 +125,7 @@ def define_plan():
     # --- E: twin chamber
     region("E_door", "E", (13.7, 15.7, 92.0, 92.3), -6, 3.0, "opening")
     region("E_chamber", "E", (1.7, 27.7, 92.3, 118.3), -6, 14.0, "chamber")
+    define_expansion()
 
 
 # =====================================================================
@@ -1070,8 +1074,8 @@ def area_e():
         ang = k / 16 * 2 * math.pi
         r = 12.6
         x, y = cx + math.cos(ang) * r, cy + math.sin(ang) * r
-        if abs(x - cx) > 12.9 or abs(y - cy) > 12.9:
-            continue
+        if abs(x - cx) > 12.9 or abs(y - cy) > 12.9 or (x < cx - 10 and abs(y - 105.2) < 1.6):
+            continue      # keep the new west passage clear
         put(a, box("rib", (0.7, 0.9, H), (x, y, zf + H / 2), "teal_metal", rot=(0, 0, ang)), structural=False)
     # stepped circular dais
     for k, (r, h) in enumerate(((7.0, 0.3), (5.6, 0.6), (4.2, 0.9))):
@@ -1210,6 +1214,380 @@ def export_area(key):
     T.export_glb(f"assets/models/environment/{name}.glb", objs)
 
 
+
+# =====================================================================
+# Graphics v2 expansion: about 3x more floor space for a ~10 minute run
+# =====================================================================
+
+CELL_SLOTS = [(30.0, 33.3), (33.6, 36.9), (37.2, 40.5), (40.8, 44.1), (49.5, 52.8), (53.1, 56.4), (56.7, 60.0)]
+
+
+def define_expansion():
+    # --- A: security office (west) and admin offices (east) off the lobby
+    region("A_door_w", "A", (-8.3, -8.0, -1.2, 0.4), 0, 2.4, "opening")
+    region("A_security", "A", (-16, -8.3, -6, 3), 0, 3.2, "lab")
+    region("A_door_e", "A", (8.0, 8.3, 0.8, 2.4), 0, 2.4, "opening")
+    region("A_admin", "A", (8.3, 22, -6, 6), 0, 3.2, "lobby")
+    # --- G: west wing (break room, lockers, dormitory, archive, service, specimens)
+    region("G_door_c", "G", (-1.8, -1.5, 12.4, 14.2), 0, 2.4, "opening")
+    region("G_corr", "G", (-30, -1.8, 12, 14.6), 0, 3.0, "lab")
+    region("G_door_break", "G", (-9.0, -7.8, 11.7, 12.0), 0, 2.4, "opening")
+    region("G_break", "G", (-16, -2.1, 6.3, 11.7), 0, 3.0, "lobby")
+    region("G_door_lock", "G", (-22.0, -20.8, 11.7, 12.0), 0, 2.4, "opening")
+    region("G_lockers", "G", (-28, -16.3, 6.3, 11.7), 0, 3.0, "lab")
+    region("G_door_dorm", "G", (-22.0, -20.8, 14.6, 14.9), 0, 2.4, "opening")
+    region("G_dorm", "G", (-30, -14.1, 14.9, 26.0), 0, 3.0, "lab")
+    region("G_door_arch", "G", (-30.3, -30.0, 12.4, 14.2), 0, 2.4, "opening")
+    region("G_archive", "G", (-44, -30.3, 4, 22), 0, 4.0, "lab")
+    region("G_door_svc", "G", (-40.0, -38.6, 22.0, 22.3), 0, 2.4, "opening")
+    region("G_service", "G", (-40, -37.4, 22.3, 40.0), 0, 3.0, "lower")
+    region("G_door_spec", "G", (-37.4, -37.1, 37.0, 38.4), 0, 2.4, "opening")
+    region("G_specimen", "G", (-37.1, -15.6, 33, 48), 0, 5.0, "industrial")
+    region("G_door_link", "G", (-15.6, -15.3, 33.2, 34.8), 0, 2.6, "opening")
+    region("C_link", "C", (-15.3, -11.3, 33.0, 35.0), 0, 3.0, "industrial")
+    region("C_door_link", "C", (-11.3, -11.0, 33.2, 34.8), 0, 2.6, "opening")
+    # --- H: east wing (clock workshop, animal lab, morgue, surgery)
+    region("H_door_c", "H", (1.5, 1.8, 20.2, 22.4), 0, 2.4, "opening")
+    region("H_corr", "H", (1.8, 30, 20, 22.6), 0, 3.0, "lab")
+    region("H_door_hor", "H", (7.0, 8.2, 22.6, 22.9), 0, 2.4, "opening")
+    region("H_horology", "H", (2.9, 14, 22.9, 29.7), 0, 3.4, "lab")
+    region("H_door_anim", "H", (19.0, 20.2, 22.6, 22.9), 0, 2.4, "opening")
+    region("H_animal", "H", (14.3, 26, 22.9, 29.7), 0, 3.2, "lab")
+    region("H_door_morgue", "H", (19.0, 20.2, 19.7, 20.0), 0, 2.4, "opening")
+    region("H_morgue", "H", (14.1, 26, 8, 19.7), 0, 3.2, "lab")
+    region("H_door_surg", "H", (30.0, 30.3, 20.4, 22.2), 0, 2.6, "opening")
+    region("H_surgery", "H", (30.3, 42, 12, 28), 0, 6.0, "lab")
+    # --- F: subject cell block + link back to the containment hall
+    region("F_door_s", "F", (34.0, 37.0, 28.0, 28.3), 0, 2.8, "opening")
+    region("F_corr", "F", (34.0, 37.0, 28.3, 60.0), 0, 3.2, "lower")
+    for k, (y0, y1) in enumerate(CELL_SLOTS):
+        region(f"F_cellW{k}_door", "F", (33.7, 34.0, y0, y1), 0, 2.7, "opening")
+        region(f"F_cellW{k}", "F", (30.7, 33.7, y0, y1), 0, 3.0, "lower")
+        region(f"F_cellE{k}_door", "F", (37.0, 37.3, y0, y1), 0, 2.7, "opening")
+        region(f"F_cellE{k}", "F", (37.3, 40.3, y0, y1), 0, 3.0, "lower")
+    region("F_door_link", "F", (11.0, 11.3, 46.0, 47.6), 0, 2.8, "opening")
+    region("F_link", "F", (11.3, 34.0, 45.5, 48.1), 0, 3.0, "lower")
+    region("F_door_warden", "F", (34.8, 36.2, 60.0, 60.3), 0, 2.4, "opening")
+    region("F_warden", "F", (32.0, 40.0, 60.3, 66.0), 0, 3.0, "lab")
+    # --- D: maintenance tunnels, generator room, flooded storage, incinerator
+    region("D_door_w", "D", (-1.6, -1.3, 69.2, 70.8), -6, 2.4, "opening")
+    region("D_tunnel", "D", (-20, -1.6, 68.8, 71.2), -6, 2.8, "lower")
+    region("D_door_gen", "D", (-20.3, -20.0, 69.2, 70.8), -6, 2.6, "opening")
+    region("D_generator", "D", (-34, -20.3, 60, 78), -6, 6.0, "industrial")
+    region("D_door_t2", "D", (-31.0, -28.6, 78.0, 78.3), -6, 2.6, "opening")
+    region("D_tunnel2", "D", (-31, -28.6, 78.3, 100), -6, 2.8, "lower")
+    region("D_door_flood", "D", (-31.0, -28.6, 100.0, 100.3), -6, 2.6, "opening")
+    region("D_flooded", "D", (-32, -6, 100.3, 112), -6, 3.6, "lower")
+    region("D_door_t3", "D", (-6.0, -5.7, 104.4, 106.0), -6, 2.4, "opening")
+    region("D_tunnel3", "D", (-5.7, 1.4, 103.8, 106.6), -6, 2.8, "lower")
+    region("E_door_w", "E", (1.4, 1.7, 104.4, 106.0), -6, 2.6, "opening")
+    region("D_door_inc", "D", (16.0, 16.3, 84.0, 85.6), -6, 2.4, "opening")
+    region("D_incinerator", "D", (16.3, 26, 80, 90), -6, 4.0, "industrial")
+
+
+def area_expansion():
+    rnd = random.Random(2026)
+    # ---------------- A: security office
+    a = "A"
+    ceiling_lights(a, (-16, -8.3, -6, 3), 3.2, spacing=(2.6, 3.0), seed=101, broken=0.4, off=0.35)
+    P(a, "office_desk", (-12.0, -1.0, 0), rz=math.pi / 2)
+    for k in range(4):
+        P(a, "computer_terminal", (-15.55, -4.6 + k * 0.9, 0.92 - 0.0), rz=-math.pi / 2)
+    P(a, "lab_table", (-15.3, -3.2, 0), rz=math.pi / 2)
+    P(a, "server_rack", (-15.6, 1.8, 0), rz=-math.pi / 2)
+    P(a, "locker_row", (-12.0, 2.65, 0), rz=math.pi)
+    P(a, "office_chair", (-13.2, -1.6, 0.25), rx=1.57, rz=0.3)
+    P(a, "filing_cabinet", (-8.8, -5.5, 0), rz=math.pi / 2)
+    P(a, "papers_scattered", (-11.0, -3.0, 0), rz=0.8)
+    P(a, "wall_bloodsmear", (-10.5, 2.97, 0), rz=math.pi)
+    P(a, "pistol", (-12.3, -0.8, 0.76), rz=0.4)
+    P(a, "keycard", (-11.6, -1.2, 0.76), rz=1.1)
+    P(a, "emergency_beacon", (-8.45, 2.0, 2.6), rz=math.pi / 2)
+    wall_sign_text(a, "SECURITY", (-8.05, 1.6, 2.6), (math.pi / 2, 0, math.pi / 2), size=0.18, mat="painted_white", extrude=0.01)
+    V(a, "security_office", (-9.0, -5.2, 1.65), (-14.5, 0.5, 1.0))
+    # ---------------- A: admin offices
+    ceiling_lights(a, (8.3, 22, -6, 6), 3.2, spacing=(3.0, 3.0), seed=102, broken=0.35, off=0.3)
+    for row in range(2):
+        for col in range(3):
+            P(a, "cubicle", (11.5 + col * 3.6, -3.6 + row * 4.4, 0), rz=0 if row == 0 else math.pi)
+            P(a, "office_chair", (11.5 + col * 3.6 + rnd.uniform(-0.4, 0.4), -3.0 + row * 3.2, 0.25 if rnd.random() < 0.4 else 0),
+              rz=rnd.uniform(0, 6), rx=1.57 if rnd.random() < 0.3 else 0)
+    P(a, "filing_cabinet", (21.6, 4.5, 0), rz=math.pi / 2)
+    P(a, "filing_cabinet", (21.6, 3.8, 0), rz=math.pi / 2)
+    P(a, "cardboard_boxes", (20.5, -5.2, 0), rz=0.3)
+    P(a, "papers_scattered", (15.0, 0.5, 0), rz=1.4)
+    P(a, "papers_scattered", (18.5, 1.5, 0), rz=0.2)
+    P(a, "vending_machine", (8.9, 5.4, 0), rz=math.pi)
+    P(a, "wall_clock", (15.0, 5.95, 2.3), rz=math.pi)
+    P(a, "blood_trail", (12.0, 1.0, 0), rz=1.2)
+    V(a, "admin_offices", (9.2, -5.3, 1.7), (17.0, 2.0, 0.8))
+
+    # ---------------- G: west wing corridor
+    a = "G"
+    ceiling_lights(a, (-30, -1.8, 12, 14.6), 3.0, spacing=(3.0, 2.6), seed=111, broken=0.5, off=0.35)
+    pipe_run(a, [(-29.8, 14.35, 2.75), (-2.0, 14.35, 2.75)], 0.06, "painted_metal", 2.5)
+    P(a, "wheelchair", (-12.0, 13.0, 0), rz=2.2)
+    P(a, "iv_stand", (-18.0, 14.0, 0))
+    P(a, "papers_scattered", (-24.0, 13.2, 0), rz=0.3)
+    P(a, "blood_trail", (-6.0, 13.4, 0), rz=math.pi / 2)
+    P(a, "wall_clock", (-15.0, 14.55, 2.2), rz=math.pi)
+    wall_sign_text(a, "STAFF  WING  /  ARCHIVE  >", (-4.0, 14.57, 2.3), (math.pi / 2, 0, math.pi), size=0.14, mat="painted_white", extrude=0.01)
+    V(a, "west_corridor", (-2.4, 13.3, 1.65), (-25.0, 13.3, 1.2))
+    # break room
+    ceiling_lights(a, (-16, -2.1, 6.3, 11.7), 3.0, spacing=(3.0, 2.6), seed=112, broken=0.3, off=0.3)
+    for k in range(3):
+        P(a, "cafeteria_table", (-13.0 + k * 3.6, 8.9, 0), rz=rnd.uniform(-0.15, 0.15))
+    P(a, "vending_machine", (-2.6, 7.0, 0), rz=math.pi / 2)
+    P(a, "vending_machine", (-2.6, 8.0, 0), rz=math.pi / 2)
+    P(a, "lab_bench_sink", (-8.0, 6.65, 0), rz=0)
+    P(a, "office_chair", (-6.5, 10.5, 0.25), rx=1.57, rz=0.8)
+    P(a, "wall_clock", (-9.0, 11.67, 2.2), rz=math.pi)
+    P(a, "photo_frame", (-11.2, 8.8, 0.76), rz=0.4)
+    V(a, "break_room", (-2.8, 11.2, 1.65), (-12.0, 7.5, 0.8))
+    # lockers / showers
+    ceiling_lights(a, (-28, -16.3, 6.3, 11.7), 3.0, spacing=(2.8, 2.6), seed=113, broken=0.5, off=0.4)
+    for k in range(3):
+        P(a, "locker_row", (-26.5 + k * 1.75, 11.25, 0), rz=math.pi)
+    for k in range(4):
+        P(a, "shower_stall", (-27.0 + k * 1.1, 6.9, 0), rz=0)
+    P(a, "wall_bloodsmear", (-22.0, 6.33, 0), rz=0)
+    P(a, "body_bag", (-19.5, 8.5, 0), rz=1.2)
+    FX(a, "suspended_particles", (-22.0, 9.0, 0))
+    V(a, "locker_room", (-17.0, 11.2, 1.65), (-25.5, 7.5, 1.0))
+    # dormitory: rows of bunks
+    ceiling_lights(a, (-30, -14.1, 14.9, 26.0), 3.0, spacing=(3.2, 2.8), seed=114, broken=0.55, off=0.45)
+    for k in range(6):
+        P(a, "bunk_bed", (-28.5 + k * 2.6, 25.3, 0), rz=math.pi / 2 + rnd.uniform(-0.05, 0.05))
+        if k % 2 == 0:
+            P(a, "bunk_bed", (-28.5 + k * 2.6, 17.0, 0), rz=-math.pi / 2)
+    P(a, "teddy_bear", (-23.3, 25.4, 0.5), rz=1.0)
+    P(a, "wheelchair", (-17.0, 21.0, 0), rz=0.6)
+    P(a, "papers_scattered", (-20.0, 20.5, 0), rz=2.0)
+    P(a, "wall_bloodsmear", (-14.15, 21.0, 0), rz=-math.pi / 2)
+    V(a, "dormitory", (-15.0, 15.6, 1.65), (-27.0, 23.5, 0.8))
+    # archive: maze of shelving
+    ceiling_lights(a, (-44, -30.3, 4, 22), 4.0, spacing=(3.4, 3.0), seed=115, broken=0.5, off=0.5)
+    for row in range(5):
+        for col in range(3):
+            if (row, col) in ((2, 1),):
+                continue
+            P(a, "archive_shelf", (-41.0 + col * 3.6, 6.0 + row * 3.2, 0), rz=0.0 if (row + col) % 4 else 0.12)
+    P(a, "archive_shelf", (-32.0, 16.0, 0.3), rx=1.4, rz=0.2)          # toppled
+    P(a, "cardboard_boxes", (-33.0, 8.0, 0))
+    P(a, "cardboard_boxes", (-36.0, 20.5, 0), rz=1.0)
+    P(a, "papers_scattered", (-37.5, 12.5, 0), rz=0.5)
+    P(a, "papers_scattered", (-33.2, 17.4, 0), rz=2.5)
+    P(a, "office_desk", (-31.5, 5.0, 0), rz=math.pi)
+    P(a, "computer_terminal", (-31.7, 5.0, 0.76), rz=math.pi)
+    V(a, "archive", (-31.0, 21.3, 1.7), (-40.0, 8.0, 1.0))
+    # service corridor
+    for y in np.arange(24.0, 40.0, 4.0):
+        L(a, "cage", (-37.6, y, 2.4), energy=1.3, range=6.0, color=[1.0, 0.62, 0.32], flicker=rnd.choice([0, 0.5, 0.9]))
+        put(a, sphere("svc_bulb", 0.06, (-37.55, y, 2.55), "light_amber", 10, 6), structural=False)
+    pipe_run(a, [(-39.7, 22.5, 2.5), (-39.7, 39.8, 2.5)], 0.1, "rust", 2.0)
+    hanging_cables(a, -39.8, -37.6, 23, 39, 2.95, 8, seed=116)
+    P(a, "chem_barrel", (-38.0, 26.0, 0))
+    P(a, "blood_trail", (-38.7, 31.0, 0), rz=0.0)
+    V(a, "service_tunnel", (-38.7, 22.8, 1.6), (-38.7, 38.0, 1.0))
+    # specimen storage: rows of tanks
+    for y in (36.0, 40.0, 44.0):
+        for x in np.arange(-34.0, -17.5, 3.4):
+            P(a, "containment_tank_broken" if rnd.random() < 0.3 else "containment_tank", (x, y, 0), rz=rnd.uniform(0, 6))
+    for y in (34.6, 46.6):
+        for x in np.arange(-34.0, -17.0, 4.5):
+            L(a, "highbay", (x, y, 4.6), energy=2.5, range=8.0, spot=80, flicker=rnd.choice([0, 0, 0.6]), color=[0.6, 1.0, 0.8])
+            put(a, cyl("spec_lamp", 0.3, 0.25, (x, y, 4.85), "painted_metal", r2=0.12, seg=16), structural=False)
+    P(a, "gas_cylinders", (-36.5, 47.4, 0), rz=math.pi)
+    P(a, "chem_barrel_leaking", (-17.5, 47.0, 0))
+    P(a, "warning_sign_plate", (-37.07, 42.0, 1.8), rz=-math.pi / 2)
+    wall_sign_text(a, "SPECIMEN  STORAGE", (-26.0, 47.97, 3.8), (math.pi / 2, 0, math.pi), size=0.35, mat="hazard", extrude=0.02)
+    hanging_cables(a, -36, -17, 34, 47, 4.95, 10, seed=117)
+    V(a, "specimen_storage", (-16.6, 33.8, 1.8), (-30.0, 44.0, 1.5))
+    # link to the containment hall
+    a = "C"
+    L(a, "red", (-13.3, 34.0, 2.6), energy=1.5, range=6.0, pulse=1.0)
+    P(a, "emergency_beacon", (-13.3, 34.97, 2.5), rz=math.pi)
+
+    # ---------------- H: east wing corridor
+    a = "H"
+    ceiling_lights(a, (1.8, 30, 20, 22.6), 3.0, spacing=(3.0, 2.6), seed=121, broken=0.45, off=0.3)
+    pipe_run(a, [(2.0, 20.25, 2.75), (29.8, 20.25, 2.75)], 0.06, "copper", 2.5)
+    P(a, "cart_trolley", (10.0, 21.6, 0), rz=0.4)
+    P(a, "blood_trail", (24.0, 21.0, 0), rz=-math.pi / 2)
+    P(a, "wall_clock", (16.5, 20.05, 2.2), rz=0)
+    wall_sign_text(a, "HOROLOGY  /  BIOLOGY  /  SURGERY  >", (5.0, 20.03, 2.3), (math.pi / 2, 0, 0), size=0.14, mat="painted_white", extrude=0.01)
+    V(a, "east_corridor", (2.4, 21.3, 1.65), (28.0, 21.3, 1.2))
+    # clock workshop (horology lab): clocks everywhere
+    ceiling_lights(a, (2.9, 14, 22.9, 29.7), 3.4, spacing=(2.8, 2.8), seed=122, broken=0.4, off=0.45)
+    P(a, "clock_workbench", (6.0, 29.2, 0), rz=math.pi)
+    P(a, "clock_workbench", (10.5, 29.2, 0), rz=math.pi)
+    P(a, "clock_workbench", (8.5, 25.5, 0), rz=0.2)
+    for k in range(4):
+        P(a, "grandfather_clock", (3.3, 23.8 + k * 1.3, 0), rz=-math.pi / 2)
+    for k in range(18):
+        P(a, "wall_clock", (13.95, 23.4 + (k % 6) * 1.0, 1.2 + (k // 6) * 0.65), rz=math.pi / 2 + rnd.uniform(-0.1, 0.1))
+    P(a, "storage_cabinet", (13.5, 28.8, 0), rz=math.pi / 2)
+    P(a, "papers_scattered", (7.5, 27.0, 0), rz=1.0)
+    V(a, "clock_workshop", (13.2, 23.4, 1.65), (5.0, 28.0, 1.2))
+    # animal lab
+    ceiling_lights(a, (14.3, 26, 22.9, 29.7), 3.2, spacing=(3.0, 2.8), seed=123, broken=0.5, off=0.4)
+    for k in range(4):
+        P(a, "animal_cage", (16.5 + k * 2.2, 29.25, 0), rz=math.pi)
+    P(a, "animal_cage", (25.55, 25.0, 0), rz=math.pi / 2)
+    P(a, "lab_table", (20.0, 25.5, 0))
+    P(a, "microscope", (19.6, 25.5, 0.92))
+    P(a, "chem_bottles", (20.6, 25.4, 0.92))
+    P(a, "covered_gurney", (16.0, 24.5, 0), rz=0.3)
+    V(a, "animal_lab", (25.4, 23.5, 1.65), (17.0, 28.0, 0.8))
+    # morgue
+    ceiling_lights(a, (14.1, 26, 8, 19.7), 3.2, spacing=(3.0, 2.8), seed=124, broken=0.3, off=0.5)
+    for k in range(3):
+        P(a, "morgue_drawers", (16.5 + k * 3.0, 8.5, 0), rz=0)
+    P(a, "operating_table", (20.0, 14.0, 0), rz=math.pi / 2)
+    P(a, "body_bag", (17.0, 16.0, 0), rz=0.3)
+    P(a, "body_bag", (23.5, 12.5, 0), rz=1.8)
+    P(a, "cart_trolley", (22.0, 15.0, 0), rz=1.0)
+    FX(a, "suspended_particles", (20.0, 14.0, 0))
+    V(a, "morgue", (25.4, 19.0, 1.65), (17.0, 9.0, 0.8))
+    # surgical theatre with raised observation gallery
+    ceiling_lights(a, (30.3, 42, 12, 28), 6.0, spacing=(3.5, 4.0), seed=125, broken=0.6, off=0.5)
+    P(a, "operating_table", (36.0, 20.0, 0), rz=math.pi / 2)
+    P(a, "surgical_lamp", (36.0, 20.0, 6.0), rz=0.0)
+    P(a, "surgical_lamp", (35.0, 19.0, 6.0), rz=2.0)
+    P(a, "cart_trolley", (37.4, 21.5, 0), rz=1.4)
+    P(a, "iv_stand", (34.6, 21.2, 0))
+    P(a, "restraint_chair", (39.5, 15.0, 0), rz=2.4)
+    P(a, "storage_cabinet", (41.6, 25.0, 0), rz=math.pi / 2)
+    P(a, "storage_cabinet", (41.6, 26.0, 0), rz=math.pi / 2)
+    gal_z = 3.0
+    put(a, box("gallery", (11.7, 2.6, 0.2), (36.15, 26.7, gal_z - 0.1), "concrete"))
+    put(a, box("gallery_glass", (11.7, 0.04, 1.6), (36.15, 25.4, gal_z + 0.9), "glass"), structural=False)
+    put(a, box("gallery_rail", (11.7, 0.08, 0.08), (36.15, 25.4, gal_z + 0.05), "steel"), structural=False)
+    for k in range(5):
+        put(a, box("gallery_seat", (1.6, 0.5, 0.45), (32.0 + k * 2.1, 27.2, gal_z + 0.22), "rubber", bevel=0.03), structural=False)
+    for x in (30.6, 41.7):
+        put(a, cyl("gallery_post", 0.12, gal_z, (x, 25.5, gal_z / 2), "painted_metal", seg=12), structural=False)
+    P(a, "papers_scattered", (35.5, 18.0, 0), rz=0.4)
+    V(a, "surgery", (31.0, 13.0, 1.8), (36.0, 21.0, 1.0))
+
+    # ---------------- F: cell block
+    a = "F"
+    for y in np.arange(30.0, 60.0, 3.6):
+        dead = rnd.random() < 0.35
+        put(a, box("cell_lamp", (0.5, 0.2, 0.08), (35.5, y, 3.15), "painted_metal"), structural=False)
+        put(a, box("cell_lamp_lens", (0.44, 0.15, 0.02), (35.5, y, 3.105), "light_fluor_off" if dead else "light_amber"), structural=False)
+        if not dead:
+            L(a, "cage", (35.5, y, 2.8), energy=1.6, range=6.5, color=[1.0, 0.65, 0.4], flicker=rnd.choice([0, 0.3, 0.8]))
+    for k, (y0, y1) in enumerate(CELL_SLOTS):
+        yc = (y0 + y1) / 2
+        for side, xdoor, xin, rz in (("W", 33.85, 32.2, math.pi / 2), ("E", 37.15, 38.8, -math.pi / 2)):
+            P(a, "cell_bars", (xdoor, yc, 0), rz=rz)
+            P(a, "cot", (xin + (-0.9 if side == "W" else 0.9) * 0.6, yc + 0.9, 0), rz=math.pi / 2)
+            P(a, "cell_toilet", (xin + (-1.0 if side == "W" else 1.0), yc - 1.2, 0), rz=-rz)
+            roll = rnd.random()
+            if roll < 0.25:
+                P(a, "wall_bloodsmear", (xin + (-1.45 if side == "W" else 1.45), yc, 0), rz=rz)
+            elif roll < 0.4:
+                P(a, "body_bag", (xin, yc - 0.2, 0), rz=rnd.uniform(0, 3))
+            elif roll < 0.55:
+                P(a, "papers_scattered", (xin, yc, 0), rz=rnd.uniform(0, 3))
+            # tally marks / scratches: dark strips on the back wall
+            for t in range(rnd.randint(4, 14)):
+                xw = xin + (-1.48 if side == "W" else 1.48)
+                put(a, box("tally", (0.01, 0.008, 0.18), (xw, yc - 1.0 + t * 0.06, 1.2 + (t // 5) * 0.25), "black_cavity", uv=False), structural=False)
+            # cell number above the door
+            wall_sign_text(a, f"{side}-{k + 1:02d}", (xdoor + (0.16 if side == "W" else -0.16), yc, 2.85),
+                           (math.pi / 2, 0, -math.pi / 2 if side == "W" else math.pi / 2), size=0.14, mat="painted_white", extrude=0.01)
+    P(a, "emergency_beacon", (35.5, 59.95, 2.6), rz=math.pi)
+    P(a, "blood_trail", (35.5, 42.0, 0), rz=0.0)
+    hanging_cables(a, 34.2, 36.8, 29, 59, 3.15, 10, seed=131)
+    wall_sign_text(a, "SUBJECT  HOLDING  -  BLOCK  F", (35.5, 28.33, 3.0), (math.pi / 2, 0, math.pi), size=0.14, mat="hazard", extrude=0.01)
+    V(a, "cell_block", (35.5, 28.8, 1.65), (35.5, 50.0, 1.2))
+    V(a, "cell_interior", (35.6, 43.0, 1.6), (32.0, 42.0, 0.8))
+    # link corridor to containment
+    for x in np.arange(13.0, 34.0, 4.0):
+        L(a, "cage", (x, 47.9, 2.4), energy=1.2, range=6.0, color=[1.0, 0.62, 0.32], flicker=rnd.choice([0, 0.6]))
+        put(a, sphere("link_bulb", 0.06, (x, 48.0, 2.55), "light_amber", 10, 6), structural=False)
+    pipe_run(a, [(11.5, 45.75, 2.6), (33.8, 45.75, 2.6)], 0.09, "rust", 2.0)
+    P(a, "chem_barrel", (20.0, 47.6, 0))
+    P(a, "debris_pile", (27.0, 46.5, 0))
+    V(a, "cell_link", (12.0, 46.8, 1.65), (30.0, 46.8, 1.0))
+    # warden office
+    ceiling_lights(a, (32, 40, 60.3, 66), 3.0, spacing=(2.6, 2.8), seed=132, broken=0.4, off=0.3)
+    P(a, "office_desk", (36.0, 63.5, 0), rz=math.pi)
+    P(a, "computer_terminal", (36.2, 63.6, 0.76), rz=math.pi)
+    P(a, "photo_frame", (35.4, 63.4, 0.76), rz=math.pi + 0.4)
+    P(a, "keycard", (36.6, 63.2, 0.76), rz=0.5)
+    P(a, "filing_cabinet", (39.6, 65.4, 0), rz=math.pi / 2)
+    P(a, "server_rack", (32.4, 65.4, 0), rz=-math.pi / 2)
+    P(a, "grandfather_clock", (39.6, 61.0, 0), rz=math.pi / 2)
+    V(a, "warden_office", (33.0, 60.9, 1.65), (38.0, 65.0, 0.8))
+
+    # ---------------- D: tunnels, generator, flooded storage, incinerator
+    a = "D"
+    for x in np.arange(-18.5, -2.0, 3.6):
+        L(a, "cage", (x, 71.0, -3.6), energy=1.3, range=6.0, color=[1.0, 0.62, 0.32], flicker=rnd.choice([0, 0.5, 0.9]))
+        put(a, sphere("tun_bulb", 0.06, (x, 71.1, -3.45), "light_amber", 10, 6), structural=False)
+    pipe_run(a, [(-19.8, 69.05, -3.5), (-1.8, 69.05, -3.5)], 0.12, "rust", 2.0)
+    hanging_cables(a, -19.5, -2.0, 69, 71, -3.25, 8, seed=141)
+    V(a, "maintenance_tunnel", (-2.2, 70.0, -4.35), (-18.0, 70.0, -4.6))
+    # generator room
+    P(a, "generator", (-27.0, 66.0, -6), rz=0.0)
+    P(a, "generator", (-27.0, 72.5, -6), rz=math.pi)
+    P(a, "boiler", (-32.5, 62.5, -6))
+    P(a, "boiler", (-32.5, 76.0, -6))
+    P(a, "electrical_panel", (-20.4, 63.0, -6), rz=math.pi / 2)
+    P(a, "electrical_panel", (-20.4, 75.0, -6), rz=math.pi / 2)
+    P(a, "gas_cylinders", (-22.0, 77.4, -6), rz=math.pi)
+    P(a, "chem_barrel_leaking", (-23.5, 61.0, -6))
+    for y in (63.0, 69.0, 75.0):
+        for x in (-30.0, -24.0):
+            L(a, "highbay", (x, y, -0.6), energy=3.0, range=10.0, spot=75, flicker=rnd.choice([0, 0.5]), color=[1.0, 0.75, 0.5])
+            put(a, cyl("gen_lamp", 0.4, 0.35, (x, y, -0.3), "painted_metal", r2=0.15, seg=16), structural=False)
+    pipe_run(a, [(-33.7, 60.4, -1.0), (-33.7, 77.6, -1.0)], 0.2, "painted_metal", 2.0)
+    floor_decal(a, (-29.5, -24.5, 69.0, 69.4), -6.0)
+    V(a, "generator_room", (-21.0, 61.0, -4.2), (-29.0, 70.0, -5.0))
+    # long tunnel north
+    for y in np.arange(80.0, 100.0, 4.0):
+        L(a, "cage", (-28.8, y, -3.6), energy=1.0, range=5.5, color=[1.0, 0.6, 0.3], flicker=rnd.choice([0.4, 0.9, 0]))
+        put(a, sphere("tun2_bulb", 0.06, (-28.75, y, -3.45), "light_amber", 10, 6), structural=False)
+    for y in np.arange(80.5, 99.5, 1.8):
+        put(a, box("tun_rib", (2.6, 0.16, 0.16), (-29.8, y, -3.3), "rust"), structural=False)
+    hanging_cables(a, -30.8, -28.8, 79, 99, -3.25, 10, seed=142)
+    P(a, "wall_clock", (-30.97, 88.0, -4.4), rz=-math.pi / 2)
+    P(a, "blood_trail", (-29.8, 95.0, -6), rz=0.0)
+    FX(a, "suspended_particles", (-29.8, 90.0, -6))
+    V(a, "long_tunnel", (-29.8, 78.8, -4.35), (-29.8, 98.0, -4.6))
+    # flooded storage: ankle-deep black water over everything
+    put(a, box("water", (25.8, 11.5, 0.02), (-19.0, 106.15, -5.82), "water", uv=False), structural=False)
+    ceiling_lights(a, (-32, -6, 100.3, 112), -2.4, spacing=(3.6, 3.4), seed=143, broken=0.7, off=0.6)
+    for k in range(6):
+        P(a, "crate_stack", (-29.0 + k * 4.0, 111.0 - (k % 2) * 0.6, -6), rz=rnd.uniform(-0.3, 0.3))
+    P(a, "archive_shelf", (-20.0, 101.5, -6), rz=0.1)
+    P(a, "archive_shelf", (-14.0, 104.0, -5.7), rx=1.45, rz=0.6)        # fallen into the water
+    P(a, "body_bag", (-17.0, 107.0, -6), rz=2.0)
+    P(a, "chem_barrel", (-10.0, 103.0, -6))
+    P(a, "chem_barrel_leaking", (-9.0, 110.0, -6), rz=1.0)
+    FX(a, "suspended_particles", (-19.0, 106.0, -6))
+    V(a, "flooded_storage", (-30.0, 100.9, -4.3), (-12.0, 108.0, -5.4))
+    # tunnel 3 to the chamber's west door
+    L(a, "chamber_spill", (0.8, 105.2, -3.6), energy=1.6, range=5.0, color=[1.0, 0.45, 0.15], flicker=0.3)
+    L(a, "cage", (-3.0, 106.3, -3.6), energy=0.9, range=5.0, color=[1.0, 0.6, 0.3], flicker=0.8)
+    V(a, "west_passage", (-5.4, 105.2, -4.35), (1.6, 105.2, -4.6))
+    # incinerator
+    put(a, box("furnace", (3.2, 2.6, 3.6), (24.0, 85.0, -4.2), "rust", bevel=0.05))
+    put(a, box("furnace_mouth", (1.4, 0.05, 1.0), (22.38, 85.0, -4.9), "black_cavity"), structural=False)
+    put(a, box("furnace_door", (1.6, 0.12, 1.2), (21.9, 84.0, -4.9), "painted_metal", rot=(0, 0, 1.0), bevel=0.01), structural=False)
+    FX(a, "fire_orange", (23.2, 85.0, -5.4))
+    pipe_run(a, [(24.0, 85.0, -2.4), (24.0, 85.0, -2.0), (24.0, 89.6, -2.0)], 0.35, "rust", 1.5)
+    P(a, "body_bag", (19.0, 87.0, -6), rz=0.4)
+    P(a, "body_bag", (19.6, 82.5, -6), rz=2.6)
+    P(a, "cart_trolley", (20.5, 85.5, -6), rz=1.6)
+    P(a, "wall_bloodsmear", (16.35, 82.0, -6), rz=-math.pi / 2)
+    L(a, "cage", (18.0, 89.6, -2.6), energy=1.0, range=6.0, color=[1.0, 0.6, 0.3], flicker=0.5)
+    V(a, "incinerator", (16.8, 80.6, -4.3), (23.0, 86.0, -4.8))
+
+
 def main():
     T.reset()
     define_plan()
@@ -1223,6 +1601,7 @@ def main():
     area_c()
     area_d()
     area_e()
+    area_expansion()
     build_floors(g)
     for r in REGIONS[1:]:
         if r.style in ("opening", "window"):
