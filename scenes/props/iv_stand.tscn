@@ -2,6 +2,6 @@
 
 [ext_resource type="PackedScene" path="res://assets/models/props/iv_stand.glb" id="1_0xcaf"]
 
-[node name="IvStand" type="Node3D" unique_id=1242970583]
+[node name="IvStand" type="Node3D" unique_id=932584481]
 
 [node name="Model" type="Node3D" parent="." unique_id=1597381680 instance=ExtResource("1_0xcaf")]

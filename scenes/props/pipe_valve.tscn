@@ -2,6 +2,6 @@
 
 [ext_resource type="PackedScene" path="res://assets/models/props/pipe_valve.glb" id="1_6t48y"]
 
-[node name="PipeValve" type="Node3D" unique_id=1855628520]
+[node name="PipeValve" type="Node3D" unique_id=500079849]
 
 [node name="Model" type="Node3D" parent="." unique_id=211314507 instance=ExtResource("1_6t48y")]

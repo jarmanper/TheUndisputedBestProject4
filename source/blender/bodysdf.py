@@ -191,7 +191,8 @@ def face(sh, hc, opt=None, upper_face=True):
     mouth_open, eye_depth, skull_back. upper_face=False leaves the upper
     head flat (the twin's clock/eye assembly replaces it)."""
     f = {"jaw": 0.85, "chin": 0.7, "cheek": 0.6, "gaunt": 0.4, "brow": 0.6, "nose_len": 1.0, "nose_width": 1.0,
-         "lip": 0.7, "mouth_open": 0.0, "eye_depth": 1.0, "skull_back": 0.6, "scale": 1.0}
+         "lip": 0.7, "mouth_open": 0.0, "eye_depth": 1.0, "skull_back": 0.6, "scale": 1.0, "jaw_drop": 0.0,
+         "melt": 0.0}
     f.update(opt or {})
     sc = f["scale"]
     c = Vector(hc)
@@ -203,7 +204,8 @@ def face(sh, hc, opt=None, upper_face=True):
     else:
         add(sh, E(P(0, 0.012, -0.005), (0.07 * sc, 0.09 * sc, 0.07 * sc)), 0.02)
     jw = f["jaw"]
-    add(sh, E(P(0, -0.022, -0.058), (0.058 * jw * sc, 0.068 * sc, 0.05 * sc)), 0.035)
+    jd = f["jaw_drop"]          # unhinged jaw: chin, lower lip and jaw slide down
+    add(sh, E(P(0, -0.022, -0.058 - jd * 0.6), (0.058 * jw * sc, 0.068 * sc, 0.05 * sc + jd * 0.5)), 0.035)
     for s in (-1, 1):
         add(sh, SPH(P(s * 0.05 * jw, -0.005, -0.06), 0.017 * sc), 0.03)                 # jaw angle
         add(sh, E(P(s * 0.046, -0.058, -0.004), (0.024 * sc, 0.02 * sc, 0.014 * sc)), 0.016 * f["cheek"] + 0.004)
@@ -225,12 +227,20 @@ def face(sh, hc, opt=None, upper_face=True):
     add(sh, RC(P(0, -0.084, 0.012 if upper_face else -0.008), P(0, -0.09 - 0.024 * nl, -0.03), 0.0088 * sc * f["nose_width"], 0.0108 * sc), 0.01)
     add(sh, E(P(0, -0.086, 0.0), (0.009 * sc, 0.008 * sc, 0.018 * sc)), 0.01)
     # chin + lips + mouth
-    add(sh, E(P(0, -0.076, -0.094), (0.02 * sc * f["chin"] + 0.006, 0.014 * sc, 0.016 * sc)), 0.02)
+    add(sh, E(P(0, -0.076, -0.094 - jd), (0.02 * sc * f["chin"] + 0.006, 0.014 * sc, 0.016 * sc)), 0.02)
     lp = f["lip"]
     add(sh, E(P(0, -0.092, -0.05), (0.021 * sc, 0.0085 * sc * lp + 0.003, 0.0075 * sc)), 0.006)
-    add(sh, E(P(0, -0.089, -0.0625), (0.018 * sc, 0.0095 * sc * lp + 0.003, 0.0085 * sc)), 0.006)
+    add(sh, E(P(0, -0.089, -0.0625 - jd), (0.018 * sc, 0.0095 * sc * lp + 0.003, 0.0085 * sc)), 0.006)
     mo = f["mouth_open"]
-    cut(sh, E(P(0, -0.098, -0.0565 - mo * 0.012), (0.021 * sc + mo * 0.004, 0.02 * sc + mo * 0.03, 0.0014 * sc + mo * 0.017)), 0.002 + mo * 0.004)
+    cut(sh, E(P(0, -0.098, -0.0565 - mo * 0.012 - jd * 0.5), (0.021 * sc + mo * 0.004, 0.02 * sc + mo * 0.03, 0.0014 * sc + mo * 0.017 + jd * 0.45)), 0.002 + mo * 0.004)
+    if f["melt"] > 0:
+        # one side of the face slides down like wax: sagging cheek, drooping lid, drips
+        m = f["melt"]
+        add(sh, E(P(0.04, -0.07, -0.06), (0.032 * sc, 0.024 * sc * m, 0.05 * sc)), 0.03)
+        add(sh, E(P(0.05, -0.065, -0.11), (0.022 * sc, 0.02 * sc * m, 0.03 * sc)), 0.03)
+        add(sh, E(P(0.034, -0.085, -0.005), (0.02 * sc, 0.012 * sc * m, 0.012 * sc)), 0.012)
+        for k in range(4):
+            add(sh, CAP(P(0.02 + k * 0.012, -0.08, -0.07), P(0.024 + k * 0.012, -0.075, -0.13 - k * 0.012), 0.005 * m + 0.002), 0.01)
     return sh
 
 

@@ -3,13 +3,13 @@
 [ext_resource type="PackedScene" path="res://assets/models/props/surgical_lamp.glb" id="1_8cwiv"]
 [ext_resource type="Script" path="res://scripts/visual/light_flicker.gd" id="2_ubdai"]
 
-[node name="SurgicalLamp" type="Node3D" unique_id=1315590740]
+[node name="SurgicalLamp" type="Node3D" unique_id=2119760112]
 
 [node name="Model" type="Node3D" parent="." unique_id=1373814537 instance=ExtResource("1_8cwiv")]
 
-[node name="Lights" type="Node3D" parent="." unique_id=1994587048]
+[node name="Lights" type="Node3D" parent="." unique_id=2064258706]
 
-[node name="surgical_light" type="SpotLight3D" parent="Lights" unique_id=289344437]
+[node name="surgical_light" type="SpotLight3D" parent="Lights" unique_id=1619903841]
 transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 0.5, -1.35, 0)
 light_color = Color(1, 0.95, 0.85, 1)
 light_energy = 8.0

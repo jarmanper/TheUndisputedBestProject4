@@ -2,6 +2,6 @@
 
 [ext_resource type="PackedScene" path="res://assets/models/props/debris_pile.glb" id="1_18lxr"]
 
-[node name="DebrisPile" type="Node3D" unique_id=1273655319]
+[node name="DebrisPile" type="Node3D" unique_id=462076542]
 
 [node name="Model" type="Node3D" parent="." unique_id=1362220346 instance=ExtResource("1_18lxr")]

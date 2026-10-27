@@ -2,6 +2,6 @@
 
 [ext_resource type="PackedScene" path="res://assets/models/props/covered_gurney.glb" id="1_tdl43"]
 
-[node name="CoveredGurney" type="Node3D" unique_id=772824281]
+[node name="CoveredGurney" type="Node3D" unique_id=1218610499]
 
 [node name="Model" type="Node3D" parent="." unique_id=1661132702 instance=ExtResource("1_tdl43")]

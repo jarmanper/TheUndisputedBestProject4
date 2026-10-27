@@ -2,6 +2,6 @@
 
 [ext_resource type="PackedScene" path="res://assets/models/props/storage_cabinet.glb" id="1_pwwsp"]
 
-[node name="StorageCabinet" type="Node3D" unique_id=1948074514]
+[node name="StorageCabinet" type="Node3D" unique_id=378355584]
 
 [node name="Model" type="Node3D" parent="." unique_id=1684703063 instance=ExtResource("1_pwwsp")]

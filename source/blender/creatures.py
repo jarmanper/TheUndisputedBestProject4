@@ -113,21 +113,21 @@ def scar(points, r=0.004, stitches=True, mat="lip"):
 def humanoid_base(name, variant):
     """Builds body + head + rig for a variant. Returns (arm, meshes, joints, head_info)."""
     cfg = {
-        "failed_humanoid": dict(arm_len=1.2, leg_len=1.02, thin=0.82, finger=1.35, asym=0.004, skin="skin",
-                                body=dict(w=0.86, emaciated=0.95, muscle=0.25),
-                                sdf_face=dict(gaunt=1.0, cheek=1.0, brow=0.7, nose_len=0.8, lip=0.4, mouth_open=0.7,
-                                              jaw=0.72, chin=0.6, eye_depth=1.5),
+        "failed_humanoid": dict(arm_len=1.26, leg_len=1.04, thin=0.8, finger=1.65, asym=0.006, skin="skin_corpse",
+                                body=dict(w=0.82, emaciated=1.0, muscle=0.2),
+                                sdf_face=dict(gaunt=1.2, cheek=1.0, brow=0.8, nose_len=0.6, lip=0.3, mouth_open=1.0,
+                                              jaw=0.68, chin=0.5, eye_depth=2.2, jaw_drop=0.045),
                                 face=dict(gaunt=0.9, cheek=0.9, brow=0.7, nose_len=0.8, lip=0.2, mouth_open=0.9,
                                           jaw_width=0.65, chin=0.4, eye_depth=1.6)),
-        "augmented_subject": dict(arm_len=1.06, leg_len=1.0, thin=0.95, finger=1.1, asym=0.0, skin="skin",
+        "augmented_subject": dict(arm_len=1.06, leg_len=1.0, thin=0.95, finger=1.1, asym=0.0, skin="skin_corpse",
                                   body=dict(w=1.0, emaciated=0.45, muscle=0.7),
                                   sdf_face=dict(gaunt=0.5, cheek=0.7, brow=0.8, lip=0.6, mouth_open=0.1, jaw=0.85, eye_depth=1.2),
                                   face=dict(gaunt=0.6, cheek=0.7, brow=0.6, lip=0.4, mouth_open=0.2,
                                             jaw_width=0.75, eye_depth=1.2)),
         "chemical_subject": dict(arm_len=1.12, leg_len=0.98, thin=1.0, finger=1.2, asym=0.012, skin="skin_diseased",
                                  body=dict(w=1.08, emaciated=0.2, muscle=0.5),
-                                 sdf_face=dict(gaunt=0.3, cheek=0.5, brow=1.0, nose_len=0.6, lip=0.9, mouth_open=0.5,
-                                               jaw=0.95, eye_depth=1.4, skull_back=0.9),
+                                 sdf_face=dict(gaunt=0.3, cheek=0.5, brow=1.0, nose_len=0.6, lip=0.9, mouth_open=0.6,
+                                               jaw=0.95, eye_depth=1.4, skull_back=0.9, melt=1.0, jaw_drop=0.015),
                                  face=dict(gaunt=0.4, cheek=0.5, brow=0.9, nose_len=0.5, lip=0.8, mouth_open=0.5,
                                            jaw_width=0.9, eye_depth=1.4, skull_back=0.9)),
     }[variant]
@@ -137,6 +137,9 @@ def humanoid_base(name, variant):
         for n, k in (("farm.L", 1.6), ("elbow.L", 1.3), ("thigh.R", 1.25), ("calf.R", 1.2), ("shoulder.L", 1.3)):
             rx, ry = j[n][2]
             j[n][2] = (rx * k, ry * k)
+    if variant == "failed_humanoid":
+        j["neck_top"][1] = j["neck_top"][1] + Vector((0, -0.02, 0.06))     # unnaturally long neck
+        j["neck"][1] = j["neck"][1] + Vector((0, -0.005, 0.02))
     neck_top = j["neck_top"][1]
     hsize = (0.074, 0.094, 0.118)
     hc = neck_top + Vector((0, -0.012, 0.085))
@@ -154,11 +157,20 @@ def humanoid_base(name, variant):
     body = S.mesh_from_sdf(name + "_body", sh, (-0.7, -0.3, -0.02), (0.7, 0.3, 1.95), 0.003, cfg["skin"], decimate=0.16)
     meshes = [body]
     eye_mat = {"failed_humanoid": "eye_milky", "augmented_subject": "eye_glow", "chemical_subject": "eye_milky"}[variant]
-    for p in B.eye_positions(hc):
-        meshes.append(T.sphere(name + "_eye", 0.0118, tuple(p), eye_mat, 16, 10))
+    for k, p in enumerate(B.eye_positions(hc)):
+        if variant == "failed_humanoid":
+            # empty sockets: a black void set deep in the skull
+            meshes.append(T.sphere(name + "_socket", 0.013, tuple(p + Vector((0, 0.012, 0))), "black_cavity", 16, 10))
+        elif variant == "chemical_subject" and k == 1:
+            meshes.append(T.sphere(name + "_bulge_eye", 0.017, tuple(p + Vector((0, -0.006, -0.004))), "eye_milky", 16, 10))
+        elif variant == "augmented_subject" and k == 1:
+            pass      # covered by the face plate
+        else:
+            meshes.append(T.sphere(name + "_eye", 0.0118, tuple(p), eye_mat, 16, 10))
     if cfg["sdf_face"].get("mouth_open", 0) > 0.3:
-        meshes.append(T.sphere(name + "_mouth", 0.017, tuple(hc + Vector((0, -0.08, -0.06))), "black_cavity", 14, 8,
-                               scale=(1.2, 0.7, 1.0)))
+        jd = cfg["sdf_face"].get("jaw_drop", 0.0)
+        meshes.append(T.sphere(name + "_mouth", 0.017, tuple(hc + Vector((0, -0.075, -0.06 - jd * 0.5))), "black_cavity", 14, 8,
+                               scale=(1.2, 0.7, 1.0 + jd * 25)))
     head_top = hc + Vector((0, 0, hsize[2]))
     arm = A.rig(name + "_rig", j, head_top)
     return arm, meshes, j, (hc, hsize)
@@ -266,6 +278,10 @@ def anims_shambler(anim, limp=1.0, hunch=22.0, twitchy=1.0):
         tw = spike(t, 0.37, 0.012) * twitchy
         tw2 = spike(t, 0.71, 0.018) * twitchy
         add(p, "head", [(Y, -35 * tw), (X, 12 * tw2)])
+        # slow, too-far head roll: the neck bends further than a living person's can
+        roll = max(0.0, wave(t, 0.1, 1)) ** 3
+        add(p, "head", [(Y, 48 * roll * twitchy)])
+        add(p, "neck", [(Y, 22 * roll * twitchy)])
         add(p, "neck", [(Z, 18 * tw)])
         add(p, "uarm.R", [(X, -20 * tw2)])
         add(p, "farm.R", [(X, -25 * tw2)])
@@ -337,7 +353,8 @@ def build(variant):
     extra = []
     if variant in ("failed_humanoid", "augmented_subject"):
         body = meshes[0]
-        extra.append(gown(body, variant + "_gown", "fabric", top_z=1.56, bottom_z=0.6 if variant == "failed_humanoid" else 0.82, seed=3, joints=j))
+        extra.append(gown(body, variant + "_gown", "fabric_bloody" if variant == "failed_humanoid" else "fabric", top_z=1.56,
+                          bottom_z=0.6 if variant == "failed_humanoid" else 0.82, seed=3, joints=j))
     if variant == "failed_humanoid":
         # Y-incision on the chest and a skull scar
         body = meshes[0]
@@ -348,12 +365,50 @@ def build(variant):
         top = hc + Vector((0, 0, 0.2))
         skull = [tuple(top + Vector((x, y, 0))) for x, y in ((-0.05, -0.05), (-0.02, -0.01), (0.01, 0.02), (0.04, 0.05), (0.05, 0.08))]
         extra += scar(project(body, skull, direction=(0, 0, -1)))
+    body = meshes[0]
+    if variant == "failed_humanoid":
+        # blood tears from the empty sockets, long cracked nails
+        for p in B.eye_positions(hc):
+            pts = project(body, [tuple(p + Vector((dx, 0, -0.012 - k * 0.012))) for k, dx in enumerate((0, 0.002, -0.001, 0.003, 0.0, 0.004, 0.002))], lift=0.0015)
+            extra.append(T.tube("blood_tear", pts, 0.0025, "blood_dry", 6))
+        mouth_pts = project(body, [tuple(hc + Vector((x, 0, -0.1 - abs(x) * 0.3))) for x in (-0.012, -0.004, 0.004, 0.012)], lift=0.001)
+        for mp in mouth_pts:
+            extra.append(T.tube("drool", [mp, tuple(Vector(mp) + Vector((0, -0.004, -0.04)))], 0.0022, "blood_dry", 5))
+        for side in ("L", "R"):
+            for f in ("index", "middle", "ring", "pinky", "thumb"):
+                a, b = Vector(j[f"{f}2.{side}"][1]), Vector(j[f"{f}3.{side}"][1])
+                d = (b - a).normalized()
+                extra.append(T.cyl("nail", 0.005, 0.03, tuple(b + d * 0.012), "black_cavity", r2=0.0006,
+                                   rot=tuple(Vector((0, 0, 1)).rotation_difference(d).to_euler()), seg=6))
     rigid = []
     if variant == "augmented_subject":
         rigid = implants(variant, j, hc, "augmented", meshes[0])
+        # mouth stapled shut, riveted plate over the left half of the face, bloody piercings
+        for k in range(7):
+            x = -0.018 + k * 0.006
+            p = Vector(project(body, [tuple(hc + Vector((x, 0, -0.056)))], lift=0.001)[0])
+            rigid.append((T.box(f"{variant}_staple", (0.002, 0.003, 0.016), tuple(p), "steel"), "head"))
+        plate_c = Vector(project(body, [tuple(hc + Vector((0.035, 0, 0.0)))], lift=0.004)[0])
+        rigid.append((T.box(f"{variant}_faceplate", (0.06, 0.008, 0.075), tuple(plate_c), "teal_metal", rot=(0, 0, 0.35), bevel=0.004), "head"))
+        for dx, dz in ((-0.024, 0.03), (0.024, 0.03), (-0.024, -0.03), (0.024, -0.03)):
+            rp = plate_c + Vector((dx, -0.006, dz))
+            rigid.append((T.sphere(f"{variant}_rivet", 0.004, tuple(rp), "gold", 8, 5), "head"))
+            extra.append(T.sphere("pierce_blood", 0.006, tuple(rp + Vector((0, 0.003, -0.006))), "blood_dry", 8, 5, scale=(1, 0.3, 1.6)))
+        rigid.append((T.sphere(f"{variant}_lens", 0.013, tuple(plate_c + Vector((-0.004, -0.007, 0.012))), "eye_glow", 14, 8, scale=(1, 0.5, 1)), "head"))
     if variant == "chemical_subject":
         rigid = implants(variant, j, hc, "chemical", meshes[0])
-        extra.append(gown(meshes[0], variant + "_rags", "fabric", top_z=1.12, bottom_z=0.74, seed=9, joints=j))
+        extra.append(gown(meshes[0], variant + "_rags", "fabric_bloody", top_z=1.12, bottom_z=0.74, seed=9, joints=j))
+        # glowing veins crawling over the body
+        rnd = random.Random(77)
+        for k in range(14):
+            bone = rnd.choice(["farm.L", "uarm.L", "thigh.R", "chest", "neck", "uarm.R"])
+            pair = {"farm.L": ("elbow.L", "wrist.L"), "uarm.L": ("shoulder.L", "elbow.L"), "uarm.R": ("shoulder.R", "elbow.R"),
+                    "thigh.R": ("hip.R", "knee.R"), "chest": ("chest", "chest_up"), "neck": ("neck", "neck_top")}[bone]
+            a, b = Vector(j[pair[0]][1]), Vector(j[pair[1]][1])
+            t0 = rnd.uniform(0, 0.6)
+            raw = [a.lerp(b, t0 + i * 0.07) + Vector((rnd.gauss(0, 0.012), 0, rnd.gauss(0, 0.012))) for i in range(6)]
+            pts = project(body, [tuple(r) for r in raw], lift=0.0012)
+            extra.append(T.tube("vein", pts, 0.0028, "chem_residue", 5))
     neck_z = j["neck_top"][1].z
     head_rule = [(lambda p: p.z > neck_z + 0.02 and abs(p.x) < 0.16, "head")]
     cloth = [m for m in extra if "_gown" in m.name or "_rags" in m.name]

@@ -1,0 +1,20 @@
+# creature|voice|rate|line   (raw speech from Windows SAPI, distorted afterwards by sfxgen.py)
+failed|David|-4|help me
+failed|David|-5|it hurts
+failed|Zira|-4|where are you
+failed|David|-6|make it stop
+failed|Zira|-5|dont look at me
+failed|David|-3|mother
+augmented|David|-2|subject accepted
+augmented|David|-1|do not resist
+augmented|Zira|-2|procedure incomplete
+augmented|David|-2|i can still feel it
+chemical|David|-6|it burns
+chemical|Zira|-6|so cold
+chemical|David|-7|cant breathe
+twin|David|-5|brother
+twin|David|-6|you found me
+twin|Zira|-5|you left me here
+twin|David|-6|tick tock
+twin|David|-5|stay with me
+twin|Zira|-6|time stopped

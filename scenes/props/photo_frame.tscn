@@ -2,6 +2,6 @@
 
 [ext_resource type="PackedScene" path="res://assets/models/props/photo_frame.glb" id="1_jy43l"]
 
-[node name="PhotoFrame" type="Node3D" unique_id=615412237]
+[node name="PhotoFrame" type="Node3D" unique_id=1733282771]
 
 [node name="Model" type="Node3D" parent="." unique_id=380891539 instance=ExtResource("1_jy43l")]

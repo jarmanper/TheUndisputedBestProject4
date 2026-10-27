@@ -2,6 +2,6 @@
 
 [ext_resource type="PackedScene" path="res://assets/models/props/old_key.glb" id="1_03ue6"]
 
-[node name="OldKey" type="Node3D" unique_id=1873898572]
+[node name="OldKey" type="Node3D" unique_id=546629842]
 
 [node name="Model" type="Node3D" parent="." unique_id=144751233 instance=ExtResource("1_03ue6")]

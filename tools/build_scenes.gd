@@ -455,7 +455,7 @@ func build_reveal(twin_scene: String) -> void:
 	twin.set("desync", false)
 	root.add_child(twin)
 	# face key light + soft fill so the face always reads (never lost in darkness)
-	var face_c := bpos(Vector3(14.7, 106.7, -3.3))
+	var face_c := bpos(Vector3(14.7, 106.65, -3.22))
 	var key := SpotLight3D.new()
 	key.name = "FaceKey"
 	key.light_color = Color(1.0, 0.88, 0.75)
@@ -485,8 +485,8 @@ func build_reveal(twin_scene: String) -> void:
 		[0.0, bpos(Vector3(14.7, 93.6, -4.3)), bpos(Vector3(14.7, 106.8, -4.0))],
 		[3.0, bpos(Vector3(14.9, 99.0, -4.2)), bpos(Vector3(14.7, 106.8, -3.6))],
 		[6.5, bpos(Vector3(15.0, 104.4, -3.4)), face_c],
-		[11.0, bpos(Vector3(14.8, 105.8, -3.22)), face_c],
-		[16.0, bpos(Vector3(14.62, 105.95, -3.18)), face_c],
+		[11.0, bpos(Vector3(14.78, 105.95, -3.18)), face_c],
+		[16.0, bpos(Vector3(14.66, 106.08, -3.16)), face_c],
 	])
 	for i in 6:   # inspection/capture viewpoints along the sequence
 		pass
@@ -497,7 +497,7 @@ func build_reveal(twin_scene: String) -> void:
 	root.add_child(v1)
 	var v2 := Node3D.new()
 	v2.name = "VIEW__reveal_face"
-	var e2 := bpos(Vector3(14.78, 105.85, -3.22))
+	var e2 := bpos(Vector3(14.76, 105.55, -3.15))
 	v2.transform = Transform3D(Basis.looking_at(face_c - e2, Vector3.UP), e2)
 	root.add_child(v2)
 	var v3 := Node3D.new()
@@ -505,6 +505,11 @@ func build_reveal(twin_scene: String) -> void:
 	var e3 := bpos(Vector3(15.9, 104.6, -3.6))
 	v3.transform = Transform3D(Basis.looking_at(bpos(Vector3(14.7, 106.8, -3.9)) - e3, Vector3.UP), e3)
 	root.add_child(v3)
+	var v4 := Node3D.new()
+	v4.name = "VIEW__reveal_portrait"
+	var e4 := bpos(Vector3(14.7, 106.05, -3.17))
+	v4.transform = Transform3D(Basis.looking_at(face_c + Vector3(0, 0.03, 0) - e4, Vector3.UP), e4)
+	root.add_child(v4)
 	own_shallow(root)
 	save_scene(root, "res://scenes/cinematics/twin_reveal.tscn")
 
@@ -513,9 +518,9 @@ func build_reveal(twin_scene: String) -> void:
 
 ## Where each creature stands in the inspection scene (Blender coords, facing yaw deg)
 const SHOWCASE := {
-	"failed_humanoid": [Vector3(-10.6, 22.2, 0.0), 0.0, "idle", Vector3(-7.6, 21.0, 1.55)],
-	"augmented_subject": [Vector3(5.2, 45.6, 0.0), 0.0, "twitch", Vector3(3.6, 43.0, 1.6)],
-	"chemical_subject": [Vector3(0.1, 70.5, -6.0), 0.0, "idle", Vector3(0.0, 67.4, -4.5)],
+	"failed_humanoid": [Vector3(-10.6, 22.2, 0.0), 0.0, "idle", Vector3(-9.3, 21.5, 1.6)],
+	"augmented_subject": [Vector3(5.2, 45.6, 0.0), 0.0, "twitch", Vector3(4.6, 44.3, 1.65)],
+	"chemical_subject": [Vector3(0.1, 70.5, -6.0), 0.0, "idle", Vector3(0.05, 69.1, -4.4)],
 	"twin_monster": [Vector3(14.7, 106.8, -5.1), 0.0, "idle", Vector3(14.7, 102.6, -3.6)],
 }
 

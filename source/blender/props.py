@@ -844,6 +844,346 @@ def covered_gurney():
     return o
 
 
+# ----------------------------------------------------------------- expansion props (graphics v2)
+
+@prop()
+def locker_row():
+    """Four tall staff lockers, one hanging open with a coat inside."""
+    o = []
+    for i in range(4):
+        x = -0.6 + i * 0.4
+        o.append(box("locker", (0.38, 0.45, 1.85), (x, 0, 0.925), "painted_metal", bevel=0.006))
+        for k in range(3):
+            o.append(box("vent", (0.22, 0.01, 0.012), (x, -0.226, 1.6 + k * 0.03), "black_cavity"))
+        o.append(box("handle", (0.02, 0.02, 0.08), (x + 0.12, -0.235, 1.0), "steel"))
+        if i == 2:
+            o.append(box("door_open", (0.36, 0.02, 1.8), (x + 0.33, -0.36, 0.93), "painted_metal", rot=(0, 0, -1.2), bevel=0.004))
+            o.append(box("inside", (0.34, 0.02, 1.8), (x, -0.21, 0.93), "black_cavity"))
+            o.append(box("coat", (0.28, 0.08, 0.9), (x, -0.12, 1.25), "fabric_bloody", bevel=0.03))
+    o.append(box("bench", (1.6, 0.3, 0.04), (0, -0.6, 0.45), "wood_dark", bevel=0.005))
+    o += legs(0.7, 0.1, 0.43, 0.015, "steel")
+    for leg in o[-4:]:
+        leg.location.y -= 0.6
+    return o
+
+
+@prop()
+def bunk_bed():
+    o = []
+    for z in (0.35, 1.25):
+        o.append(box("frame", (1.95, 0.85, 0.05), (0, 0, z), "painted_metal"))
+        o.append(box("mattress", (1.9, 0.8, 0.12), (0, 0, z + 0.08), "fabric", bevel=0.03))
+    for sx in (-1, 1):
+        for sy in (-1, 1):
+            o.append(box("post", (0.04, 0.04, 1.75), (sx * 0.96, sy * 0.41, 0.875), "painted_metal"))
+    for k in range(5):
+        o.append(box("rung", (0.03, 0.03, 0.3), (0.96, -0.41 + k * 0.0, 0.5 + k * 0.2), "steel", rot=(math.pi / 2, 0, 0)))
+    o.append(box("sheet", (1.2, 0.82, 0.03), (0.3, 0.02, 1.4), "fabric_bloody", rot=(0, 0.08, 0.06), bevel=0.01))
+    o.append(box("strap", (0.06, 0.88, 0.012), (-0.3, 0, 0.5), "rubber"))
+    return o
+
+
+@prop()
+def cafeteria_table():
+    o = [box("top", (2.0, 0.8, 0.04), (0, 0, 0.74), "plastic", bevel=0.01)]
+    o += legs(0.9, 0.3, 0.72, 0.02, "steel")
+    for sy in (-1, 1):
+        o.append(box("bench", (2.0, 0.3, 0.04), (0, sy * 0.65, 0.45), "plastic", bevel=0.008))
+        o.append(box("bench_leg", (0.04, 0.04, 0.45), (0.85, sy * 0.65, 0.22), "steel"))
+        o.append(box("bench_leg", (0.04, 0.04, 0.45), (-0.85, sy * 0.65, 0.22), "steel"))
+    rnd = random.Random(14)
+    for i in range(4):
+        x = rnd.uniform(-0.8, 0.8)
+        o.append(box("tray", (0.4, 0.3, 0.02), (x, rnd.uniform(-0.2, 0.2), 0.77), "plastic", rot=(0, 0, rnd.uniform(-0.4, 0.4))))
+        o.append(cyl("cup", 0.035, 0.09, (x + 0.1, 0.0, 0.83), "plastic", seg=12))
+    o.append(cyl("spill", 0.25, 0.003, (0.4, 0.1, 0.762), "blood_dry", seg=20, smooth=False))
+    return o
+
+
+@prop()
+def vending_machine():
+    o = [box("body", (0.9, 0.8, 1.85), (0, 0, 0.925), "painted_metal", bevel=0.02)]
+    o.append(box("window", (0.6, 0.02, 1.2), (-0.1, -0.405, 1.1), "glass"))
+    o.append(box("inside", (0.58, 0.05, 1.18), (-0.1, -0.37, 1.1), "black_cavity"))
+    rnd = random.Random(3)
+    for r in range(5):
+        for c in range(4):
+            if rnd.random() < 0.65:
+                o.append(box("snack", (0.1, 0.08, 0.14), (-0.33 + c * 0.15, -0.34, 0.6 + r * 0.22), rnd.choice(["light_red", "hazard", "plastic", "copper"]), uv=False))
+    o.append(box("panel", (0.18, 0.02, 0.5), (0.33, -0.405, 1.2), "black_cavity"))
+    o.append(box("screen", (0.12, 0.01, 0.06), (0.33, -0.415, 1.35), "light_green", uv=False))
+    o.append(box("crack", (0.5, 0.025, 0.02), (-0.1, -0.41, 1.3), "black_cavity", rot=(0, 0.7, 0)))
+    o.append(empty("L__screen__0", (0.2, -0.7, 1.2), props={"energy": 0.5, "range": 2.5, "color": [0.6, 1.0, 0.6], "flicker": 0.3}))
+    return o
+
+
+@prop()
+def shower_stall():
+    o = [box("base", (1.0, 1.0, 0.08), (0, 0, 0.04), "porcelain_tile")]
+    o.append(box("back", (1.0, 0.06, 2.1), (0, 0.47, 1.05), "porcelain_tile"))
+    for sx in (-1, 1):
+        o.append(box("side", (0.06, 1.0, 2.1), (sx * 0.47, 0, 1.05), "porcelain_tile"))
+    o.append(tube("pipe", [(0.2, 0.43, 1.0), (0.2, 0.43, 1.95), (0.2, 0.2, 2.0)], 0.015, "steel", 8))
+    o.append(cyl("head", 0.06, 0.03, (0.2, 0.2, 1.97), "steel", seg=14))
+    o.append(cyl("drain", 0.05, 0.005, (0, 0, 0.082), "black_cavity", seg=14))
+    o.append(tube("curtain_rod", [(-0.45, -0.48, 2.0), (0.45, -0.48, 2.0)], 0.01, "steel", 8))
+    o.append(box("curtain", (0.4, 0.01, 1.6), (-0.25, -0.48, 1.2), "plastic", rot=(0, 0.05, 0.1)))
+    o += blood_splat((0.05, 0.0, 0.085), 0.25, seed=8)
+    return o
+
+
+@prop()
+def morgue_drawers():
+    """Wall of cold-storage drawers (3x3), one pulled out with a body bag."""
+    o = [box("wall", (2.4, 0.9, 2.2), (0, 0.1, 1.1), "brushed_steel_mat", bevel=0.01)]
+    for r in range(3):
+        for c in range(3):
+            x, z = -0.78 + c * 0.78, 0.4 + r * 0.7
+            pulled = (r, c) == (0, 1)
+            if pulled:
+                o.append(box("hole", (0.66, 0.05, 0.56), (x, -0.36, z), "black_cavity"))
+                o.append(box("tray", (0.6, 1.6, 0.05), (x, -1.15, z - 0.2), "steel"))
+                o.append(box("tray_face", (0.66, 0.04, 0.56), (x, -1.95, z), "brushed_steel_mat", bevel=0.01))
+                o.append(sphere("bag", 1.0, (x, -1.15, z - 0.05), "rubber", 16, 10, scale=(0.24, 0.85, 0.12)))
+                o.append(tube("zip", [(x, -1.9, z + 0.06), (x, -0.4, z + 0.06)], 0.004, "steel", 4))
+            else:
+                o.append(box("door", (0.66, 0.04, 0.56), (x, -0.37, z), "brushed_steel_mat", bevel=0.01))
+                o.append(box("latch", (0.16, 0.03, 0.04), (x, -0.4, z + 0.12), "steel"))
+                o.append(box("tag", (0.1, 0.005, 0.06), (x - 0.18, -0.395, z + 0.12), "paper_old"))
+    return o
+
+
+@prop()
+def animal_cage():
+    """Stack of wire cages, some doors open, one with a small dead thing inside."""
+    o = []
+    for r in range(2):
+        for c in range(3):
+            x, z = -0.62 + c * 0.62, 0.05 + r * 0.55
+            o.append(box("floor", (0.58, 0.5, 0.02), (x, 0, z), "steel"))
+            for k in range(9):
+                o.append(cyl("bar", 0.004, 0.48, (x - 0.27 + k * 0.067, -0.25, z + 0.25), "steel", seg=6))
+            o.append(box("top", (0.58, 0.5, 0.01), (x, 0, z + 0.5), "steel"))
+            o.append(box("back", (0.58, 0.01, 0.48), (x, 0.25, z + 0.25), "steel"))
+            if (r, c) == (0, 2):
+                o.append(sphere("dead", 0.06, (x, 0.02, z + 0.05), "skin_diseased", 12, 8, scale=(1.6, 1, 0.7)))
+                o += blood_splat((x, 0.0, z + 0.015), 0.12, seed=3, count=5)
+    return o
+
+
+@prop()
+def clock_workbench():
+    """Horology bench: dismantled clocks, gears, tools and a magnifier lamp."""
+    o = [box("top", (1.8, 0.7, 0.05), (0, 0, 0.9), "wood_dark", bevel=0.005)]
+    o += legs(0.85, 0.3, 0.88, 0.025, "wood_dark")
+    o.append(box("shelf", (1.8, 0.25, 0.03), (0, 0.25, 1.35), "wood_dark"))
+    rnd = random.Random(42)
+    for i in range(14):
+        x, y = rnd.uniform(-0.8, 0.8), rnd.uniform(-0.3, 0.25)
+        r = rnd.uniform(0.01, 0.05)
+        o.append(cyl("gear", r, 0.004, (x, y, 0.927), rnd.choice(["brass", "gold", "copper"]), seg=18))
+    for i in range(3):
+        x = -0.6 + i * 0.55
+        face = cyl("clockface", 0.11, 0.015, (x, 0.25, 1.48), "porcelain", rot=(math.pi / 2 - 0.2, 0, 0), seg=32, uv=False)
+        T.planar_uv(face, "Z")
+        o.append(face)
+        o.append(torus("clockrim", 0.11, 0.012, (x, 0.24, 1.48), "brass", rot=(math.pi / 2 - 0.2, 0, 0), seg=32, rseg=8))
+    o.append(tube("lamp", [(0.75, 0.25, 0.93), (0.75, 0.25, 1.2), (0.5, 0.0, 1.25)], 0.012, "steel", 8))
+    o.append(torus("magnifier", 0.06, 0.008, (0.5, -0.02, 1.22), "steel", rot=(1.2, 0, 0), seg=24, rseg=6))
+    o.append(cyl("lens", 0.055, 0.004, (0.5, -0.02, 1.22), "glass", rot=(1.2, 0, 0), seg=20))
+    for i in range(4):
+        o.append(cyl("tool", 0.004, 0.14, (-0.4 + i * 0.05, -0.25, 0.93), "steel", rot=(math.pi / 2, 0, 0.3 * i), seg=6))
+    o.append(empty("L__desk_lamp__0", (0.5, -0.02, 1.1), props={"energy": 0.8, "range": 3.0, "color": [1.0, 0.8, 0.5], "flicker": 0.1}))
+    return o
+
+
+@prop()
+def grandfather_clock():
+    o = [box("case", (0.5, 0.3, 1.9), (0, 0, 0.95), "wood_dark", bevel=0.01)]
+    o.append(box("hood", (0.56, 0.34, 0.5), (0, 0, 2.05), "wood_dark", bevel=0.02))
+    o.append(box("crest", (0.5, 0.3, 0.08), (0, 0, 2.34), "wood_dark", bevel=0.02))
+    face = cyl("face", 0.19, 0.01, (0, -0.172, 2.05), "porcelain", rot=(math.pi / 2, 0, 0), seg=32, uv=False)
+    T.planar_uv(face, "Z")
+    o.append(face)
+    o.append(torus("rim", 0.19, 0.012, (0, -0.178, 2.05), "brass", rot=(math.pi / 2, 0, 0), seg=32, rseg=8))
+    o.append(box("hand1", (0.01, 0.004, 0.13), (0.03, -0.185, 2.1), "black_cavity", rot=(0, -0.5, 0)))
+    o.append(box("hand2", (0.008, 0.004, 0.17), (-0.04, -0.188, 2.0), "black_cavity", rot=(0, 2.6, 0)))
+    o.append(box("window", (0.3, 0.01, 0.8), (0, -0.152, 1.1), "glass"))
+    o.append(tube("pendulum", [(0, -0.1, 1.75), (0.05, -0.1, 0.95)], 0.006, "brass", 6))
+    o.append(cyl("bob", 0.07, 0.015, (0.05, -0.1, 0.9), "brass", rot=(math.pi / 2, 0, 0), seg=20))
+    return o
+
+
+@prop()
+def archive_shelf():
+    """Tall steel archive shelving packed with boxes and binders."""
+    o = []
+    for sx in (-1, 1):
+        for sy in (-1, 1):
+            o.append(box("upright", (0.04, 0.04, 2.4), (sx * 0.98, sy * 0.28, 1.2), "painted_metal"))
+    rnd = random.Random(23)
+    for k in range(6):
+        z = 0.1 + k * 0.45
+        o.append(box("shelf", (2.0, 0.6, 0.025), (0, 0, z), "steel"))
+        x = -0.92
+        while x < 0.85:
+            w = rnd.uniform(0.06, 0.4)
+            if rnd.random() < 0.85:
+                kind = rnd.random()
+                if kind < 0.6:
+                    o.append(box("archbox", (w, 0.5, 0.3), (x + w / 2, 0, z + 0.165), "paper_old", bevel=0.005))
+                else:
+                    o.append(box("binder", (w * 0.5, 0.35, 0.32), (x + w / 4, -0.05, z + 0.17), rnd.choice(["painted_metal", "hazard", "plastic"]), rot=(0, rnd.uniform(-0.15, 0.15), 0)))
+            x += w + 0.02
+    return o
+
+
+@prop()
+def generator():
+    """Big diesel generator with exhaust and warning stripes."""
+    o = [box("skid", (3.2, 1.4, 0.2), (0, 0, 0.1), "hazard")]
+    o.append(box("body", (2.6, 1.2, 1.5), (0, 0, 0.95), "painted_metal", bevel=0.04))
+    for k in range(8):
+        o.append(box("fin", (0.04, 1.22, 1.0), (-1.0 + k * 0.12, 0, 1.0), "steel"))
+    o.append(cyl("flywheel", 0.45, 0.2, (1.4, 0, 0.9), "rust", rot=(0, math.pi / 2, 0), seg=32))
+    o.append(tube("exhaust", [(-0.6, 0.3, 1.7), (-0.6, 0.3, 2.6), (-0.6, 1.2, 3.0)], 0.12, "rust", 12))
+    o.append(box("panel", (0.6, 0.1, 0.5), (0.6, -0.65, 1.1), "black_cavity"))
+    for k in range(3):
+        g = cyl("gauge", 0.06, 0.02, (0.45 + k * 0.15, -0.71, 1.2), "gauge", rot=(math.pi / 2, 0, 0), seg=16, uv=False)
+        T.planar_uv(g, "Z")
+        o.append(g)
+    o.append(box("warn", (0.4, 0.01, 0.4), (-0.6, -0.61, 1.2), "warning_sign", uv=False))
+    T.planar_uv(o[-1], "Y")
+    o.append(empty("L__panel__0", (0.6, -0.9, 1.15), props={"energy": 0.4, "range": 2.0, "color": [1.0, 0.6, 0.2], "pulse": 0.5}))
+    return o
+
+
+@prop()
+def boiler():
+    o = [cyl("tank", 0.8, 2.8, (0, 0, 1.6), "rust", seg=32)]
+    o.append(sphere("dome", 0.8, (0, 0, 3.0), "rust", 32, 16, scale=(1, 1, 0.4)))
+    for z in (0.5, 1.4, 2.3):
+        o.append(torus("band", 0.81, 0.03, (0, 0, z), "painted_metal", seg=32, rseg=6))
+    o.append(cyl("hatch", 0.3, 0.06, (0, -0.8, 1.0), "painted_metal", rot=(math.pi / 2, 0, 0), seg=24))
+    o.append(tube("pipe", [(0.5, -0.5, 3.0), (0.5, -0.5, 3.6), (1.6, -0.5, 3.6)], 0.09, "painted_metal", 12))
+    g = cyl("gauge", 0.08, 0.02, (0.3, -0.78, 1.6), "gauge", rot=(math.pi / 2, 0, 0), seg=16, uv=False)
+    T.planar_uv(g, "Z")
+    o.append(g)
+    for k in range(4):
+        a = k * math.pi / 2
+        o.append(box("foot", (0.2, 0.2, 0.3), (math.cos(a) * 0.65, math.sin(a) * 0.65, 0.15), "painted_metal"))
+    return o
+
+
+@prop()
+def cell_bars():
+    """Barred cell front for a 3.3 m wide cell opening with a sliding door."""
+    o = [box("rail_top", (3.3, 0.12, 0.12), (0, 0, 2.6), "painted_metal")]
+    o.append(box("rail_bot", (3.3, 0.12, 0.06), (0, 0, 0.03), "painted_metal"))
+    for k in range(23):
+        x = -1.6 + k * 0.145
+        if 0.2 < x < 1.15:      # door slid open: those bars stack behind
+            continue
+        o.append(cyl("bar", 0.016, 2.55, (x, 0, 1.3), "rust", seg=8))
+    for k in range(7):
+        o.append(cyl("door_bar", 0.016, 2.4, (0.6 + k * 0.145, 0.1, 1.25), "rust", seg=8))
+    o.append(box("door_frame", (1.0, 0.05, 0.08), (1.05, 0.1, 2.42), "painted_metal"))
+    o.append(box("door_frame2", (1.0, 0.05, 0.08), (1.05, 0.1, 1.2), "painted_metal"))
+    o.append(box("lock", (0.12, 0.1, 0.2), (0.15, -0.04, 1.2), "steel"))
+    o.append(box("number", (0.25, 0.01, 0.15), (-1.2, -0.07, 2.3), "paper_old"))
+    return o
+
+
+@prop()
+def cell_toilet():
+    o = [box("bowl", (0.4, 0.55, 0.4), (0, 0, 0.2), "brushed_steel_mat", bevel=0.08)]
+    o.append(box("tank", (0.4, 0.15, 0.4), (0, 0.25, 0.6), "brushed_steel_mat", bevel=0.03))
+    o.append(box("sink", (0.45, 0.35, 0.12), (0.7, 0.1, 0.8), "brushed_steel_mat", bevel=0.03))
+    o.append(cyl("tap", 0.015, 0.1, (0.7, 0.22, 0.9), "steel", seg=8))
+    o.append(box("mirror_broken", (0.35, 0.01, 0.45), (0.7, 0.28, 1.3), "glass"))
+    return o
+
+
+@prop()
+def wheelchair():
+    o = [box("seat", (0.48, 0.45, 0.04), (0, 0, 0.5), "rubber")]
+    o.append(box("back", (0.48, 0.04, 0.45), (0, 0.24, 0.78), "rubber", rot=(-0.1, 0, 0)))
+    for sx in (-1, 1):
+        o.append(torus("wheel", 0.3, 0.015, (sx * 0.29, 0.1, 0.31), "rubber", rot=(0, math.pi / 2, 0), seg=32, rseg=6))
+        o.append(torus("rim", 0.27, 0.008, (sx * 0.32, 0.1, 0.31), "steel", rot=(0, math.pi / 2, 0), seg=32, rseg=6))
+        o.append(cyl("caster", 0.06, 0.03, (sx * 0.2, -0.3, 0.06), "rubber", rot=(0, math.pi / 2, 0), seg=12))
+        o.append(tube("frame", [(sx * 0.24, 0.24, 1.0), (sx * 0.24, 0.24, 0.5), (sx * 0.24, -0.25, 0.48), (sx * 0.2, -0.3, 0.1)], 0.012, "steel", 6))
+        o.append(box("strap", (0.06, 0.04, 0.02), (sx * 0.24, 0.0, 0.66), "rubber"))
+    return o
+
+
+@prop()
+def operating_table():
+    o = [cyl("column", 0.12, 0.7, (0, 0, 0.45), "painted_white", seg=20)]
+    o.append(box("base", (0.8, 0.5, 0.1), (0, 0, 0.05), "painted_white", bevel=0.03))
+    o.append(box("top", (2.0, 0.6, 0.08), (0, 0, 0.84), "painted_white", bevel=0.02))
+    o.append(box("pad", (1.95, 0.55, 0.05), (0, 0, 0.905), "rubber", bevel=0.02))
+    for x in (-0.6, 0.0, 0.6):
+        o.append(box("strap", (0.07, 0.62, 0.012), (x, 0, 0.935), "rubber"))
+    o += blood_splat((0.1, 0.0, 0.932), 0.3, seed=11, count=12)
+    o += blood_splat((0.5, -0.4, 0.002), 0.4, seed=12, count=10)
+    o.append(box("drain_tray", (0.4, 0.3, 0.04), (0.9, 0.0, 0.6), "steel"))
+    return o
+
+
+@prop()
+def cubicle():
+    """Office cubicle: partitions, desk, monitor, chair."""
+    o = []
+    o.append(box("part_back", (1.8, 0.05, 1.4), (0, 0.8, 0.7), "fabric", bevel=0.01))
+    o.append(box("part_side", (0.05, 1.6, 1.4), (-0.9, 0.0, 0.7), "fabric", bevel=0.01))
+    o.append(box("desk", (1.6, 0.7, 0.04), (0, 0.4, 0.74), "plastic", bevel=0.005))
+    o.append(box("desk_side", (0.04, 0.7, 0.72), (0.78, 0.4, 0.36), "plastic"))
+    o.append(box("mon", (0.45, 0.06, 0.32), (0, 0.6, 1.0), "plastic", bevel=0.01))
+    o.append(screen("scr", 0.4, 0.27, (0, 0.565, 1.0), mat="black_cavity"))
+    o.append(box("kb", (0.42, 0.14, 0.02), (0, 0.3, 0.77), "plastic"))
+    o += [p for p in scatter_papers(5, (0.6, 0.2), 0.765, seed=31)]
+    for p in o[-5:]:
+        p.location.y += 0.4
+    return o
+
+
+@prop()
+def crate_stack():
+    rnd = random.Random(9)
+    o = []
+    for i, (x, y, z, s) in enumerate([(0, 0, 0, 1.0), (0.95, 0.05, 0, 0.9), (0.4, 0.0, 1.0, 0.85), (-0.1, -0.9, 0, 0.7)]):
+        sz = 0.9 * s
+        o.append(box("crate", (sz, sz, sz), (x, y, z + sz / 2), "wood_dark", rot=(0, 0, rnd.uniform(-0.15, 0.15)), bevel=0.02))
+        for k in (-1, 1):
+            o.append(box("slat", (sz + 0.02, 0.06, sz + 0.02), (x, y + k * sz * 0.3, z + sz / 2), "painted_metal"))
+    return o
+
+
+@prop(collide=False)
+def body_bag():
+    o = [sphere("bag", 1.0, (0, 0, 0.12), "rubber", 20, 12, scale=(0.3, 0.95, 0.14))]
+    o.append(sphere("head", 0.12, (0, -0.78, 0.13), "rubber", 14, 10, scale=(1, 1, 0.9)))
+    o.append(tube("zip", [(0.0, -0.9, 0.27), (0.0, 0.85, 0.25)], 0.005, "steel", 4))
+    o.append(box("tag", (0.06, 0.004, 0.09), (0.15, 0.95, 0.12), "paper_old", rot=(0.4, 0, 0)))
+    o += blood_splat((0.1, 0.4, 0.002), 0.35, seed=19, count=8)
+    return o
+
+
+@prop(collide=False)
+def wall_bloodsmear():
+    """Hand smears and a long drag on a wall (faces -Y, origin at floor)."""
+    o = []
+    rnd = random.Random(41)
+    for k in range(5):
+        x = rnd.uniform(-0.6, 0.6)
+        z = rnd.uniform(1.0, 1.6)
+        for f in range(4):
+            o.append(box("finger", (0.018, 0.004, rnd.uniform(0.2, 0.6)), (x + f * 0.03, 0.0, z - 0.2), "blood_dry", rot=(0, rnd.uniform(-0.1, 0.1), 0), uv=False))
+    o.append(box("drag", (0.12, 0.004, 1.2), (0.0, 0.0, 0.6), "blood_dry", rot=(0, 0.15, 0), uv=False))
+    return o
+
+
 # ----------------------------------------------------------------- export
 
 def build_all(names=None):

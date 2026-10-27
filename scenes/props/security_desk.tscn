@@ -2,13 +2,13 @@
 
 [ext_resource type="PackedScene" path="res://assets/models/props/security_desk.glb" id="1_nufm0"]
 
-[node name="SecurityDesk" type="Node3D" unique_id=1734349756]
+[node name="SecurityDesk" type="Node3D" unique_id=371201585]
 
 [node name="Model" type="Node3D" parent="." unique_id=1711057270 instance=ExtResource("1_nufm0")]
 
-[node name="Lights" type="Node3D" parent="." unique_id=879117348]
+[node name="Lights" type="Node3D" parent="." unique_id=1433403120]
 
-[node name="desk_lamp_light" type="OmniLight3D" parent="Lights" unique_id=454583738]
+[node name="desk_lamp_light" type="OmniLight3D" parent="Lights" unique_id=1854373793]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9, 1.05, -0.45)
 light_color = Color(1, 0.75, 0.45, 1)
 light_energy = 0.6
