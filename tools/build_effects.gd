@@ -22,22 +22,46 @@ var made: Array[String] = []
 func _init() -> void:
 	DirAccess.make_dir_recursive_absolute("res://scenes/effects")
 	save_materials()
-	save("muzzle_flash", muzzle_flash())
-	save("impact_sparks", impact_sparks())
+	var mf := muzzle_flash()
+	sfx(mf, "gunshot", false, 6.0, 60.0)
+	save("muzzle_flash", mf)
+	var im := impact_sparks()
+	sfx(im, "impact_ricochet", false, 2.0, 25.0)
+	save("impact_sparks", im)
 	save("bullet_hole", decal_scene("bullet_hole", 0.12))
 	save("scorch_mark", decal_scene("scorch", 2.4))
-	save("tracking_indicator", tracking_indicator())
-	save("suspend_field", suspend_field())
+	var ti := tracking_indicator()
+	sfx(ti, "tracker_ping_loop", true, 1.5, 12.0, -6.0)
+	save("tracking_indicator", ti)
+	var sf := suspend_field()
+	sfx(sf, "suspend_loop", true, 3.0, 20.0)
+	save("suspend_field", sf)
 	save("suspended_particles", suspended_particles())
 	for c in PALETTES:
-		save("explosion_%s" % c, explosion(c))
-		save("fire_%s" % c, fire(c))
+		var ex := explosion(c)
+		sfx(ex, "explosion", false, 10.0, 90.0, 3.0)
+		save("explosion_%s" % c, ex)
+		var fi := fire(c)
+		sfx(fi, "fire_loop", true, 2.0, 15.0, -3.0)
+		save("fire_%s" % c, fi)
 	build_gallery()
 	print("built %d effects: %s" % [made.size(), ", ".join(made)])
 	quit()
 
 
 # ------------------------------------------------------------------ helpers
+
+func sfx(root: Node3D, file: String, autoplay: bool, unit := 3.0, max_d := 30.0, vol := 0.0) -> void:
+	var a := AudioStreamPlayer3D.new()
+	a.name = "Sfx_" + file
+	a.stream = load("res://assets/audio/sfx/%s.wav" % file)
+	a.bus = "SFX"
+	a.unit_size = unit
+	a.max_distance = max_d
+	a.volume_db = vol
+	a.autoplay = autoplay
+	root.add_child(a)
+
 
 func save(name: String, root: Node3D) -> void:
 	root.name = name.to_pascal_case()

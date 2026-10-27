@@ -1,15 +1,17 @@
 [gd_scene format=3]
 
-[ext_resource type="PackedScene" path="res://assets/models/props/failed_containment_device.glb" id="1_h7l7v"]
-[ext_resource type="Script" path="res://scripts/visual/light_flicker.gd" id="2_ieltf"]
+[ext_resource type="PackedScene" path="res://assets/models/props/failed_containment_device.glb" id="1_k0tri"]
+[ext_resource type="Script" path="res://scripts/visual/light_flicker.gd" id="2_ex8n6"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/machine_hum_loop.wav" id="3_34fvx"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/electric_crackle_loop.wav" id="4_4vl1j"]
 
-[node name="FailedContainmentDevice" type="Node3D" unique_id=151021494]
+[node name="FailedContainmentDevice" type="Node3D" unique_id=1600319478]
 
-[node name="Model" type="Node3D" parent="." unique_id=176119452 instance=ExtResource("1_h7l7v")]
+[node name="Model" type="Node3D" parent="." unique_id=176119452 instance=ExtResource("1_k0tri")]
 
-[node name="Lights" type="Node3D" parent="." unique_id=3516330]
+[node name="Lights" type="Node3D" parent="." unique_id=2137843345]
 
-[node name="core_light" type="OmniLight3D" parent="Lights" unique_id=352595306]
+[node name="core_light" type="OmniLight3D" parent="Lights" unique_id=1147877845]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.2, -0.5)
 light_color = Color(1, 0.45, 0.15, 1)
 light_energy = 3.0
@@ -21,10 +23,10 @@ distance_fade_begin = 30.0
 distance_fade_shadow = 18.0
 omni_range = 8.0
 omni_attenuation = 1.2
-script = ExtResource("2_ieltf")
+script = ExtResource("2_ex8n6")
 flicker = 0.5
 
-[node name="red_light" type="OmniLight3D" parent="Lights" unique_id=934748681]
+[node name="red_light" type="OmniLight3D" parent="Lights" unique_id=807301948]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, 0)
 light_color = Color(1, 0.1, 0.05, 1)
 light_energy = 2.0
@@ -35,5 +37,25 @@ distance_fade_begin = 30.0
 distance_fade_shadow = 18.0
 omni_range = 6.0
 omni_attenuation = 1.2
-script = ExtResource("2_ieltf")
+script = ExtResource("2_ex8n6")
 pulse = 0.8
+
+[node name="Audio_machine_hum_loop" type="AudioStreamPlayer3D" parent="." unique_id=1288159196]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+stream = ExtResource("3_34fvx")
+volume_db = -2.0
+unit_size = 5.0
+autoplay = true
+max_distance = 30.0
+bus = &"SFX"
+attenuation_filter_cutoff_hz = 6000.0
+
+[node name="Audio_electric_crackle_loop" type="AudioStreamPlayer3D" parent="." unique_id=685137110]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+stream = ExtResource("4_4vl1j")
+volume_db = -6.0
+unit_size = 2.0
+autoplay = true
+max_distance = 14.0
+bus = &"SFX"
+attenuation_filter_cutoff_hz = 6000.0

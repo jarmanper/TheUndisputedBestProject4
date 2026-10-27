@@ -2,6 +2,6 @@
 
 [ext_resource type="PackedScene" path="res://assets/models/props/office_desk.glb" id="1_asrx2"]
 
-[node name="OfficeDesk" type="Node3D" unique_id=1568740103]
+[node name="OfficeDesk" type="Node3D" unique_id=1481761042]
 
 [node name="Model" type="Node3D" parent="." unique_id=1716975455 instance=ExtResource("1_asrx2")]

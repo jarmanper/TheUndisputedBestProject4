@@ -1,15 +1,17 @@
 [gd_scene format=3]
 
-[ext_resource type="PackedScene" path="res://assets/models/props/hanging_light_broken.glb" id="1_tcs2x"]
-[ext_resource type="Script" path="res://scripts/visual/light_flicker.gd" id="2_c7w2c"]
+[ext_resource type="PackedScene" path="res://assets/models/props/hanging_light_broken.glb" id="1_kc280"]
+[ext_resource type="Script" path="res://scripts/visual/light_flicker.gd" id="2_ows2u"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/buzz_fluorescent_loop.wav" id="3_57x30"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/electric_crackle_loop.wav" id="4_0wp2k"]
 
-[node name="HangingLightBroken" type="Node3D" unique_id=1987349208]
+[node name="HangingLightBroken" type="Node3D" unique_id=315370417]
 
-[node name="Model" type="Node3D" parent="." unique_id=886641143 instance=ExtResource("1_tcs2x")]
+[node name="Model" type="Node3D" parent="." unique_id=886641143 instance=ExtResource("1_kc280")]
 
-[node name="Lights" type="Node3D" parent="." unique_id=1536171966]
+[node name="Lights" type="Node3D" parent="." unique_id=808602320]
 
-[node name="fluor_hanging_light" type="OmniLight3D" parent="Lights" unique_id=1413489591]
+[node name="fluor_hanging_light" type="OmniLight3D" parent="Lights" unique_id=116461278]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.45, 0)
 light_color = Color(0.8, 0.92, 1, 1)
 light_energy = 1.4
@@ -21,5 +23,24 @@ distance_fade_begin = 30.0
 distance_fade_shadow = 18.0
 omni_range = 6.0
 omni_attenuation = 1.2
-script = ExtResource("2_c7w2c")
+script = ExtResource("2_ows2u")
 flicker = 0.6
+
+[node name="Audio_buzz_fluorescent_loop" type="AudioStreamPlayer3D" parent="Lights/fluor_hanging_light" unique_id=1979464826]
+stream = ExtResource("3_57x30")
+volume_db = -12.4
+unit_size = 1.2
+autoplay = true
+max_distance = 9.0
+bus = &"SFX"
+attenuation_filter_cutoff_hz = 6000.0
+
+[node name="Audio_electric_crackle_loop" type="AudioStreamPlayer3D" parent="." unique_id=1675715557]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+stream = ExtResource("4_0wp2k")
+volume_db = -6.0
+unit_size = 1.5
+autoplay = true
+max_distance = 9.0
+bus = &"SFX"
+attenuation_filter_cutoff_hz = 6000.0

@@ -1,7 +1,18 @@
 [gd_scene format=3]
 
-[ext_resource type="PackedScene" path="res://assets/models/props/server_rack.glb" id="1_7hc5n"]
+[ext_resource type="PackedScene" path="res://assets/models/props/server_rack.glb" id="1_l6kts"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/computer_hum_loop.wav" id="2_6867v"]
 
-[node name="ServerRack" type="Node3D" unique_id=485898390]
+[node name="ServerRack" type="Node3D" unique_id=229225893]
 
-[node name="Model" type="Node3D" parent="." unique_id=338006432 instance=ExtResource("1_7hc5n")]
+[node name="Model" type="Node3D" parent="." unique_id=338006432 instance=ExtResource("1_l6kts")]
+
+[node name="Audio_computer_hum_loop" type="AudioStreamPlayer3D" parent="." unique_id=1408354991]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+stream = ExtResource("2_6867v")
+volume_db = -8.0
+unit_size = 1.5
+autoplay = true
+max_distance = 9.0
+bus = &"SFX"
+attenuation_filter_cutoff_hz = 6000.0

@@ -27,6 +27,12 @@ func restart() -> void:
 	_t = 0.0
 	if _twin and _twin.has_method("play_visual"):
 		_twin.play_visual("reveal", 0.0)
+	var sting := get_node_or_null("RevealSting")
+	if sting:
+		sting.play()
+	var voice := _twin.get_node_or_null("CreatureAudio") if _twin else null
+	if voice:
+		get_tree().create_timer(5.5).timeout.connect(func(): voice.say("you_found_me"))
 
 
 func _process(delta: float) -> void:

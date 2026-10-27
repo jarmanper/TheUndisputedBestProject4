@@ -2,6 +2,6 @@
 
 [ext_resource type="PackedScene" path="res://assets/models/props/jersey_barrier.glb" id="1_tvytc"]
 
-[node name="JerseyBarrier" type="Node3D" unique_id=1439506161]
+[node name="JerseyBarrier" type="Node3D" unique_id=1854804931]
 
 [node name="Model" type="Node3D" parent="." unique_id=343439082 instance=ExtResource("1_tvytc")]

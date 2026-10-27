@@ -2,6 +2,6 @@
 
 [ext_resource type="PackedScene" path="res://assets/models/props/office_chair.glb" id="1_vmti3"]
 
-[node name="OfficeChair" type="Node3D" unique_id=2053880645]
+[node name="OfficeChair" type="Node3D" unique_id=736850015]
 
 [node name="Model" type="Node3D" parent="." unique_id=2054277706 instance=ExtResource("1_vmti3")]

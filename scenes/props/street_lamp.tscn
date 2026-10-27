@@ -1,15 +1,16 @@
 [gd_scene format=3]
 
-[ext_resource type="PackedScene" path="res://assets/models/props/street_lamp.glb" id="1_4krsv"]
-[ext_resource type="Script" path="res://scripts/visual/light_flicker.gd" id="2_u8h6u"]
+[ext_resource type="PackedScene" path="res://assets/models/props/street_lamp.glb" id="1_u8h6u"]
+[ext_resource type="Script" path="res://scripts/visual/light_flicker.gd" id="2_pvtrj"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/buzz_fluorescent_loop.wav" id="3_vapys"]
 
-[node name="StreetLamp" type="Node3D" unique_id=1812016941]
+[node name="StreetLamp" type="Node3D" unique_id=1549309534]
 
-[node name="Model" type="Node3D" parent="." unique_id=871930678 instance=ExtResource("1_4krsv")]
+[node name="Model" type="Node3D" parent="." unique_id=871930678 instance=ExtResource("1_u8h6u")]
 
-[node name="Lights" type="Node3D" parent="." unique_id=604760665]
+[node name="Lights" type="Node3D" parent="." unique_id=178790443]
 
-[node name="sodium_light" type="SpotLight3D" parent="Lights" unique_id=715261514]
+[node name="sodium_light" type="SpotLight3D" parent="Lights" unique_id=1593267078]
 transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 0, 6.2, 1.6)
 light_color = Color(1, 0.62, 0.3, 1)
 light_energy = 6.0
@@ -23,5 +24,15 @@ spot_range = 18.0
 spot_attenuation = 0.8
 spot_angle = 35.0
 spot_angle_attenuation = 1.6
-script = ExtResource("2_u8h6u")
+script = ExtResource("2_pvtrj")
 flicker = 0.08
+
+[node name="Audio_buzz_fluorescent_loop" type="AudioStreamPlayer3D" parent="." unique_id=1312794570]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+stream = ExtResource("3_vapys")
+volume_db = -12.0
+unit_size = 2.0
+autoplay = true
+max_distance = 14.0
+bus = &"SFX"
+attenuation_filter_cutoff_hz = 6000.0

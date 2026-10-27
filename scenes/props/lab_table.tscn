@@ -2,6 +2,6 @@
 
 [ext_resource type="PackedScene" path="res://assets/models/props/lab_table.glb" id="1_m1ey6"]
 
-[node name="LabTable" type="Node3D" unique_id=1258757583]
+[node name="LabTable" type="Node3D" unique_id=1737988715]
 
 [node name="Model" type="Node3D" parent="." unique_id=1354624705 instance=ExtResource("1_m1ey6")]
