@@ -14,27 +14,27 @@ auto_exposure_speed = 0.8
 auto_exposure_min_sensitivity = 70.0
 auto_exposure_max_sensitivity = 220.0
 
-[node name="TimbukFacility" type="Node3D" unique_id=2118363105]
+[node name="TimbukFacility" type="Node3D" unique_id=95614915]
 
-[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1508565229]
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1416059126]
 environment = ExtResource("1_xoswm")
 camera_attributes = SubResource("CameraAttributesPractical_a57tj")
 
-[node name="Moonlight" type="DirectionalLight3D" parent="." unique_id=2007272116]
+[node name="Moonlight" type="DirectionalLight3D" parent="." unique_id=1012502755]
 transform = Transform3D(0.9396926, 0.17101006, -0.2961981, 0, 0.8660254, 0.5, 0.34202012, -0.4698463, 0.81379765, 0, 0, 0)
 light_color = Color(0.55, 0.65, 0.9, 1)
 light_energy = 0.28
 shadow_enabled = true
 directional_shadow_max_distance = 60.0
 
-[node name="Areas" type="Node3D" parent="." unique_id=1806500750]
+[node name="Areas" type="Node3D" parent="." unique_id=346743688]
 
-[node name="AreaAEntrance" type="Node3D" parent="Areas" unique_id=2078318987 instance=ExtResource("2_nw6np")]
+[node name="AreaAEntrance" type="Node3D" parent="Areas" unique_id=834301009 instance=ExtResource("2_nw6np")]
 
-[node name="AreaBResearch" type="Node3D" parent="Areas" unique_id=1365858267 instance=ExtResource("3_2acbn")]
+[node name="AreaBResearch" type="Node3D" parent="Areas" unique_id=19690591 instance=ExtResource("3_2acbn")]
 
-[node name="AreaCContainment" type="Node3D" parent="Areas" unique_id=1727356658 instance=ExtResource("4_npy06")]
+[node name="AreaCContainment" type="Node3D" parent="Areas" unique_id=1257115268 instance=ExtResource("4_npy06")]
 
-[node name="AreaDLower" type="Node3D" parent="Areas" unique_id=2143390324 instance=ExtResource("5_d1354")]
+[node name="AreaDLower" type="Node3D" parent="Areas" unique_id=2031141370 instance=ExtResource("5_d1354")]
 
-[node name="AreaETwinChamber" type="Node3D" parent="Areas" unique_id=1114450169 instance=ExtResource("6_4gynl")]
+[node name="AreaETwinChamber" type="Node3D" parent="Areas" unique_id=1086509001 instance=ExtResource("6_4gynl")]

@@ -17,9 +17,9 @@
   "rubber":            {"tex": "rubber_black", "repeat": 0.5, "normal": 0.5},
   "plastic":           {"tex": "plastic_dirty", "repeat": 0.6, "normal": 0.3},
   "hazard":            {"tex": "hazard_stripes", "repeat": 1.0, "normal": 0.4},
-  "fabric":            {"tex": "fabric_worn", "repeat": 0.5, "normal": 0.6, "double_sided": true},
-  "skin":              {"tex": "skin_pale", "repeat": 0.35, "normal": 0.5, "sss": 0.35, "sss_color": [0.85, 0.35, 0.3]},
-  "skin_diseased":     {"tex": "skin_diseased", "repeat": 0.35, "normal": 0.8, "sss": 0.25, "sss_color": [0.7, 0.4, 0.2]},
+  "fabric":            {"tex": "fabric_worn", "repeat": 0.25, "normal": 0.4, "double_sided": true},
+  "skin":              {"tex": "skin_pale", "repeat": 0.18, "normal": 0.35, "sss": 0.35, "sss_color": [0.85, 0.35, 0.3]},
+  "skin_diseased":     {"tex": "skin_diseased", "repeat": 0.25, "normal": 0.6, "sss": 0.25, "sss_color": [0.7, 0.4, 0.2]},
   "porcelain":         {"tex": "clock_face", "repeat": 1.0, "normal": 0.6, "clearcoat": 0.6},
   "gauge":             {"tex": "gauge_face", "repeat": 1.0, "emission_energy": 1.5, "clearcoat": 0.8},
   "eye_iris":          {"tex": "eye_iris", "repeat": 1.0, "emission_energy": 6.0, "normal": 0.6},
@@ -47,5 +47,6 @@
   "light_amber":       {"albedo": [1.0, 0.55, 0.1], "emission": [1.0, 0.5, 0.08], "emission_energy": 6.0},
   "light_green":       {"albedo": [0.2, 1.0, 0.4], "emission": [0.2, 1.0, 0.35], "emission_energy": 5.0},
   "light_cyan":        {"albedo": [0.3, 0.9, 1.0], "emission": [0.3, 0.85, 1.0], "emission_energy": 5.0},
+  "eye_milky":         {"albedo": [0.78, 0.8, 0.76], "roughness": 0.05, "clearcoat": 1.0},
   "eye_glow":          {"albedo": [1.0, 0.3, 0.05], "emission": [1.0, 0.28, 0.05], "emission_energy": 12.0}
 }

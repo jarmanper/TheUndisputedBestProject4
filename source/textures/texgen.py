@@ -351,9 +351,10 @@ def skin_diseased():
     blister_f, _, _ = worley(n, 400)
     blister = (1 - remap(blister_f, 0, 0.35)) * burn
     sick = smooth(remap(fbm(n, 2.0, lo=2), 0.4, 0.7))
-    base = lerp(srgb("b8ad94"), srgb("9fa486"), sick)            # yellow-green cast
-    base = lerp(base, srgb("6d2f28"), burn * 0.7)
-    base = lerp(base, srgb("d9c08e"), blister * 0.5)
+    base = lerp(srgb("8f8a6c"), srgb("7a8460"), sick)            # sallow yellow-green
+    base = lerp(base, srgb("4a1a14"), burn * 0.85)                # raw chemical burns
+    base = lerp(base, srgb("c9b070"), blister * 0.55)
+    base = lerp(base, srgb("3c4a2a"), smooth(remap(fine, 0.7, 0.95)) * 0.3)
     base = base * (0.9 + fine[:, :, None] * 0.15)
     h = fine * 0.2 + blister * 0.6 - burn * 0.2
     rough = 0.6 - blister * 0.35 + burn * 0.15

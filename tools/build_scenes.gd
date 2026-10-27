@@ -51,7 +51,8 @@ func _init() -> void:
 	var prop_scenes := build_props()
 	var areas := build_areas(prop_scenes)
 	build_facility(areas)
-	build_inspection()
+	var characters := build_characters()
+	build_inspection(characters)
 	print("TIMBUK scenes built: %d props, %d areas" % [prop_scenes.size(), areas.size()])
 	quit()
 
@@ -387,13 +388,69 @@ func own_shallow_inner(n: Node, root: Node) -> void:
 			own_shallow_inner(c, root)
 
 
+# ------------------------------------------------------------------ characters
+
+const CHAR_DIR := "res://assets/models/characters/"
+const CREATURE_SCRIPT := preload("res://scripts/visual/creature_visual.gd")
+
+
+func build_characters() -> Dictionary:
+	var out := {}
+	if not DirAccess.dir_exists_absolute(CHAR_DIR):
+		return out
+	for f in DirAccess.get_files_at(CHAR_DIR):
+		if not f.ends_with(".glb"):
+			continue
+		var name := f.get_basename()
+		var pair := glb_root(CHAR_DIR + f, pascal(name))
+		var root: Node3D = pair[0]
+		if root.get_node("Lights").get_child_count() == 0:
+			root.get_node("Lights").free()
+		root.set_script(CREATURE_SCRIPT)
+		var path := "res://scenes/characters/%s.tscn" % name
+		save_scene(root, path)
+		out[name] = path
+	return out
+
+
 # ------------------------------------------------------------------ inspection
 
-func build_inspection() -> void:
+## Where each creature stands in the inspection scene (Blender coords, facing yaw deg)
+const SHOWCASE := {
+	"failed_humanoid": [Vector3(-10.6, 22.2, 0.0), 0.0, "idle", Vector3(-7.6, 21.0, 1.55)],
+	"augmented_subject": [Vector3(5.2, 45.6, 0.0), 0.0, "twitch", Vector3(3.6, 43.0, 1.6)],
+	"chemical_subject": [Vector3(0.1, 70.5, -6.0), 0.0, "idle", Vector3(0.0, 67.4, -4.5)],
+	"twin_monster": [Vector3(14.7, 106.8, -5.1), 0.0, "idle", Vector3(14.7, 102.6, -3.6)],
+}
+
+
+func build_inspection(characters: Dictionary = {}) -> void:
 	var root := Node3D.new()
 	root.name = "VisualInspection"
 	var fac: Node3D = load("res://scenes/environments/timbuk_facility.tscn").instantiate()
 	root.add_child(fac)
+	var showcase := Node3D.new()
+	showcase.name = "CreatureShowcase"
+	root.add_child(showcase)
+	for cname in characters:
+		if not SHOWCASE.has(cname):
+			continue
+		var spec: Array = SHOWCASE[cname]
+		var c: Node3D = load(characters[cname]).instantiate()
+		var bp: Vector3 = spec[0]
+		c.position = Vector3(bp.x, bp.z, -bp.y)
+		var vp: Vector3 = spec[3]
+		var eye := Vector3(vp.x, vp.z, -vp.y)
+		# models face +Z: turn toward the viewpoint, plus an optional offset
+		var to_eye := eye - c.position
+		c.rotation.y = atan2(to_eye.x, to_eye.z) + deg_to_rad(spec[1])
+		c.set("animation", spec[2])
+		showcase.add_child(c, true)
+		var view := Node3D.new()
+		view.name = "VIEW__creature_%s" % cname
+		var target := c.position + Vector3(0, 1.3, 0)
+		view.transform = Transform3D(Basis.looking_at(target - eye, Vector3.UP), eye)
+		showcase.add_child(view)
 	var cam := Camera3D.new()
 	cam.name = "FreeLookCamera"
 	cam.set_script(load("res://scripts/visual/free_look_camera.gd"))

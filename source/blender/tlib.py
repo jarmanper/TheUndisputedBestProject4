@@ -425,11 +425,13 @@ def export_glb(path, objs=None, animations=False):
             o.select_set(True)
             for c in o.children_recursive:
                 c.select_set(True)
+    anim_kw = dict(export_animation_mode="NLA_TRACKS", export_force_sampling=True,
+                   export_skins=True, export_def_bones=False, export_frame_step=1) if animations else {}
     bpy.ops.export_scene.gltf(
         filepath=full, export_format="GLB", use_selection=objs is not None,
-        export_materials="VIEWPORT", export_apply=True, export_yup=True,
+        export_materials="VIEWPORT", export_apply=not animations, export_yup=True,
         export_animations=animations, export_extras=True, export_lights=False,
-        export_cameras=False)
+        export_cameras=False, **anim_kw)
     stub = full + ".import"
     if not os.path.exists(stub):
         with open(stub, "w") as f:

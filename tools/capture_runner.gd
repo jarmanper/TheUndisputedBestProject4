@@ -10,6 +10,11 @@ func _ready() -> void:
 	print("GPU: ", RenderingServer.get_video_adapter_name(), " / ", RenderingServer.get_video_adapter_api_version())
 	var scene: Node = load(scene_path).instantiate()
 	add_child(scene)
+	for other in scene.find_children("*", "Camera3D", true, false):
+		other.current = false
+		other.process_mode = Node.PROCESS_MODE_DISABLED
+	for layer in scene.find_children("*", "CanvasLayer", true, false):
+		layer.visible = false
 	var cam := Camera3D.new()
 	cam.fov = 70
 	cam.far = 300

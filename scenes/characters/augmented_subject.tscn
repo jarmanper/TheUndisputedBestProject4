@@ -1,0 +1,9 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/visual/creature_visual.gd" id="1_d22kn"]
+[ext_resource type="PackedScene" path="res://assets/models/characters/augmented_subject.glb" id="2_a3tbn"]
+
+[node name="AugmentedSubject" type="Node3D" unique_id=53872728]
+script = ExtResource("1_d22kn")
+
+[node name="Model" type="Node3D" parent="." unique_id=150052692 instance=ExtResource("2_a3tbn")]

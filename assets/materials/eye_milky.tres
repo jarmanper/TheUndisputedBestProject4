@@ -1,0 +1,8 @@
+[gd_resource type="StandardMaterial3D" format=3]
+
+[resource]
+resource_name = "eye_milky"
+albedo_color = Color(0.78, 0.8, 0.76, 1)
+roughness = 0.05
+clearcoat_enabled = true
+clearcoat_roughness = 0.35
