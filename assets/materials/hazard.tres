@@ -1,0 +1,16 @@
+[gd_resource type="StandardMaterial3D" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/textures/hazard_stripes_albedo.png" id="1_gv0sa"]
+[ext_resource type="Texture2D" path="res://assets/textures/hazard_stripes_metal.png" id="2_vivqc"]
+[ext_resource type="Texture2D" path="res://assets/textures/hazard_stripes_normal.png" id="3_rwdkr"]
+[ext_resource type="Texture2D" path="res://assets/textures/hazard_stripes_rough.png" id="4_5xfgi"]
+
+[resource]
+resource_name = "hazard"
+albedo_texture = ExtResource("1_gv0sa")
+metallic = 1.0
+metallic_texture = ExtResource("2_vivqc")
+roughness_texture = ExtResource("4_5xfgi")
+normal_enabled = true
+normal_scale = 0.4
+normal_texture = ExtResource("3_rwdkr")

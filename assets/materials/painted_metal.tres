@@ -1,0 +1,17 @@
+[gd_resource type="StandardMaterial3D" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/textures/painted_metal_albedo.png" id="1_doit8"]
+[ext_resource type="Texture2D" path="res://assets/textures/painted_metal_metal.png" id="2_cpmwb"]
+[ext_resource type="Texture2D" path="res://assets/textures/painted_metal_normal.png" id="3_72rn1"]
+[ext_resource type="Texture2D" path="res://assets/textures/painted_metal_rough.png" id="4_crxq7"]
+
+[resource]
+resource_name = "painted_metal"
+albedo_texture = ExtResource("1_doit8")
+metallic = 1.0
+metallic_texture = ExtResource("2_cpmwb")
+roughness_texture = ExtResource("4_crxq7")
+normal_enabled = true
+normal_scale = 0.8
+normal_texture = ExtResource("3_72rn1")
+uv1_scale = Vector3(0.6666667, 0.6666667, 0.6666667)

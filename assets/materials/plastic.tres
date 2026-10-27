@@ -1,0 +1,14 @@
+[gd_resource type="StandardMaterial3D" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/textures/plastic_dirty_albedo.png" id="1_sr5pk"]
+[ext_resource type="Texture2D" path="res://assets/textures/plastic_dirty_normal.png" id="2_loi6l"]
+[ext_resource type="Texture2D" path="res://assets/textures/plastic_dirty_rough.png" id="3_xuk3k"]
+
+[resource]
+resource_name = "plastic"
+albedo_texture = ExtResource("1_sr5pk")
+roughness_texture = ExtResource("3_xuk3k")
+normal_enabled = true
+normal_scale = 0.3
+normal_texture = ExtResource("2_loi6l")
+uv1_scale = Vector3(1.6666666, 1.6666666, 1.6666666)

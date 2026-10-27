@@ -1,0 +1,19 @@
+[gd_resource type="StandardMaterial3D" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/textures/gauge_face_albedo.png" id="1_ns1e8"]
+[ext_resource type="Texture2D" path="res://assets/textures/gauge_face_emit.png" id="2_xgrdx"]
+[ext_resource type="Texture2D" path="res://assets/textures/gauge_face_normal.png" id="3_wgokq"]
+[ext_resource type="Texture2D" path="res://assets/textures/gauge_face_rough.png" id="4_fux7h"]
+
+[resource]
+resource_name = "gauge"
+albedo_texture = ExtResource("1_ns1e8")
+roughness_texture = ExtResource("4_fux7h")
+emission_enabled = true
+emission_energy_multiplier = 1.5
+emission_texture = ExtResource("2_xgrdx")
+normal_enabled = true
+normal_texture = ExtResource("3_wgokq")
+clearcoat_enabled = true
+clearcoat = 0.8
+clearcoat_roughness = 0.35

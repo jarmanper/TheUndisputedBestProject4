@@ -1,0 +1,7 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://assets/models/props/blood_trail.glb" id="1_wqq8q"]
+
+[node name="BloodTrail" type="Node3D" unique_id=1882064390]
+
+[node name="Model" type="Node3D" parent="." unique_id=2024861929 instance=ExtResource("1_wqq8q")]

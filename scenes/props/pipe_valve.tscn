@@ -1,0 +1,7 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://assets/models/props/pipe_valve.glb" id="1_6t48y"]
+
+[node name="PipeValve" type="Node3D" unique_id=834183425]
+
+[node name="Model" type="Node3D" parent="." unique_id=211314507 instance=ExtResource("1_6t48y")]

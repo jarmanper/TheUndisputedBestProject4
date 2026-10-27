@@ -1,0 +1,7 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://assets/models/props/keycard.glb" id="1_f8g3d"]
+
+[node name="Keycard" type="Node3D" unique_id=968321622]
+
+[node name="Model" type="Node3D" parent="." unique_id=150975726 instance=ExtResource("1_f8g3d")]

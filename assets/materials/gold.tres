@@ -1,0 +1,17 @@
+[gd_resource type="StandardMaterial3D" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/textures/tarnished_gold_albedo.png" id="1_jw0vy"]
+[ext_resource type="Texture2D" path="res://assets/textures/tarnished_gold_metal.png" id="2_jlxfy"]
+[ext_resource type="Texture2D" path="res://assets/textures/tarnished_gold_normal.png" id="3_rbb5l"]
+[ext_resource type="Texture2D" path="res://assets/textures/tarnished_gold_rough.png" id="4_u5nqd"]
+
+[resource]
+resource_name = "gold"
+albedo_texture = ExtResource("1_jw0vy")
+metallic = 1.0
+metallic_texture = ExtResource("2_jlxfy")
+roughness_texture = ExtResource("4_u5nqd")
+normal_enabled = true
+normal_scale = 0.4
+normal_texture = ExtResource("3_rbb5l")
+uv1_scale = Vector3(2.5, 2.5, 2.5)

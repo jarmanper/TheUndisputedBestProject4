@@ -1,0 +1,7 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://assets/models/props/lab_bench_sink.glb" id="1_ihiut"]
+
+[node name="LabBenchSink" type="Node3D" unique_id=1188915952]
+
+[node name="Model" type="Node3D" parent="." unique_id=1134254929 instance=ExtResource("1_ihiut")]

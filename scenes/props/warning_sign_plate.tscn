@@ -1,0 +1,7 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://assets/models/props/warning_sign_plate.glb" id="1_25t78"]
+
+[node name="WarningSignPlate" type="Node3D" unique_id=1485518383]
+
+[node name="Model" type="Node3D" parent="." unique_id=827565619 instance=ExtResource("1_25t78")]

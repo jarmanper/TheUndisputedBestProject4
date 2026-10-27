@@ -1,0 +1,6 @@
+[gd_resource type="StandardMaterial3D" format=3]
+
+[resource]
+resource_name = "black_cavity"
+albedo_color = Color(0.015, 0.015, 0.015, 1)
+roughness = 0.9

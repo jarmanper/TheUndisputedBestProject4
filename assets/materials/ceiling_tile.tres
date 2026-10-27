@@ -1,0 +1,17 @@
+[gd_resource type="StandardMaterial3D" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/textures/ceiling_tile_albedo.png" id="1_3mmn2"]
+[ext_resource type="Texture2D" path="res://assets/textures/ceiling_tile_metal.png" id="2_46y4f"]
+[ext_resource type="Texture2D" path="res://assets/textures/ceiling_tile_normal.png" id="3_3e60v"]
+[ext_resource type="Texture2D" path="res://assets/textures/ceiling_tile_rough.png" id="4_tak03"]
+
+[resource]
+resource_name = "ceiling_tile"
+albedo_texture = ExtResource("1_3mmn2")
+metallic = 1.0
+metallic_texture = ExtResource("2_46y4f")
+roughness_texture = ExtResource("4_tak03")
+normal_enabled = true
+normal_scale = 0.6
+normal_texture = ExtResource("3_3e60v")
+uv1_scale = Vector3(0.8333333, 0.8333333, 0.8333333)

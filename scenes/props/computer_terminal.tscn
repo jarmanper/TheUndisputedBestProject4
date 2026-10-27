@@ -1,0 +1,24 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://assets/models/props/computer_terminal.glb" id="1_agpm2"]
+[ext_resource type="Script" path="res://scripts/visual/light_flicker.gd" id="2_1ixk0"]
+
+[node name="ComputerTerminal" type="Node3D" unique_id=896250820]
+
+[node name="Model" type="Node3D" parent="." unique_id=419345641 instance=ExtResource("1_agpm2")]
+
+[node name="Lights" type="Node3D" parent="." unique_id=1836942125]
+
+[node name="screen_light" type="OmniLight3D" parent="Lights" unique_id=447455905]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.25, 0.3)
+light_color = Color(0.35, 1, 0.6, 1)
+light_energy = 0.35
+light_volumetric_fog_energy = 1.5
+shadow_blur = 1.5
+distance_fade_enabled = true
+distance_fade_begin = 30.0
+distance_fade_shadow = 18.0
+omni_range = 1.6
+omni_attenuation = 1.2
+script = ExtResource("2_1ixk0")
+flicker = 0.15

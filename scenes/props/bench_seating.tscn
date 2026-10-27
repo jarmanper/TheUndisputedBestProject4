@@ -1,0 +1,7 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://assets/models/props/bench_seating.glb" id="1_8dsk1"]
+
+[node name="BenchSeating" type="Node3D" unique_id=88036612]
+
+[node name="Model" type="Node3D" parent="." unique_id=253906488 instance=ExtResource("1_8dsk1")]

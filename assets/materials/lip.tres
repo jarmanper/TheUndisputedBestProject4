@@ -1,0 +1,11 @@
+[gd_resource type="StandardMaterial3D" format=3]
+
+[resource]
+resource_name = "lip"
+albedo_color = Color(0.62, 0.45, 0.43, 1)
+roughness = 0.55
+subsurf_scatter_enabled = true
+subsurf_scatter_strength = 0.3
+subsurf_scatter_skin_mode = true
+backlight_enabled = true
+backlight = Color(0.2, 0.075, 0.075, 0.25)

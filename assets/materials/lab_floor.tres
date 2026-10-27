@@ -1,0 +1,14 @@
+[gd_resource type="StandardMaterial3D" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/textures/lab_floor_albedo.png" id="1_eacd6"]
+[ext_resource type="Texture2D" path="res://assets/textures/lab_floor_normal.png" id="2_hi4jg"]
+[ext_resource type="Texture2D" path="res://assets/textures/lab_floor_rough.png" id="3_7wctg"]
+
+[resource]
+resource_name = "lab_floor"
+albedo_texture = ExtResource("1_eacd6")
+roughness_texture = ExtResource("3_7wctg")
+normal_enabled = true
+normal_scale = 0.8
+normal_texture = ExtResource("2_hi4jg")
+uv1_scale = Vector3(0.41666666, 0.41666666, 0.41666666)

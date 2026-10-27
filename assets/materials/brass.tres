@@ -1,0 +1,17 @@
+[gd_resource type="StandardMaterial3D" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/textures/brass_aged_albedo.png" id="1_e87bg"]
+[ext_resource type="Texture2D" path="res://assets/textures/brass_aged_metal.png" id="2_gh2wt"]
+[ext_resource type="Texture2D" path="res://assets/textures/brass_aged_normal.png" id="3_os4a6"]
+[ext_resource type="Texture2D" path="res://assets/textures/brass_aged_rough.png" id="4_amk50"]
+
+[resource]
+resource_name = "brass"
+albedo_texture = ExtResource("1_e87bg")
+metallic = 1.0
+metallic_texture = ExtResource("2_gh2wt")
+roughness_texture = ExtResource("4_amk50")
+normal_enabled = true
+normal_scale = 0.5
+normal_texture = ExtResource("3_os4a6")
+uv1_scale = Vector3(2, 2, 2)

@@ -1,0 +1,16 @@
+[gd_resource type="StandardMaterial3D" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/textures/monitor_screen_albedo.png" id="1_a00xq"]
+[ext_resource type="Texture2D" path="res://assets/textures/monitor_screen_emit.png" id="2_hrk2e"]
+[ext_resource type="Texture2D" path="res://assets/textures/monitor_screen_normal.png" id="3_q2vri"]
+[ext_resource type="Texture2D" path="res://assets/textures/monitor_screen_rough.png" id="4_5mn45"]
+
+[resource]
+resource_name = "monitor"
+albedo_texture = ExtResource("1_a00xq")
+roughness_texture = ExtResource("4_5mn45")
+emission_enabled = true
+emission_energy_multiplier = 2.5
+emission_texture = ExtResource("2_hrk2e")
+normal_enabled = true
+normal_texture = ExtResource("3_q2vri")

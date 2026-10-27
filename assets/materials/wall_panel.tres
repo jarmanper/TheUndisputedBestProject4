@@ -1,0 +1,17 @@
+[gd_resource type="StandardMaterial3D" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/textures/wall_panel_albedo.png" id="1_0b35k"]
+[ext_resource type="Texture2D" path="res://assets/textures/wall_panel_metal.png" id="2_jypbn"]
+[ext_resource type="Texture2D" path="res://assets/textures/wall_panel_normal.png" id="3_3vbdk"]
+[ext_resource type="Texture2D" path="res://assets/textures/wall_panel_rough.png" id="4_2p833"]
+
+[resource]
+resource_name = "wall_panel"
+albedo_texture = ExtResource("1_0b35k")
+metallic = 1.0
+metallic_texture = ExtResource("2_jypbn")
+roughness_texture = ExtResource("4_2p833")
+normal_enabled = true
+normal_scale = 0.8
+normal_texture = ExtResource("3_3vbdk")
+uv1_scale = Vector3(0.41666666, 0.41666666, 0.41666666)

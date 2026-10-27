@@ -1,0 +1,20 @@
+[gd_resource type="StandardMaterial3D" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/textures/eye_iris_albedo.png" id="1_4d6cd"]
+[ext_resource type="Texture2D" path="res://assets/textures/eye_iris_emit.png" id="2_ravem"]
+[ext_resource type="Texture2D" path="res://assets/textures/eye_iris_metal.png" id="3_meark"]
+[ext_resource type="Texture2D" path="res://assets/textures/eye_iris_normal.png" id="4_xwurs"]
+[ext_resource type="Texture2D" path="res://assets/textures/eye_iris_rough.png" id="5_d16bk"]
+
+[resource]
+resource_name = "eye_iris"
+albedo_texture = ExtResource("1_4d6cd")
+metallic = 1.0
+metallic_texture = ExtResource("3_meark")
+roughness_texture = ExtResource("5_d16bk")
+emission_enabled = true
+emission_energy_multiplier = 6.0
+emission_texture = ExtResource("2_ravem")
+normal_enabled = true
+normal_scale = 0.6
+normal_texture = ExtResource("4_xwurs")

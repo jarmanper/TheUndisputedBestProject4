@@ -1,0 +1,40 @@
+[gd_scene format=3]
+
+[ext_resource type="Environment" path="res://assets/materials/env_facility.tres" id="1_xoswm"]
+[ext_resource type="PackedScene" path="res://scenes/environments/area_a_entrance.tscn" id="2_nw6np"]
+[ext_resource type="PackedScene" path="res://scenes/environments/area_b_research.tscn" id="3_2acbn"]
+[ext_resource type="PackedScene" path="res://scenes/environments/area_c_containment.tscn" id="4_npy06"]
+[ext_resource type="PackedScene" path="res://scenes/environments/area_d_lower.tscn" id="5_d1354"]
+[ext_resource type="PackedScene" path="res://scenes/environments/area_e_twin_chamber.tscn" id="6_4gynl"]
+
+[sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_a57tj"]
+auto_exposure_enabled = true
+auto_exposure_scale = 0.3
+auto_exposure_speed = 0.8
+auto_exposure_min_sensitivity = 70.0
+auto_exposure_max_sensitivity = 220.0
+
+[node name="TimbukFacility" type="Node3D" unique_id=2118363105]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1508565229]
+environment = ExtResource("1_xoswm")
+camera_attributes = SubResource("CameraAttributesPractical_a57tj")
+
+[node name="Moonlight" type="DirectionalLight3D" parent="." unique_id=2007272116]
+transform = Transform3D(0.9396926, 0.17101006, -0.2961981, 0, 0.8660254, 0.5, 0.34202012, -0.4698463, 0.81379765, 0, 0, 0)
+light_color = Color(0.55, 0.65, 0.9, 1)
+light_energy = 0.28
+shadow_enabled = true
+directional_shadow_max_distance = 60.0
+
+[node name="Areas" type="Node3D" parent="." unique_id=1806500750]
+
+[node name="AreaAEntrance" type="Node3D" parent="Areas" unique_id=2078318987 instance=ExtResource("2_nw6np")]
+
+[node name="AreaBResearch" type="Node3D" parent="Areas" unique_id=1365858267 instance=ExtResource("3_2acbn")]
+
+[node name="AreaCContainment" type="Node3D" parent="Areas" unique_id=1727356658 instance=ExtResource("4_npy06")]
+
+[node name="AreaDLower" type="Node3D" parent="Areas" unique_id=2143390324 instance=ExtResource("5_d1354")]
+
+[node name="AreaETwinChamber" type="Node3D" parent="Areas" unique_id=1114450169 instance=ExtResource("6_4gynl")]

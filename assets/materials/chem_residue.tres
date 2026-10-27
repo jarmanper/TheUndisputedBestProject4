@@ -1,0 +1,18 @@
+[gd_resource type="StandardMaterial3D" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/textures/chemical_residue_albedo.png" id="1_f81gk"]
+[ext_resource type="Texture2D" path="res://assets/textures/chemical_residue_emit.png" id="2_d5ikk"]
+[ext_resource type="Texture2D" path="res://assets/textures/chemical_residue_normal.png" id="3_fdktx"]
+[ext_resource type="Texture2D" path="res://assets/textures/chemical_residue_rough.png" id="4_f0p17"]
+
+[resource]
+resource_name = "chem_residue"
+albedo_texture = ExtResource("1_f81gk")
+roughness_texture = ExtResource("4_f0p17")
+emission_enabled = true
+emission_energy_multiplier = 1.2
+emission_texture = ExtResource("2_d5ikk")
+normal_enabled = true
+normal_scale = 0.5
+normal_texture = ExtResource("3_fdktx")
+uv1_scale = Vector3(0.6666667, 0.6666667, 0.6666667)

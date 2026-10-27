@@ -1,0 +1,7 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://assets/models/props/teddy_bear.glb" id="1_uylwf"]
+
+[node name="TeddyBear" type="Node3D" unique_id=1984099025]
+
+[node name="Model" type="Node3D" parent="." unique_id=729391613 instance=ExtResource("1_uylwf")]

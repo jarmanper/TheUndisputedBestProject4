@@ -1,0 +1,7 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://assets/models/props/wall_clock.glb" id="1_44ntf"]
+
+[node name="WallClock" type="Node3D" unique_id=2030775440]
+
+[node name="Model" type="Node3D" parent="." unique_id=955434172 instance=ExtResource("1_44ntf")]

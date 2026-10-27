@@ -1,0 +1,16 @@
+[gd_resource type="StandardMaterial3D" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/textures/warning_sign_albedo.png" id="1_us3ow"]
+[ext_resource type="Texture2D" path="res://assets/textures/warning_sign_metal.png" id="2_ikpxo"]
+[ext_resource type="Texture2D" path="res://assets/textures/warning_sign_normal.png" id="3_og1vu"]
+[ext_resource type="Texture2D" path="res://assets/textures/warning_sign_rough.png" id="4_yw3hp"]
+
+[resource]
+resource_name = "warning_sign"
+albedo_texture = ExtResource("1_us3ow")
+metallic = 1.0
+metallic_texture = ExtResource("2_ikpxo")
+roughness_texture = ExtResource("4_yw3hp")
+normal_enabled = true
+normal_scale = 0.4
+normal_texture = ExtResource("3_og1vu")

@@ -1,0 +1,17 @@
+[gd_resource type="StandardMaterial3D" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/textures/copper_oxidized_albedo.png" id="1_tke0n"]
+[ext_resource type="Texture2D" path="res://assets/textures/copper_oxidized_metal.png" id="2_o723f"]
+[ext_resource type="Texture2D" path="res://assets/textures/copper_oxidized_normal.png" id="3_gm4g0"]
+[ext_resource type="Texture2D" path="res://assets/textures/copper_oxidized_rough.png" id="4_cxr6o"]
+
+[resource]
+resource_name = "wire_copper"
+albedo_texture = ExtResource("1_tke0n")
+metallic = 1.0
+metallic_texture = ExtResource("2_o723f")
+roughness_texture = ExtResource("4_cxr6o")
+normal_enabled = true
+normal_scale = 0.2
+normal_texture = ExtResource("3_gm4g0")
+uv1_scale = Vector3(5, 5, 5)

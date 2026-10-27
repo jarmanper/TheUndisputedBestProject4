@@ -1,0 +1,16 @@
+[gd_resource type="StandardMaterial3D" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/textures/clock_face_albedo.png" id="1_vjlvt"]
+[ext_resource type="Texture2D" path="res://assets/textures/clock_face_normal.png" id="2_ewf6d"]
+[ext_resource type="Texture2D" path="res://assets/textures/clock_face_rough.png" id="3_3yuxc"]
+
+[resource]
+resource_name = "porcelain"
+albedo_texture = ExtResource("1_vjlvt")
+roughness_texture = ExtResource("3_3yuxc")
+normal_enabled = true
+normal_scale = 0.6
+normal_texture = ExtResource("2_ewf6d")
+clearcoat_enabled = true
+clearcoat = 0.6
+clearcoat_roughness = 0.35

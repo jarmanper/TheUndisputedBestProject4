@@ -1,0 +1,19 @@
+[gd_resource type="StandardMaterial3D" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/textures/skin_pale_albedo.png" id="1_j1vvk"]
+[ext_resource type="Texture2D" path="res://assets/textures/skin_pale_normal.png" id="2_yjefc"]
+[ext_resource type="Texture2D" path="res://assets/textures/skin_pale_rough.png" id="3_f7xtr"]
+
+[resource]
+resource_name = "skin"
+albedo_texture = ExtResource("1_j1vvk")
+roughness_texture = ExtResource("3_f7xtr")
+normal_enabled = true
+normal_scale = 0.5
+normal_texture = ExtResource("2_yjefc")
+subsurf_scatter_enabled = true
+subsurf_scatter_strength = 0.35
+subsurf_scatter_skin_mode = true
+backlight_enabled = true
+backlight = Color(0.2125, 0.0875, 0.075, 0.25)
+uv1_scale = Vector3(2.857143, 2.857143, 2.857143)

@@ -1,0 +1,7 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://assets/models/props/server_rack.glb" id="1_7hc5n"]
+
+[node name="ServerRack" type="Node3D" unique_id=583122593]
+
+[node name="Model" type="Node3D" parent="." unique_id=338006432 instance=ExtResource("1_7hc5n")]

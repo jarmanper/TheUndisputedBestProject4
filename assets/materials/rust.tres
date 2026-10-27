@@ -1,0 +1,17 @@
+[gd_resource type="StandardMaterial3D" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/textures/rust_albedo.png" id="1_fis36"]
+[ext_resource type="Texture2D" path="res://assets/textures/rust_metal.png" id="2_mo8pl"]
+[ext_resource type="Texture2D" path="res://assets/textures/rust_normal.png" id="3_y8r8p"]
+[ext_resource type="Texture2D" path="res://assets/textures/rust_rough.png" id="4_t26ts"]
+
+[resource]
+resource_name = "rust"
+albedo_texture = ExtResource("1_fis36")
+metallic = 1.0
+metallic_texture = ExtResource("2_mo8pl")
+roughness_texture = ExtResource("4_t26ts")
+normal_enabled = true
+normal_scale = 1.2
+normal_texture = ExtResource("3_y8r8p")
+uv1_scale = Vector3(0.6666667, 0.6666667, 0.6666667)

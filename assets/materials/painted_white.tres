@@ -1,0 +1,16 @@
+[gd_resource type="StandardMaterial3D" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/textures/painted_white_metal_albedo.png" id="1_c3718"]
+[ext_resource type="Texture2D" path="res://assets/textures/painted_white_metal_metal.png" id="2_ogqxq"]
+[ext_resource type="Texture2D" path="res://assets/textures/painted_white_metal_normal.png" id="3_j2guf"]
+[ext_resource type="Texture2D" path="res://assets/textures/painted_white_metal_rough.png" id="4_c354f"]
+
+[resource]
+resource_name = "painted_white"
+albedo_texture = ExtResource("1_c3718")
+metallic = 1.0
+metallic_texture = ExtResource("2_ogqxq")
+roughness_texture = ExtResource("4_c354f")
+normal_enabled = true
+normal_scale = 0.5
+normal_texture = ExtResource("3_j2guf")
