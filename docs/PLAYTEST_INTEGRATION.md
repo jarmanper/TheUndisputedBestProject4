@@ -2,6 +2,8 @@
 
 `playtest-integration` starts from `origin/full-game2` (`aa255d6`). Inspected `origin/main` (`fc9a889`), `origin/full-game` (`9f843ab`) and `origin/rhaiyn-marking-playable` (`f0a360c`). The latter supplied the Marking reference; it was not merged or cherry-picked wholesale. AGENTS.md was missing from full-game2 and is restored from main, with the integration authorization, architecture, route and implemented word budget recorded.
 
+A final fetch found the newer `full-game2` HUD commit `a6610c9`. Its history is merged, with all four reusable UI helper scripts retained. Its conflicting ammo/interaction HUD, unbudgeted dialogue/end-screen text and flag-based loop are deliberately superseded by the validated wordless HUD and assignment lifecycle. The reusable settings panel/style/crosshair helpers are retained for their owner but are not instantiated in this playtest's HUD. Current main is also merged; no teammate history was rewritten.
+
 ## Play
 
 Use Godot 4.7.2, F5, New Game. F6 also works with `scenes/game/main.tscn` or `final_chamber.tscn` open. WASD moves; mouse turns the shoulder camera; Left Mouse/Q/E/R activate Combat/Marking/Suspend/Explosion; Esc pauses and releases or captures the mouse. No jump or other gameplay actions.
@@ -37,7 +39,7 @@ Development checks, not human tester results:
 
 | Validation | Result |
 | --- | --- |
-| Editor import and script resource audit | 24 gameplay/UI/visual scripts compile, 0 failures |
+| Editor import and script resource audit | 28 gameplay/UI/visual scripts compile, 0 failures |
 | Exact mechanics suite | 59 checks, 0 failures |
 | Route/lifecycle/input/budget/export-configuration suite | 78 checks, 0 failures |
 | Rendered live title-to-game run | 12 checks, 0 failures, including all four mapped inputs, combo, camera, occlusion, live navigation/attacks/death/restart |

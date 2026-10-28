@@ -27,6 +27,8 @@ Edit only the files you own. If you need a change in someone else's file, ask th
 
 **October 28 integration authorization:** Rhaiyn explicitly authorized the `playtest-integration` branch to repair all integrated gameplay, UI, story and shared settings from `full-game2` against this document. Original mechanic owners remain unchanged. These cross-owner repairs are documented in the integration PR; generated graphics scenes remain untouched relative to `full-game2`.
 
+The later `full-game2` UI commit `a6610c9` is merged into the integration branch. Its reusable UI helpers are retained, while its ammo/interact HUD, unbudgeted dialogue and manual retry loop are superseded by the assignment-compliant HUD and automatic restart. No history is rewritten.
+
 | Area | Owner | Files |
 | --- | --- | --- |
 | Combat + enemy behavior (Team 3 defines enemies inside Combat) | Rickey | `scripts/game/mechanics/combat.gd`, `scripts/game/enemy.gd`, `scripts/game/twin_boss.gd` |
