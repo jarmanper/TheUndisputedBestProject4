@@ -3,11 +3,11 @@
 [ext_resource type="PackedScene" path="res://assets/models/props/wall_clock.glb" id="1_lyhee"]
 [ext_resource type="AudioStream" path="res://assets/audio/sfx/clock_tick_loop.wav" id="2_bg4pp"]
 
-[node name="WallClock" type="Node3D" unique_id=208226530]
+[node name="WallClock" type="Node3D" unique_id=1302150018]
 
 [node name="Model" type="Node3D" parent="." unique_id=955434172 instance=ExtResource("1_lyhee")]
 
-[node name="Audio_clock_tick_loop" type="AudioStreamPlayer3D" parent="." unique_id=847193143]
+[node name="Audio_clock_tick_loop" type="AudioStreamPlayer3D" parent="." unique_id=1368199394]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 stream = ExtResource("2_bg4pp")
 volume_db = -10.0

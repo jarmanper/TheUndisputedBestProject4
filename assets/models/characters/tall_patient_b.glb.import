@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://bnepdtuywth1d"
-path="res://.godot/imported/failed_humanoid.glb-29c071e3d4af95cd79a9fd1831e3966a.scn"
+uid="uid://cki75riwsb507"
+path="res://.godot/imported/tall_patient_b.glb-d88bd31a616e8bb991cd4c5aa0cd5f76.scn"
 
 [deps]
 
-source_file="res://assets/models/characters/failed_humanoid.glb"
-dest_files=["res://.godot/imported/failed_humanoid.glb-29c071e3d4af95cd79a9fd1831e3966a.scn"]
+source_file="res://assets/models/characters/tall_patient_b.glb"
+dest_files=["res://.godot/imported/tall_patient_b.glb-d88bd31a616e8bb991cd4c5aa0cd5f76.scn"]
 
 [params]
 

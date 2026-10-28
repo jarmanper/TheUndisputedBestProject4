@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://cin2weph1y2ex"
-path="res://.godot/imported/chemical_subject.glb-a0e3248d255436872fa69c2357bf3c3e.scn"
+uid="uid://drg8un8ww27ji"
+path="res://.godot/imported/tall_patient_a.glb-4616cd64f47f47739e710984a46bf18a.scn"
 
 [deps]
 
-source_file="res://assets/models/characters/chemical_subject.glb"
-dest_files=["res://.godot/imported/chemical_subject.glb-a0e3248d255436872fa69c2357bf3c3e.scn"]
+source_file="res://assets/models/characters/tall_patient_a.glb"
+dest_files=["res://.godot/imported/tall_patient_a.glb-4616cd64f47f47739e710984a46bf18a.scn"]
 
 [params]
 

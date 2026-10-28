@@ -23,13 +23,13 @@
 [ext_resource type="Material" path="res://assets/materials/fog_lower.tres" id="21_wblfq"]
 [ext_resource type="AudioStream" path="res://assets/audio/ambience/amb_lab.wav" id="22_32kpi"]
 
-[node name="AreaFCellBlock" type="Node3D" unique_id=1793505929]
+[node name="AreaFCellBlock" type="Node3D" unique_id=168504510]
 
 [node name="Model" type="Node3D" parent="." unique_id=1826980502 instance=ExtResource("1_eq0w8")]
 
-[node name="Lights" type="Node3D" parent="." unique_id=566688462]
+[node name="Lights" type="Node3D" parent="." unique_id=222768154]
 
-[node name="cage_light" type="OmniLight3D" parent="Lights" unique_id=382389898]
+[node name="cage_light" type="OmniLight3D" parent="Lights" unique_id=622446505]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 35.5, 2.8, -30)
 light_color = Color(1, 0.65, 0.4, 1)
 light_energy = 1.6
@@ -43,7 +43,7 @@ omni_attenuation = 1.2
 script = ExtResource("2_bwj8i")
 flicker = 0.3
 
-[node name="Audio_buzz_fluorescent_loop" type="AudioStreamPlayer3D" parent="Lights/cage_light" unique_id=824980474]
+[node name="Audio_buzz_fluorescent_loop" type="AudioStreamPlayer3D" parent="Lights/cage_light" unique_id=1920376215]
 stream = ExtResource("3_63cje")
 volume_db = -14.2
 unit_size = 1.2
@@ -52,7 +52,7 @@ max_distance = 9.0
 bus = &"SFX"
 attenuation_filter_cutoff_hz = 6000.0
 
-[node name="cage_light2" type="OmniLight3D" parent="Lights" unique_id=448196083]
+[node name="cage_light2" type="OmniLight3D" parent="Lights" unique_id=68423588]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 35.5, 2.8, -33.6)
 light_color = Color(1, 0.65, 0.4, 1)
 light_energy = 1.6
@@ -66,7 +66,7 @@ omni_attenuation = 1.2
 script = ExtResource("2_bwj8i")
 flicker = 0.3
 
-[node name="Audio_buzz_fluorescent_loop" type="AudioStreamPlayer3D" parent="Lights/cage_light2" unique_id=677948286]
+[node name="Audio_buzz_fluorescent_loop" type="AudioStreamPlayer3D" parent="Lights/cage_light2" unique_id=1950372177]
 stream = ExtResource("3_63cje")
 volume_db = -14.2
 unit_size = 1.2
@@ -75,7 +75,7 @@ max_distance = 9.0
 bus = &"SFX"
 attenuation_filter_cutoff_hz = 6000.0
 
-[node name="cage_light3" type="OmniLight3D" parent="Lights" unique_id=1910789088]
+[node name="cage_light3" type="OmniLight3D" parent="Lights" unique_id=944599980]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 35.5, 2.8, -37.2)
 light_color = Color(1, 0.65, 0.4, 1)
 light_energy = 1.6
@@ -89,7 +89,7 @@ omni_attenuation = 1.2
 script = ExtResource("2_bwj8i")
 flicker = 0.8
 
-[node name="Audio_buzz_fluorescent_loop" type="AudioStreamPlayer3D" parent="Lights/cage_light3" unique_id=1555691128]
+[node name="Audio_buzz_fluorescent_loop" type="AudioStreamPlayer3D" parent="Lights/cage_light3" unique_id=1961252128]
 stream = ExtResource("3_63cje")
 volume_db = -11.2
 unit_size = 1.2
@@ -98,7 +98,7 @@ max_distance = 9.0
 bus = &"SFX"
 attenuation_filter_cutoff_hz = 6000.0
 
-[node name="cage_light4" type="OmniLight3D" parent="Lights" unique_id=309444527]
+[node name="cage_light4" type="OmniLight3D" parent="Lights" unique_id=1253428019]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 35.5, 2.8, -40.8)
 light_color = Color(1, 0.65, 0.4, 1)
 light_energy = 1.6
@@ -110,7 +110,7 @@ distance_fade_shadow = 18.0
 omni_range = 6.5
 omni_attenuation = 1.2
 
-[node name="cage_light5" type="OmniLight3D" parent="Lights" unique_id=1748668483]
+[node name="cage_light5" type="OmniLight3D" parent="Lights" unique_id=623501232]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 35.5, 2.8, -44.4)
 light_color = Color(1, 0.65, 0.4, 1)
 light_energy = 1.6
@@ -124,7 +124,7 @@ omni_attenuation = 1.2
 script = ExtResource("2_bwj8i")
 flicker = 0.3
 
-[node name="Audio_buzz_fluorescent_loop" type="AudioStreamPlayer3D" parent="Lights/cage_light5" unique_id=2014786457]
+[node name="Audio_buzz_fluorescent_loop" type="AudioStreamPlayer3D" parent="Lights/cage_light5" unique_id=447577311]
 stream = ExtResource("3_63cje")
 volume_db = -14.2
 unit_size = 1.2
@@ -133,7 +133,7 @@ max_distance = 9.0
 bus = &"SFX"
 attenuation_filter_cutoff_hz = 6000.0
 
-[node name="cage_light6" type="OmniLight3D" parent="Lights" unique_id=120427458]
+[node name="cage_light6" type="OmniLight3D" parent="Lights" unique_id=309956572]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 35.5, 2.8, -48)
 light_color = Color(1, 0.65, 0.4, 1)
 light_energy = 1.6
@@ -145,7 +145,7 @@ distance_fade_shadow = 18.0
 omni_range = 6.5
 omni_attenuation = 1.2
 
-[node name="cage_light7" type="OmniLight3D" parent="Lights" unique_id=311770234]
+[node name="cage_light7" type="OmniLight3D" parent="Lights" unique_id=862360732]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 35.5, 2.8, -51.6)
 light_color = Color(1, 0.65, 0.4, 1)
 light_energy = 1.6
@@ -159,7 +159,7 @@ omni_attenuation = 1.2
 script = ExtResource("2_bwj8i")
 flicker = 0.8
 
-[node name="Audio_buzz_fluorescent_loop" type="AudioStreamPlayer3D" parent="Lights/cage_light7" unique_id=755272262]
+[node name="Audio_buzz_fluorescent_loop" type="AudioStreamPlayer3D" parent="Lights/cage_light7" unique_id=285287646]
 stream = ExtResource("3_63cje")
 volume_db = -11.2
 unit_size = 1.2
@@ -168,7 +168,7 @@ max_distance = 9.0
 bus = &"SFX"
 attenuation_filter_cutoff_hz = 6000.0
 
-[node name="cage_light8" type="OmniLight3D" parent="Lights" unique_id=182879228]
+[node name="cage_light8" type="OmniLight3D" parent="Lights" unique_id=1653647683]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 35.5, 2.8, -55.2)
 light_color = Color(1, 0.65, 0.4, 1)
 light_energy = 1.6
@@ -182,7 +182,7 @@ omni_attenuation = 1.2
 script = ExtResource("2_bwj8i")
 flicker = 0.8
 
-[node name="Audio_buzz_fluorescent_loop" type="AudioStreamPlayer3D" parent="Lights/cage_light8" unique_id=598450761]
+[node name="Audio_buzz_fluorescent_loop" type="AudioStreamPlayer3D" parent="Lights/cage_light8" unique_id=1341924481]
 stream = ExtResource("3_63cje")
 volume_db = -11.2
 unit_size = 1.2
@@ -191,7 +191,7 @@ max_distance = 9.0
 bus = &"SFX"
 attenuation_filter_cutoff_hz = 6000.0
 
-[node name="cage_light9" type="OmniLight3D" parent="Lights" unique_id=782560710]
+[node name="cage_light9" type="OmniLight3D" parent="Lights" unique_id=263783944]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13, 2.4, -47.9)
 light_color = Color(1, 0.62, 0.32, 1)
 light_energy = 1.2
@@ -205,7 +205,7 @@ omni_attenuation = 1.2
 script = ExtResource("2_bwj8i")
 flicker = 0.6
 
-[node name="Audio_buzz_fluorescent_loop" type="AudioStreamPlayer3D" parent="Lights/cage_light9" unique_id=1116309158]
+[node name="Audio_buzz_fluorescent_loop" type="AudioStreamPlayer3D" parent="Lights/cage_light9" unique_id=1299114127]
 stream = ExtResource("3_63cje")
 volume_db = -12.4
 unit_size = 1.2
@@ -214,7 +214,7 @@ max_distance = 9.0
 bus = &"SFX"
 attenuation_filter_cutoff_hz = 6000.0
 
-[node name="cage_light10" type="OmniLight3D" parent="Lights" unique_id=1382989226]
+[node name="cage_light10" type="OmniLight3D" parent="Lights" unique_id=1105779965]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 17, 2.4, -47.9)
 light_color = Color(1, 0.62, 0.32, 1)
 light_energy = 1.2
@@ -226,7 +226,7 @@ distance_fade_shadow = 18.0
 omni_range = 6.0
 omni_attenuation = 1.2
 
-[node name="cage_light11" type="OmniLight3D" parent="Lights" unique_id=703362935]
+[node name="cage_light11" type="OmniLight3D" parent="Lights" unique_id=1987271782]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 21, 2.4, -47.9)
 light_color = Color(1, 0.62, 0.32, 1)
 light_energy = 1.2
@@ -238,7 +238,7 @@ distance_fade_shadow = 18.0
 omni_range = 6.0
 omni_attenuation = 1.2
 
-[node name="cage_light12" type="OmniLight3D" parent="Lights" unique_id=345857977]
+[node name="cage_light12" type="OmniLight3D" parent="Lights" unique_id=922428425]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25, 2.4, -47.9)
 light_color = Color(1, 0.62, 0.32, 1)
 light_energy = 1.2
@@ -252,7 +252,7 @@ omni_attenuation = 1.2
 script = ExtResource("2_bwj8i")
 flicker = 0.6
 
-[node name="Audio_buzz_fluorescent_loop" type="AudioStreamPlayer3D" parent="Lights/cage_light12" unique_id=454752138]
+[node name="Audio_buzz_fluorescent_loop" type="AudioStreamPlayer3D" parent="Lights/cage_light12" unique_id=2016230194]
 stream = ExtResource("3_63cje")
 volume_db = -12.4
 unit_size = 1.2
@@ -261,7 +261,7 @@ max_distance = 9.0
 bus = &"SFX"
 attenuation_filter_cutoff_hz = 6000.0
 
-[node name="cage_light13" type="OmniLight3D" parent="Lights" unique_id=567335645]
+[node name="cage_light13" type="OmniLight3D" parent="Lights" unique_id=1526805021]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 29, 2.4, -47.9)
 light_color = Color(1, 0.62, 0.32, 1)
 light_energy = 1.2
@@ -273,7 +273,7 @@ distance_fade_shadow = 18.0
 omni_range = 6.0
 omni_attenuation = 1.2
 
-[node name="cage_light14" type="OmniLight3D" parent="Lights" unique_id=1815508456]
+[node name="cage_light14" type="OmniLight3D" parent="Lights" unique_id=420349448]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 33, 2.4, -47.9)
 light_color = Color(1, 0.62, 0.32, 1)
 light_energy = 1.2
@@ -287,7 +287,7 @@ omni_attenuation = 1.2
 script = ExtResource("2_bwj8i")
 flicker = 0.6
 
-[node name="Audio_buzz_fluorescent_loop" type="AudioStreamPlayer3D" parent="Lights/cage_light14" unique_id=1326436279]
+[node name="Audio_buzz_fluorescent_loop" type="AudioStreamPlayer3D" parent="Lights/cage_light14" unique_id=1130013682]
 stream = ExtResource("3_63cje")
 volume_db = -12.4
 unit_size = 1.2
@@ -296,7 +296,7 @@ max_distance = 9.0
 bus = &"SFX"
 attenuation_filter_cutoff_hz = 6000.0
 
-[node name="fluor_light" type="OmniLight3D" parent="Lights" unique_id=1149010799]
+[node name="fluor_light" type="OmniLight3D" parent="Lights" unique_id=2038799889]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 36, 2.65, -61.725)
 light_color = Color(0.82, 0.9, 1, 1)
 light_energy = 0.95
@@ -308,7 +308,7 @@ distance_fade_shadow = 18.0
 omni_range = 5.5
 omni_attenuation = 1.2
 
-[node name="fluor_light2" type="OmniLight3D" parent="Lights" unique_id=985331457]
+[node name="fluor_light2" type="OmniLight3D" parent="Lights" unique_id=1741086005]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 38.666668, 2.65, -61.725)
 light_color = Color(0.82, 0.9, 1, 1)
 light_energy = 0.95
@@ -320,7 +320,7 @@ distance_fade_shadow = 18.0
 omni_range = 5.5
 omni_attenuation = 1.2
 
-[node name="fluor_light3" type="OmniLight3D" parent="Lights" unique_id=1752082117]
+[node name="fluor_light3" type="OmniLight3D" parent="Lights" unique_id=370540179]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 38.666668, 2.65, -64.575)
 light_color = Color(0.82, 0.9, 1, 1)
 light_energy = 0.95
@@ -334,7 +334,7 @@ omni_attenuation = 1.2
 script = ExtResource("2_bwj8i")
 flicker = 0.8881017809352849
 
-[node name="Audio_buzz_fluorescent_loop" type="AudioStreamPlayer3D" parent="Lights/fluor_light3" unique_id=1130198202]
+[node name="Audio_buzz_fluorescent_loop" type="AudioStreamPlayer3D" parent="Lights/fluor_light3" unique_id=1135743271]
 stream = ExtResource("3_63cje")
 volume_db = -10.67139
 unit_size = 1.2
@@ -343,191 +343,191 @@ max_distance = 9.0
 bus = &"SFX"
 attenuation_filter_cutoff_hz = 6000.0
 
-[node name="Props" type="Node3D" parent="." unique_id=1501115567]
+[node name="Props" type="Node3D" parent="." unique_id=1575034047]
 
-[node name="CellBars" type="Node3D" parent="Props" unique_id=171282563 instance=ExtResource("4_tx61a")]
+[node name="CellBars" type="Node3D" parent="Props" unique_id=2106428327 instance=ExtResource("4_tx61a")]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 33.85, 0, -31.65)
 
-[node name="Cot" type="Node3D" parent="Props" unique_id=2015050985 instance=ExtResource("5_c0y08")]
+[node name="Cot" type="Node3D" parent="Props" unique_id=1650460521 instance=ExtResource("5_c0y08")]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 31.66, 0, -32.55)
 
-[node name="CellToilet" type="Node3D" parent="Props" unique_id=243612181 instance=ExtResource("6_aikko")]
+[node name="CellToilet" type="Node3D" parent="Props" unique_id=2045844051 instance=ExtResource("6_aikko")]
 transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 31.2, 0, -30.45)
 
-[node name="CellBars2" type="Node3D" parent="Props" unique_id=2054036167 instance=ExtResource("4_tx61a")]
+[node name="CellBars2" type="Node3D" parent="Props" unique_id=340620287 instance=ExtResource("4_tx61a")]
 transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 37.15, 0, -31.65)
 
-[node name="Cot2" type="Node3D" parent="Props" unique_id=484337366 instance=ExtResource("5_c0y08")]
+[node name="Cot2" type="Node3D" parent="Props" unique_id=1453063106 instance=ExtResource("5_c0y08")]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 39.34, 0, -32.55)
 
-[node name="CellToilet2" type="Node3D" parent="Props" unique_id=1188503860 instance=ExtResource("6_aikko")]
+[node name="CellToilet2" type="Node3D" parent="Props" unique_id=2108719627 instance=ExtResource("6_aikko")]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 39.8, 0, -30.45)
 
-[node name="CellBars3" type="Node3D" parent="Props" unique_id=51116557 instance=ExtResource("4_tx61a")]
+[node name="CellBars3" type="Node3D" parent="Props" unique_id=1216055085 instance=ExtResource("4_tx61a")]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 33.85, 0, -35.25)
 
-[node name="Cot3" type="Node3D" parent="Props" unique_id=214479126 instance=ExtResource("5_c0y08")]
+[node name="Cot3" type="Node3D" parent="Props" unique_id=419682399 instance=ExtResource("5_c0y08")]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 31.66, 0, -36.15)
 
-[node name="CellToilet3" type="Node3D" parent="Props" unique_id=257874714 instance=ExtResource("6_aikko")]
+[node name="CellToilet3" type="Node3D" parent="Props" unique_id=1899754558 instance=ExtResource("6_aikko")]
 transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 31.2, 0, -34.05)
 
-[node name="CellBars4" type="Node3D" parent="Props" unique_id=1735781918 instance=ExtResource("4_tx61a")]
+[node name="CellBars4" type="Node3D" parent="Props" unique_id=123349505 instance=ExtResource("4_tx61a")]
 transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 37.15, 0, -35.25)
 
-[node name="Cot4" type="Node3D" parent="Props" unique_id=922889361 instance=ExtResource("5_c0y08")]
+[node name="Cot4" type="Node3D" parent="Props" unique_id=648411470 instance=ExtResource("5_c0y08")]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 39.34, 0, -36.15)
 
-[node name="CellToilet4" type="Node3D" parent="Props" unique_id=1917189870 instance=ExtResource("6_aikko")]
+[node name="CellToilet4" type="Node3D" parent="Props" unique_id=322996414 instance=ExtResource("6_aikko")]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 39.8, 0, -34.05)
 
-[node name="BodyBag" type="Node3D" parent="Props" unique_id=2005024801 instance=ExtResource("7_qs2n7")]
+[node name="BodyBag" type="Node3D" parent="Props" unique_id=409070847 instance=ExtResource("7_qs2n7")]
 transform = Transform3D(0.0754621, 0, 0.99714875, 0, 1, 0, -0.99714875, 0, 0.0754621, 38.8, 0, -35.05)
 
-[node name="CellBars5" type="Node3D" parent="Props" unique_id=1087032976 instance=ExtResource("4_tx61a")]
+[node name="CellBars5" type="Node3D" parent="Props" unique_id=1262804386 instance=ExtResource("4_tx61a")]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 33.85, 0, -38.85)
 
-[node name="Cot5" type="Node3D" parent="Props" unique_id=1561113970 instance=ExtResource("5_c0y08")]
+[node name="Cot5" type="Node3D" parent="Props" unique_id=35091626 instance=ExtResource("5_c0y08")]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 31.66, 0, -39.75)
 
-[node name="CellToilet5" type="Node3D" parent="Props" unique_id=625935364 instance=ExtResource("6_aikko")]
+[node name="CellToilet5" type="Node3D" parent="Props" unique_id=870491406 instance=ExtResource("6_aikko")]
 transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 31.2, 0, -37.65)
 
-[node name="WallBloodsmear" type="Node3D" parent="Props" unique_id=464307694 instance=ExtResource("8_yv4tt")]
+[node name="WallBloodsmear" type="Node3D" parent="Props" unique_id=1826721335 instance=ExtResource("8_yv4tt")]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 30.75, 0, -38.85)
 
-[node name="CellBars6" type="Node3D" parent="Props" unique_id=1008224099 instance=ExtResource("4_tx61a")]
+[node name="CellBars6" type="Node3D" parent="Props" unique_id=1865770480 instance=ExtResource("4_tx61a")]
 transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 37.15, 0, -38.85)
 
-[node name="Cot6" type="Node3D" parent="Props" unique_id=1260556424 instance=ExtResource("5_c0y08")]
+[node name="Cot6" type="Node3D" parent="Props" unique_id=717303119 instance=ExtResource("5_c0y08")]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 39.34, 0, -39.75)
 
-[node name="CellToilet6" type="Node3D" parent="Props" unique_id=138875552 instance=ExtResource("6_aikko")]
+[node name="CellToilet6" type="Node3D" parent="Props" unique_id=530535207 instance=ExtResource("6_aikko")]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 39.8, 0, -37.65)
 
-[node name="WallBloodsmear2" type="Node3D" parent="Props" unique_id=1344832655 instance=ExtResource("8_yv4tt")]
+[node name="WallBloodsmear2" type="Node3D" parent="Props" unique_id=466481176 instance=ExtResource("8_yv4tt")]
 transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 40.25, 0, -38.85)
 
-[node name="CellBars7" type="Node3D" parent="Props" unique_id=518749804 instance=ExtResource("4_tx61a")]
+[node name="CellBars7" type="Node3D" parent="Props" unique_id=39460708 instance=ExtResource("4_tx61a")]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 33.85, 0, -42.45)
 
-[node name="Cot7" type="Node3D" parent="Props" unique_id=1409053507 instance=ExtResource("5_c0y08")]
+[node name="Cot7" type="Node3D" parent="Props" unique_id=164391513 instance=ExtResource("5_c0y08")]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 31.66, 0, -43.35)
 
-[node name="CellToilet7" type="Node3D" parent="Props" unique_id=646209871 instance=ExtResource("6_aikko")]
+[node name="CellToilet7" type="Node3D" parent="Props" unique_id=1034511736 instance=ExtResource("6_aikko")]
 transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 31.2, 0, -41.25)
 
-[node name="WallBloodsmear3" type="Node3D" parent="Props" unique_id=508238887 instance=ExtResource("8_yv4tt")]
+[node name="WallBloodsmear3" type="Node3D" parent="Props" unique_id=1583416321 instance=ExtResource("8_yv4tt")]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 30.75, 0, -42.45)
 
-[node name="CellBars8" type="Node3D" parent="Props" unique_id=314922905 instance=ExtResource("4_tx61a")]
+[node name="CellBars8" type="Node3D" parent="Props" unique_id=1987713089 instance=ExtResource("4_tx61a")]
 transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 37.15, 0, -42.45)
 
-[node name="Cot8" type="Node3D" parent="Props" unique_id=1559352365 instance=ExtResource("5_c0y08")]
+[node name="Cot8" type="Node3D" parent="Props" unique_id=1837065402 instance=ExtResource("5_c0y08")]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 39.34, 0, -43.35)
 
-[node name="CellToilet8" type="Node3D" parent="Props" unique_id=1165200696 instance=ExtResource("6_aikko")]
+[node name="CellToilet8" type="Node3D" parent="Props" unique_id=115319099 instance=ExtResource("6_aikko")]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 39.8, 0, -41.25)
 
-[node name="CellBars9" type="Node3D" parent="Props" unique_id=365958424 instance=ExtResource("4_tx61a")]
+[node name="CellBars9" type="Node3D" parent="Props" unique_id=1917208052 instance=ExtResource("4_tx61a")]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 33.85, 0, -51.15)
 
-[node name="Cot9" type="Node3D" parent="Props" unique_id=524402822 instance=ExtResource("5_c0y08")]
+[node name="Cot9" type="Node3D" parent="Props" unique_id=973126690 instance=ExtResource("5_c0y08")]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 31.66, 0, -52.05)
 
-[node name="CellToilet9" type="Node3D" parent="Props" unique_id=2087997350 instance=ExtResource("6_aikko")]
+[node name="CellToilet9" type="Node3D" parent="Props" unique_id=743839101 instance=ExtResource("6_aikko")]
 transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 31.2, 0, -49.95)
 
-[node name="CellBars10" type="Node3D" parent="Props" unique_id=697708286 instance=ExtResource("4_tx61a")]
+[node name="CellBars10" type="Node3D" parent="Props" unique_id=1516548214 instance=ExtResource("4_tx61a")]
 transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 37.15, 0, -51.15)
 
-[node name="Cot10" type="Node3D" parent="Props" unique_id=922534126 instance=ExtResource("5_c0y08")]
+[node name="Cot10" type="Node3D" parent="Props" unique_id=1791912588 instance=ExtResource("5_c0y08")]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 39.34, 0, -52.05)
 
-[node name="CellToilet10" type="Node3D" parent="Props" unique_id=105934949 instance=ExtResource("6_aikko")]
+[node name="CellToilet10" type="Node3D" parent="Props" unique_id=1671852345 instance=ExtResource("6_aikko")]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 39.8, 0, -49.95)
 
-[node name="WallBloodsmear4" type="Node3D" parent="Props" unique_id=1169333987 instance=ExtResource("8_yv4tt")]
+[node name="WallBloodsmear4" type="Node3D" parent="Props" unique_id=2013692575 instance=ExtResource("8_yv4tt")]
 transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 40.25, 0, -51.15)
 
-[node name="CellBars11" type="Node3D" parent="Props" unique_id=1229633518 instance=ExtResource("4_tx61a")]
+[node name="CellBars11" type="Node3D" parent="Props" unique_id=1823423642 instance=ExtResource("4_tx61a")]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 33.85, 0, -54.75)
 
-[node name="Cot11" type="Node3D" parent="Props" unique_id=1272451431 instance=ExtResource("5_c0y08")]
+[node name="Cot11" type="Node3D" parent="Props" unique_id=1635544272 instance=ExtResource("5_c0y08")]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 31.66, 0, -55.65)
 
-[node name="CellToilet11" type="Node3D" parent="Props" unique_id=1194956439 instance=ExtResource("6_aikko")]
+[node name="CellToilet11" type="Node3D" parent="Props" unique_id=765200798 instance=ExtResource("6_aikko")]
 transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 31.2, 0, -53.55)
 
-[node name="WallBloodsmear5" type="Node3D" parent="Props" unique_id=1452135294 instance=ExtResource("8_yv4tt")]
+[node name="WallBloodsmear5" type="Node3D" parent="Props" unique_id=401302164 instance=ExtResource("8_yv4tt")]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 30.75, 0, -54.75)
 
-[node name="CellBars12" type="Node3D" parent="Props" unique_id=1807571567 instance=ExtResource("4_tx61a")]
+[node name="CellBars12" type="Node3D" parent="Props" unique_id=1042204145 instance=ExtResource("4_tx61a")]
 transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 37.15, 0, -54.75)
 
-[node name="Cot12" type="Node3D" parent="Props" unique_id=943864193 instance=ExtResource("5_c0y08")]
+[node name="Cot12" type="Node3D" parent="Props" unique_id=1414900303 instance=ExtResource("5_c0y08")]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 39.34, 0, -55.65)
 
-[node name="CellToilet12" type="Node3D" parent="Props" unique_id=1945543153 instance=ExtResource("6_aikko")]
+[node name="CellToilet12" type="Node3D" parent="Props" unique_id=2086557386 instance=ExtResource("6_aikko")]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 39.8, 0, -53.55)
 
-[node name="CellBars13" type="Node3D" parent="Props" unique_id=624742602 instance=ExtResource("4_tx61a")]
+[node name="CellBars13" type="Node3D" parent="Props" unique_id=1543925569 instance=ExtResource("4_tx61a")]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 33.85, 0, -58.35)
 
-[node name="Cot13" type="Node3D" parent="Props" unique_id=1474195516 instance=ExtResource("5_c0y08")]
+[node name="Cot13" type="Node3D" parent="Props" unique_id=165771365 instance=ExtResource("5_c0y08")]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 31.66, 0, -59.25)
 
-[node name="CellToilet13" type="Node3D" parent="Props" unique_id=1084104857 instance=ExtResource("6_aikko")]
+[node name="CellToilet13" type="Node3D" parent="Props" unique_id=2000141842 instance=ExtResource("6_aikko")]
 transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 31.2, 0, -57.15)
 
-[node name="CellBars14" type="Node3D" parent="Props" unique_id=418347269 instance=ExtResource("4_tx61a")]
+[node name="CellBars14" type="Node3D" parent="Props" unique_id=2134990635 instance=ExtResource("4_tx61a")]
 transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 37.15, 0, -58.35)
 
-[node name="Cot14" type="Node3D" parent="Props" unique_id=1892396071 instance=ExtResource("5_c0y08")]
+[node name="Cot14" type="Node3D" parent="Props" unique_id=33471683 instance=ExtResource("5_c0y08")]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 39.34, 0, -59.25)
 
-[node name="CellToilet14" type="Node3D" parent="Props" unique_id=2007940181 instance=ExtResource("6_aikko")]
+[node name="CellToilet14" type="Node3D" parent="Props" unique_id=1194787952 instance=ExtResource("6_aikko")]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 39.8, 0, -57.15)
 
-[node name="WallBloodsmear6" type="Node3D" parent="Props" unique_id=1771430880 instance=ExtResource("8_yv4tt")]
+[node name="WallBloodsmear6" type="Node3D" parent="Props" unique_id=794023385 instance=ExtResource("8_yv4tt")]
 transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 40.25, 0, -58.35)
 
-[node name="EmergencyBeacon" type="Node3D" parent="Props" unique_id=157300006 instance=ExtResource("9_85gxv")]
+[node name="EmergencyBeacon" type="Node3D" parent="Props" unique_id=1878911767 instance=ExtResource("9_85gxv")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 35.5, 2.6, -59.95)
 
-[node name="BloodTrail" type="Node3D" parent="Props" unique_id=190177684 instance=ExtResource("10_37lo6")]
+[node name="BloodTrail" type="Node3D" parent="Props" unique_id=1880391188 instance=ExtResource("10_37lo6")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 35.5, 0, -42)
 
-[node name="ChemBarrel" type="Node3D" parent="Props" unique_id=1778766128 instance=ExtResource("11_j3y31")]
+[node name="ChemBarrel" type="Node3D" parent="Props" unique_id=482222005 instance=ExtResource("11_j3y31")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, 0, -47.6)
 
-[node name="DebrisPile" type="Node3D" parent="Props" unique_id=1987767356 instance=ExtResource("12_3s0ur")]
+[node name="DebrisPile" type="Node3D" parent="Props" unique_id=848582753 instance=ExtResource("12_3s0ur")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 27, 0, -46.5)
 
-[node name="OfficeDesk" type="Node3D" parent="Props" unique_id=1005564895 instance=ExtResource("13_sw0ax")]
+[node name="OfficeDesk" type="Node3D" parent="Props" unique_id=2087311728 instance=ExtResource("13_sw0ax")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 36, 0, -63.5)
 
-[node name="ComputerTerminal" type="Node3D" parent="Props" unique_id=336975577 instance=ExtResource("14_t6py5")]
+[node name="ComputerTerminal" type="Node3D" parent="Props" unique_id=1974752722 instance=ExtResource("14_t6py5")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 36.2, 0.76, -63.6)
 
-[node name="PhotoFrame" type="Node3D" parent="Props" unique_id=87238073 instance=ExtResource("15_t2hyk")]
+[node name="PhotoFrame" type="Node3D" parent="Props" unique_id=802859396 instance=ExtResource("15_t2hyk")]
 transform = Transform3D(-0.92106104, 0, -0.38941827, 0, 1, 0, 0.38941827, 0, -0.92106104, 35.4, 0.76, -63.4)
 
-[node name="Keycard" type="Node3D" parent="Props" unique_id=150292571 instance=ExtResource("16_8glc3")]
+[node name="Keycard" type="Node3D" parent="Props" unique_id=494564928 instance=ExtResource("16_8glc3")]
 transform = Transform3D(0.87758255, 0, 0.47942558, 0, 1, 0, -0.47942558, 0, 0.87758255, 36.6, 0.76, -63.2)
 
-[node name="FilingCabinet" type="Node3D" parent="Props" unique_id=301899101 instance=ExtResource("17_mislt")]
+[node name="FilingCabinet" type="Node3D" parent="Props" unique_id=823191535 instance=ExtResource("17_mislt")]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 39.6, 0, -65.4)
 
-[node name="ServerRack" type="Node3D" parent="Props" unique_id=557977957 instance=ExtResource("18_kjjjn")]
+[node name="ServerRack" type="Node3D" parent="Props" unique_id=243980865 instance=ExtResource("18_kjjjn")]
 transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 32.4, 0, -65.4)
 
-[node name="GrandfatherClock" type="Node3D" parent="Props" unique_id=1497397535 instance=ExtResource("19_kfbxw")]
+[node name="GrandfatherClock" type="Node3D" parent="Props" unique_id=1506536419 instance=ExtResource("19_kfbxw")]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 39.6, 0, -61)
 
-[node name="ReflectionProbes" type="Node3D" parent="." unique_id=1434829109]
+[node name="ReflectionProbes" type="Node3D" parent="." unique_id=40100195]
 
-[node name="F_corr_probe" type="ReflectionProbe" parent="ReflectionProbes" unique_id=1437768261]
+[node name="F_corr_probe" type="ReflectionProbe" parent="ReflectionProbes" unique_id=1858159731]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 35.5, 1.6, -44.15)
 size = Vector3(3.2, 3.4, 31.900002)
 box_projection = true
@@ -536,7 +536,7 @@ ambient_mode = 2
 ambient_color = Color(0.05, 0.06, 0.07, 1)
 ambient_color_energy = 0.4
 
-[node name="F_cellW0_probe" type="ReflectionProbe" parent="ReflectionProbes" unique_id=936640840]
+[node name="F_cellW0_probe" type="ReflectionProbe" parent="ReflectionProbes" unique_id=1960278653]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 32.2, 1.5, -31.65)
 size = Vector3(3.2, 3.2, 3.5)
 box_projection = true
@@ -545,7 +545,7 @@ ambient_mode = 2
 ambient_color = Color(0.05, 0.06, 0.07, 1)
 ambient_color_energy = 0.4
 
-[node name="F_cellE0_probe" type="ReflectionProbe" parent="ReflectionProbes" unique_id=677442867]
+[node name="F_cellE0_probe" type="ReflectionProbe" parent="ReflectionProbes" unique_id=2118814990]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 38.8, 1.5, -31.65)
 size = Vector3(3.2, 3.2, 3.5)
 box_projection = true
@@ -554,7 +554,7 @@ ambient_mode = 2
 ambient_color = Color(0.05, 0.06, 0.07, 1)
 ambient_color_energy = 0.4
 
-[node name="F_cellW1_probe" type="ReflectionProbe" parent="ReflectionProbes" unique_id=2071489493]
+[node name="F_cellW1_probe" type="ReflectionProbe" parent="ReflectionProbes" unique_id=1748926031]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 32.2, 1.5, -35.25)
 size = Vector3(3.2, 3.2, 3.5)
 box_projection = true
@@ -563,7 +563,7 @@ ambient_mode = 2
 ambient_color = Color(0.05, 0.06, 0.07, 1)
 ambient_color_energy = 0.4
 
-[node name="F_cellE1_probe" type="ReflectionProbe" parent="ReflectionProbes" unique_id=786412053]
+[node name="F_cellE1_probe" type="ReflectionProbe" parent="ReflectionProbes" unique_id=844634586]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 38.8, 1.5, -35.25)
 size = Vector3(3.2, 3.2, 3.5)
 box_projection = true
@@ -572,7 +572,7 @@ ambient_mode = 2
 ambient_color = Color(0.05, 0.06, 0.07, 1)
 ambient_color_energy = 0.4
 
-[node name="F_cellW2_probe" type="ReflectionProbe" parent="ReflectionProbes" unique_id=401662310]
+[node name="F_cellW2_probe" type="ReflectionProbe" parent="ReflectionProbes" unique_id=491517991]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 32.2, 1.5, -38.85)
 size = Vector3(3.2, 3.2, 3.5)
 box_projection = true
@@ -581,7 +581,7 @@ ambient_mode = 2
 ambient_color = Color(0.05, 0.06, 0.07, 1)
 ambient_color_energy = 0.4
 
-[node name="F_cellE2_probe" type="ReflectionProbe" parent="ReflectionProbes" unique_id=540340685]
+[node name="F_cellE2_probe" type="ReflectionProbe" parent="ReflectionProbes" unique_id=2086429662]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 38.8, 1.5, -38.85)
 size = Vector3(3.2, 3.2, 3.5)
 box_projection = true
@@ -590,7 +590,7 @@ ambient_mode = 2
 ambient_color = Color(0.05, 0.06, 0.07, 1)
 ambient_color_energy = 0.4
 
-[node name="F_cellW3_probe" type="ReflectionProbe" parent="ReflectionProbes" unique_id=1666643867]
+[node name="F_cellW3_probe" type="ReflectionProbe" parent="ReflectionProbes" unique_id=327491891]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 32.2, 1.5, -42.45)
 size = Vector3(3.2, 3.2, 3.5)
 box_projection = true
@@ -599,7 +599,7 @@ ambient_mode = 2
 ambient_color = Color(0.05, 0.06, 0.07, 1)
 ambient_color_energy = 0.4
 
-[node name="F_cellE3_probe" type="ReflectionProbe" parent="ReflectionProbes" unique_id=944709812]
+[node name="F_cellE3_probe" type="ReflectionProbe" parent="ReflectionProbes" unique_id=2136958940]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 38.8, 1.5, -42.45)
 size = Vector3(3.2, 3.2, 3.5)
 box_projection = true
@@ -608,7 +608,7 @@ ambient_mode = 2
 ambient_color = Color(0.05, 0.06, 0.07, 1)
 ambient_color_energy = 0.4
 
-[node name="F_cellW4_probe" type="ReflectionProbe" parent="ReflectionProbes" unique_id=890555587]
+[node name="F_cellW4_probe" type="ReflectionProbe" parent="ReflectionProbes" unique_id=1993508580]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 32.2, 1.5, -51.15)
 size = Vector3(3.2, 3.2, 3.5)
 box_projection = true
@@ -617,7 +617,7 @@ ambient_mode = 2
 ambient_color = Color(0.05, 0.06, 0.07, 1)
 ambient_color_energy = 0.4
 
-[node name="F_cellE4_probe" type="ReflectionProbe" parent="ReflectionProbes" unique_id=2144685479]
+[node name="F_cellE4_probe" type="ReflectionProbe" parent="ReflectionProbes" unique_id=252551715]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 38.8, 1.5, -51.15)
 size = Vector3(3.2, 3.2, 3.5)
 box_projection = true
@@ -626,7 +626,7 @@ ambient_mode = 2
 ambient_color = Color(0.05, 0.06, 0.07, 1)
 ambient_color_energy = 0.4
 
-[node name="F_cellW5_probe" type="ReflectionProbe" parent="ReflectionProbes" unique_id=1342718003]
+[node name="F_cellW5_probe" type="ReflectionProbe" parent="ReflectionProbes" unique_id=140053054]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 32.2, 1.5, -54.75)
 size = Vector3(3.2, 3.2, 3.5)
 box_projection = true
@@ -635,7 +635,7 @@ ambient_mode = 2
 ambient_color = Color(0.05, 0.06, 0.07, 1)
 ambient_color_energy = 0.4
 
-[node name="F_cellE5_probe" type="ReflectionProbe" parent="ReflectionProbes" unique_id=2124185082]
+[node name="F_cellE5_probe" type="ReflectionProbe" parent="ReflectionProbes" unique_id=688111501]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 38.8, 1.5, -54.75)
 size = Vector3(3.2, 3.2, 3.5)
 box_projection = true
@@ -644,7 +644,7 @@ ambient_mode = 2
 ambient_color = Color(0.05, 0.06, 0.07, 1)
 ambient_color_energy = 0.4
 
-[node name="F_cellW6_probe" type="ReflectionProbe" parent="ReflectionProbes" unique_id=681718824]
+[node name="F_cellW6_probe" type="ReflectionProbe" parent="ReflectionProbes" unique_id=1310257871]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 32.2, 1.5, -58.35)
 size = Vector3(3.2, 3.2, 3.5)
 box_projection = true
@@ -653,7 +653,7 @@ ambient_mode = 2
 ambient_color = Color(0.05, 0.06, 0.07, 1)
 ambient_color_energy = 0.4
 
-[node name="F_cellE6_probe" type="ReflectionProbe" parent="ReflectionProbes" unique_id=1444370767]
+[node name="F_cellE6_probe" type="ReflectionProbe" parent="ReflectionProbes" unique_id=545670632]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 38.8, 1.5, -58.35)
 size = Vector3(3.2, 3.2, 3.5)
 box_projection = true
@@ -662,7 +662,7 @@ ambient_mode = 2
 ambient_color = Color(0.05, 0.06, 0.07, 1)
 ambient_color_energy = 0.4
 
-[node name="F_link_probe" type="ReflectionProbe" parent="ReflectionProbes" unique_id=1859512263]
+[node name="F_link_probe" type="ReflectionProbe" parent="ReflectionProbes" unique_id=1937942037]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 22.65, 1.5, -46.8)
 size = Vector3(22.900002, 3.2, 2.8)
 box_projection = true
@@ -671,7 +671,7 @@ ambient_mode = 2
 ambient_color = Color(0.05, 0.06, 0.07, 1)
 ambient_color_energy = 0.4
 
-[node name="F_warden_probe" type="ReflectionProbe" parent="ReflectionProbes" unique_id=1586508614]
+[node name="F_warden_probe" type="ReflectionProbe" parent="ReflectionProbes" unique_id=488578827]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 36, 1.5, -63.15)
 size = Vector3(8.2, 3.2, 5.8999996)
 box_projection = true
@@ -680,9 +680,9 @@ ambient_mode = 2
 ambient_color = Color(0.05, 0.06, 0.07, 1)
 ambient_color_energy = 0.4
 
-[node name="FogVolumes" type="Node3D" parent="." unique_id=179067293]
+[node name="FogVolumes" type="Node3D" parent="." unique_id=905934629]
 
-[node name="F_corr_ambience" type="AudioStreamPlayer3D" parent="FogVolumes" unique_id=537749041]
+[node name="F_corr_ambience" type="AudioStreamPlayer3D" parent="FogVolumes" unique_id=952677937]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 35.5, 1.6, -44.15)
 stream = ExtResource("20_n5jff")
 volume_db = -4.0
@@ -692,12 +692,12 @@ max_distance = 22.001017
 bus = &"Ambience"
 attenuation_filter_cutoff_hz = 6000.0
 
-[node name="F_corr_fog" type="FogVolume" parent="FogVolumes" unique_id=714614247]
+[node name="F_corr_fog" type="FogVolume" parent="FogVolumes" unique_id=1593679125]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 35.5, 1.6, -44.15)
 size = Vector3(3, 3.2, 31.7)
 material = ExtResource("21_wblfq")
 
-[node name="F_cellW0_ambience" type="AudioStreamPlayer3D" parent="FogVolumes" unique_id=915465266]
+[node name="F_cellW0_ambience" type="AudioStreamPlayer3D" parent="FogVolumes" unique_id=1457350326]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 32.2, 1.5, -31.65)
 stream = ExtResource("20_n5jff")
 volume_db = -4.0
@@ -707,12 +707,12 @@ max_distance = 8.687471
 bus = &"Ambience"
 attenuation_filter_cutoff_hz = 6000.0
 
-[node name="F_cellW0_fog" type="FogVolume" parent="FogVolumes" unique_id=1126364004]
+[node name="F_cellW0_fog" type="FogVolume" parent="FogVolumes" unique_id=921044966]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 32.2, 1.5, -31.65)
 size = Vector3(3, 3, 3.3)
 material = ExtResource("21_wblfq")
 
-[node name="F_cellE0_ambience" type="AudioStreamPlayer3D" parent="FogVolumes" unique_id=1922450777]
+[node name="F_cellE0_ambience" type="AudioStreamPlayer3D" parent="FogVolumes" unique_id=1323807350]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 38.8, 1.5, -31.65)
 stream = ExtResource("20_n5jff")
 volume_db = -4.0
@@ -722,12 +722,12 @@ max_distance = 8.687471
 bus = &"Ambience"
 attenuation_filter_cutoff_hz = 6000.0
 
-[node name="F_cellE0_fog" type="FogVolume" parent="FogVolumes" unique_id=2136148670]
+[node name="F_cellE0_fog" type="FogVolume" parent="FogVolumes" unique_id=1209168135]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 38.8, 1.5, -31.65)
 size = Vector3(3, 3, 3.3)
 material = ExtResource("21_wblfq")
 
-[node name="F_cellW1_ambience" type="AudioStreamPlayer3D" parent="FogVolumes" unique_id=702804408]
+[node name="F_cellW1_ambience" type="AudioStreamPlayer3D" parent="FogVolumes" unique_id=997262759]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 32.2, 1.5, -35.25)
 stream = ExtResource("20_n5jff")
 volume_db = -4.0
@@ -737,12 +737,12 @@ max_distance = 8.687471
 bus = &"Ambience"
 attenuation_filter_cutoff_hz = 6000.0
 
-[node name="F_cellW1_fog" type="FogVolume" parent="FogVolumes" unique_id=1359491196]
+[node name="F_cellW1_fog" type="FogVolume" parent="FogVolumes" unique_id=267706620]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 32.2, 1.5, -35.25)
 size = Vector3(3, 3, 3.3)
 material = ExtResource("21_wblfq")
 
-[node name="F_cellE1_ambience" type="AudioStreamPlayer3D" parent="FogVolumes" unique_id=1935577239]
+[node name="F_cellE1_ambience" type="AudioStreamPlayer3D" parent="FogVolumes" unique_id=1814241592]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 38.8, 1.5, -35.25)
 stream = ExtResource("20_n5jff")
 volume_db = -4.0
@@ -752,12 +752,12 @@ max_distance = 8.687471
 bus = &"Ambience"
 attenuation_filter_cutoff_hz = 6000.0
 
-[node name="F_cellE1_fog" type="FogVolume" parent="FogVolumes" unique_id=1117904741]
+[node name="F_cellE1_fog" type="FogVolume" parent="FogVolumes" unique_id=624331316]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 38.8, 1.5, -35.25)
 size = Vector3(3, 3, 3.3)
 material = ExtResource("21_wblfq")
 
-[node name="F_cellW2_ambience" type="AudioStreamPlayer3D" parent="FogVolumes" unique_id=639117958]
+[node name="F_cellW2_ambience" type="AudioStreamPlayer3D" parent="FogVolumes" unique_id=2122672378]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 32.2, 1.5, -38.85)
 stream = ExtResource("20_n5jff")
 volume_db = -4.0
@@ -767,12 +767,12 @@ max_distance = 8.687471
 bus = &"Ambience"
 attenuation_filter_cutoff_hz = 6000.0
 
-[node name="F_cellW2_fog" type="FogVolume" parent="FogVolumes" unique_id=504175553]
+[node name="F_cellW2_fog" type="FogVolume" parent="FogVolumes" unique_id=597695533]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 32.2, 1.5, -38.85)
 size = Vector3(3, 3, 3.3)
 material = ExtResource("21_wblfq")
 
-[node name="F_cellE2_ambience" type="AudioStreamPlayer3D" parent="FogVolumes" unique_id=922000648]
+[node name="F_cellE2_ambience" type="AudioStreamPlayer3D" parent="FogVolumes" unique_id=1414160665]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 38.8, 1.5, -38.85)
 stream = ExtResource("20_n5jff")
 volume_db = -4.0
@@ -782,12 +782,12 @@ max_distance = 8.687471
 bus = &"Ambience"
 attenuation_filter_cutoff_hz = 6000.0
 
-[node name="F_cellE2_fog" type="FogVolume" parent="FogVolumes" unique_id=1111893962]
+[node name="F_cellE2_fog" type="FogVolume" parent="FogVolumes" unique_id=1468874130]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 38.8, 1.5, -38.85)
 size = Vector3(3, 3, 3.3)
 material = ExtResource("21_wblfq")
 
-[node name="F_cellW3_ambience" type="AudioStreamPlayer3D" parent="FogVolumes" unique_id=1132260451]
+[node name="F_cellW3_ambience" type="AudioStreamPlayer3D" parent="FogVolumes" unique_id=1625111264]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 32.2, 1.5, -42.45)
 stream = ExtResource("20_n5jff")
 volume_db = -4.0
@@ -797,12 +797,12 @@ max_distance = 8.687471
 bus = &"Ambience"
 attenuation_filter_cutoff_hz = 6000.0
 
-[node name="F_cellW3_fog" type="FogVolume" parent="FogVolumes" unique_id=1029542061]
+[node name="F_cellW3_fog" type="FogVolume" parent="FogVolumes" unique_id=1470939155]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 32.2, 1.5, -42.45)
 size = Vector3(3, 3, 3.3)
 material = ExtResource("21_wblfq")
 
-[node name="F_cellE3_ambience" type="AudioStreamPlayer3D" parent="FogVolumes" unique_id=1442967138]
+[node name="F_cellE3_ambience" type="AudioStreamPlayer3D" parent="FogVolumes" unique_id=1625265034]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 38.8, 1.5, -42.45)
 stream = ExtResource("20_n5jff")
 volume_db = -4.0
@@ -812,12 +812,12 @@ max_distance = 8.687471
 bus = &"Ambience"
 attenuation_filter_cutoff_hz = 6000.0
 
-[node name="F_cellE3_fog" type="FogVolume" parent="FogVolumes" unique_id=1333899108]
+[node name="F_cellE3_fog" type="FogVolume" parent="FogVolumes" unique_id=1030003405]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 38.8, 1.5, -42.45)
 size = Vector3(3, 3, 3.3)
 material = ExtResource("21_wblfq")
 
-[node name="F_cellW4_ambience" type="AudioStreamPlayer3D" parent="FogVolumes" unique_id=1917111361]
+[node name="F_cellW4_ambience" type="AudioStreamPlayer3D" parent="FogVolumes" unique_id=1603534110]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 32.2, 1.5, -51.15)
 stream = ExtResource("20_n5jff")
 volume_db = -4.0
@@ -827,12 +827,12 @@ max_distance = 8.687471
 bus = &"Ambience"
 attenuation_filter_cutoff_hz = 6000.0
 
-[node name="F_cellW4_fog" type="FogVolume" parent="FogVolumes" unique_id=1357490657]
+[node name="F_cellW4_fog" type="FogVolume" parent="FogVolumes" unique_id=1041004265]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 32.2, 1.5, -51.15)
 size = Vector3(3, 3, 3.3)
 material = ExtResource("21_wblfq")
 
-[node name="F_cellE4_ambience" type="AudioStreamPlayer3D" parent="FogVolumes" unique_id=680053675]
+[node name="F_cellE4_ambience" type="AudioStreamPlayer3D" parent="FogVolumes" unique_id=709468177]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 38.8, 1.5, -51.15)
 stream = ExtResource("20_n5jff")
 volume_db = -4.0
@@ -842,12 +842,12 @@ max_distance = 8.687471
 bus = &"Ambience"
 attenuation_filter_cutoff_hz = 6000.0
 
-[node name="F_cellE4_fog" type="FogVolume" parent="FogVolumes" unique_id=626549191]
+[node name="F_cellE4_fog" type="FogVolume" parent="FogVolumes" unique_id=1617628969]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 38.8, 1.5, -51.15)
 size = Vector3(3, 3, 3.3)
 material = ExtResource("21_wblfq")
 
-[node name="F_cellW5_ambience" type="AudioStreamPlayer3D" parent="FogVolumes" unique_id=807985011]
+[node name="F_cellW5_ambience" type="AudioStreamPlayer3D" parent="FogVolumes" unique_id=987920406]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 32.2, 1.5, -54.75)
 stream = ExtResource("20_n5jff")
 volume_db = -4.0
@@ -857,12 +857,12 @@ max_distance = 8.687471
 bus = &"Ambience"
 attenuation_filter_cutoff_hz = 6000.0
 
-[node name="F_cellW5_fog" type="FogVolume" parent="FogVolumes" unique_id=737711952]
+[node name="F_cellW5_fog" type="FogVolume" parent="FogVolumes" unique_id=755638884]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 32.2, 1.5, -54.75)
 size = Vector3(3, 3, 3.3)
 material = ExtResource("21_wblfq")
 
-[node name="F_cellE5_ambience" type="AudioStreamPlayer3D" parent="FogVolumes" unique_id=91829829]
+[node name="F_cellE5_ambience" type="AudioStreamPlayer3D" parent="FogVolumes" unique_id=1189832640]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 38.8, 1.5, -54.75)
 stream = ExtResource("20_n5jff")
 volume_db = -4.0
@@ -872,12 +872,12 @@ max_distance = 8.687471
 bus = &"Ambience"
 attenuation_filter_cutoff_hz = 6000.0
 
-[node name="F_cellE5_fog" type="FogVolume" parent="FogVolumes" unique_id=258948795]
+[node name="F_cellE5_fog" type="FogVolume" parent="FogVolumes" unique_id=1730338613]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 38.8, 1.5, -54.75)
 size = Vector3(3, 3, 3.3)
 material = ExtResource("21_wblfq")
 
-[node name="F_cellW6_ambience" type="AudioStreamPlayer3D" parent="FogVolumes" unique_id=1512993328]
+[node name="F_cellW6_ambience" type="AudioStreamPlayer3D" parent="FogVolumes" unique_id=361105920]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 32.2, 1.5, -58.35)
 stream = ExtResource("20_n5jff")
 volume_db = -4.0
@@ -887,12 +887,12 @@ max_distance = 8.687471
 bus = &"Ambience"
 attenuation_filter_cutoff_hz = 6000.0
 
-[node name="F_cellW6_fog" type="FogVolume" parent="FogVolumes" unique_id=607772124]
+[node name="F_cellW6_fog" type="FogVolume" parent="FogVolumes" unique_id=382187147]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 32.2, 1.5, -58.35)
 size = Vector3(3, 3, 3.3)
 material = ExtResource("21_wblfq")
 
-[node name="F_cellE6_ambience" type="AudioStreamPlayer3D" parent="FogVolumes" unique_id=1138186509]
+[node name="F_cellE6_ambience" type="AudioStreamPlayer3D" parent="FogVolumes" unique_id=833747673]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 38.8, 1.5, -58.35)
 stream = ExtResource("20_n5jff")
 volume_db = -4.0
@@ -902,12 +902,12 @@ max_distance = 8.687471
 bus = &"Ambience"
 attenuation_filter_cutoff_hz = 6000.0
 
-[node name="F_cellE6_fog" type="FogVolume" parent="FogVolumes" unique_id=1501664462]
+[node name="F_cellE6_fog" type="FogVolume" parent="FogVolumes" unique_id=371148762]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 38.8, 1.5, -58.35)
 size = Vector3(3, 3, 3.3)
 material = ExtResource("21_wblfq")
 
-[node name="F_link_ambience" type="AudioStreamPlayer3D" parent="FogVolumes" unique_id=1722584307]
+[node name="F_link_ambience" type="AudioStreamPlayer3D" parent="FogVolumes" unique_id=2043149410]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 22.65, 1.5, -46.8)
 stream = ExtResource("20_n5jff")
 volume_db = -4.0
@@ -917,12 +917,12 @@ max_distance = 17.522263
 bus = &"Ambience"
 attenuation_filter_cutoff_hz = 6000.0
 
-[node name="F_link_fog" type="FogVolume" parent="FogVolumes" unique_id=951967457]
+[node name="F_link_fog" type="FogVolume" parent="FogVolumes" unique_id=1949808604]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 22.65, 1.5, -46.8)
 size = Vector3(22.7, 3, 2.6)
 material = ExtResource("21_wblfq")
 
-[node name="F_warden_ambience" type="AudioStreamPlayer3D" parent="FogVolumes" unique_id=1430360119]
+[node name="F_warden_ambience" type="AudioStreamPlayer3D" parent="FogVolumes" unique_id=2072098373]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 36, 1.5, -63.15)
 stream = ExtResource("22_32kpi")
 volume_db = -4.0

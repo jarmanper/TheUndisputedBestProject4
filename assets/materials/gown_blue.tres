@@ -1,0 +1,16 @@
+[gd_resource type="StandardMaterial3D" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/textures/fabric_worn_albedo.png" id="1_vh0o8"]
+[ext_resource type="Texture2D" path="res://assets/textures/fabric_worn_normal.png" id="2_dqrb2"]
+[ext_resource type="Texture2D" path="res://assets/textures/fabric_worn_rough.png" id="3_ssryy"]
+
+[resource]
+resource_name = "gown_blue"
+cull_mode = 2
+albedo_color = Color(0.55, 0.66, 0.74, 1)
+albedo_texture = ExtResource("1_vh0o8")
+roughness_texture = ExtResource("3_ssryy")
+normal_enabled = true
+normal_scale = 0.5
+normal_texture = ExtResource("2_dqrb2")
+uv1_scale = Vector3(3.3333333, 3.3333333, 3.3333333)

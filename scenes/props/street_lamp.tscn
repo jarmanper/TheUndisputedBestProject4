@@ -4,13 +4,13 @@
 [ext_resource type="Script" path="res://scripts/visual/light_flicker.gd" id="2_pvtrj"]
 [ext_resource type="AudioStream" path="res://assets/audio/sfx/buzz_fluorescent_loop.wav" id="3_vapys"]
 
-[node name="StreetLamp" type="Node3D" unique_id=112427496]
+[node name="StreetLamp" type="Node3D" unique_id=1154142302]
 
 [node name="Model" type="Node3D" parent="." unique_id=871930678 instance=ExtResource("1_u8h6u")]
 
-[node name="Lights" type="Node3D" parent="." unique_id=72877874]
+[node name="Lights" type="Node3D" parent="." unique_id=119947332]
 
-[node name="sodium_light" type="SpotLight3D" parent="Lights" unique_id=1360236793]
+[node name="sodium_light" type="SpotLight3D" parent="Lights" unique_id=171393028]
 transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 0, 6.2, 1.6)
 light_color = Color(1, 0.62, 0.3, 1)
 light_energy = 6.0
@@ -27,7 +27,7 @@ spot_angle_attenuation = 1.6
 script = ExtResource("2_pvtrj")
 flicker = 0.08
 
-[node name="Audio_buzz_fluorescent_loop" type="AudioStreamPlayer3D" parent="." unique_id=400657802]
+[node name="Audio_buzz_fluorescent_loop" type="AudioStreamPlayer3D" parent="." unique_id=836221775]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 stream = ExtResource("3_vapys")
 volume_db = -12.0

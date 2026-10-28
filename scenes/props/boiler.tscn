@@ -3,11 +3,11 @@
 [ext_resource type="PackedScene" path="res://assets/models/props/boiler.glb" id="1_76qiw"]
 [ext_resource type="AudioStream" path="res://assets/audio/sfx/steam_hiss_loop.wav" id="2_jmcim"]
 
-[node name="Boiler" type="Node3D" unique_id=1336018030]
+[node name="Boiler" type="Node3D" unique_id=242000761]
 
 [node name="Model" type="Node3D" parent="." unique_id=1794690434 instance=ExtResource("1_76qiw")]
 
-[node name="Audio_steam_hiss_loop" type="AudioStreamPlayer3D" parent="." unique_id=486536911]
+[node name="Audio_steam_hiss_loop" type="AudioStreamPlayer3D" parent="." unique_id=616530385]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 stream = ExtResource("2_jmcim")
 volume_db = -6.0

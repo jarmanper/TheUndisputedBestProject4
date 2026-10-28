@@ -2,6 +2,6 @@
 
 [ext_resource type="PackedScene" path="res://assets/models/props/locker_row.glb" id="1_0fg3d"]
 
-[node name="LockerRow" type="Node3D" unique_id=188656278]
+[node name="LockerRow" type="Node3D" unique_id=1117141001]
 
 [node name="Model" type="Node3D" parent="." unique_id=1142433136 instance=ExtResource("1_0fg3d")]

@@ -1,0 +1,15 @@
+[gd_resource type="StandardMaterial3D" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/textures/eye_grey_albedo.png" id="1_rfye4"]
+[ext_resource type="Texture2D" path="res://assets/textures/eye_grey_normal.png" id="2_wx0ae"]
+[ext_resource type="Texture2D" path="res://assets/textures/eye_grey_rough.png" id="3_b2b8n"]
+
+[resource]
+resource_name = "eye_grey"
+albedo_texture = ExtResource("1_rfye4")
+roughness_texture = ExtResource("3_b2b8n")
+normal_enabled = true
+normal_scale = 0.3
+normal_texture = ExtResource("2_wx0ae")
+clearcoat_enabled = true
+clearcoat_roughness = 0.35

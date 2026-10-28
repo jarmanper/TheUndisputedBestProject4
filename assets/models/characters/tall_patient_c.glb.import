@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://euutoagtowbe"
-path="res://.godot/imported/augmented_subject.glb-bf465100496f1a0ed86a799229382db1.scn"
+uid="uid://b1nebgq18ycvb"
+path="res://.godot/imported/tall_patient_c.glb-b3727f4491cf5b9c2fcd582eeb096a89.scn"
 
 [deps]
 
-source_file="res://assets/models/characters/augmented_subject.glb"
-dest_files=["res://.godot/imported/augmented_subject.glb-bf465100496f1a0ed86a799229382db1.scn"]
+source_file="res://assets/models/characters/tall_patient_c.glb"
+dest_files=["res://.godot/imported/tall_patient_c.glb-b3727f4491cf5b9c2fcd582eeb096a89.scn"]
 
 [params]
 

@@ -3,11 +3,11 @@
 [ext_resource type="PackedScene" path="res://assets/models/props/electrical_panel.glb" id="1_m4q2x"]
 [ext_resource type="AudioStream" path="res://assets/audio/sfx/electric_crackle_loop.wav" id="2_n63bx"]
 
-[node name="ElectricalPanel" type="Node3D" unique_id=2115623196]
+[node name="ElectricalPanel" type="Node3D" unique_id=1328731295]
 
 [node name="Model" type="Node3D" parent="." unique_id=191636120 instance=ExtResource("1_m4q2x")]
 
-[node name="Audio_electric_crackle_loop" type="AudioStreamPlayer3D" parent="." unique_id=664422723]
+[node name="Audio_electric_crackle_loop" type="AudioStreamPlayer3D" parent="." unique_id=772882561]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 stream = ExtResource("2_n63bx")
 volume_db = -8.0

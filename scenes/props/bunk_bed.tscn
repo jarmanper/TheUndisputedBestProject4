@@ -2,6 +2,6 @@
 
 [ext_resource type="PackedScene" path="res://assets/models/props/bunk_bed.glb" id="1_6cnr3"]
 
-[node name="BunkBed" type="Node3D" unique_id=1008824107]
+[node name="BunkBed" type="Node3D" unique_id=1106570926]
 
 [node name="Model" type="Node3D" parent="." unique_id=1772833079 instance=ExtResource("1_6cnr3")]

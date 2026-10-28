@@ -2,6 +2,6 @@
 
 [ext_resource type="PackedScene" path="res://assets/models/props/cafeteria_table.glb" id="1_iapuq"]
 
-[node name="CafeteriaTable" type="Node3D" unique_id=1824099159]
+[node name="CafeteriaTable" type="Node3D" unique_id=709405726]
 
 [node name="Model" type="Node3D" parent="." unique_id=154337 instance=ExtResource("1_iapuq")]

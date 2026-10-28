@@ -3,13 +3,13 @@
 [ext_resource type="PackedScene" path="res://assets/models/props/clock_workbench.glb" id="1_kp5co"]
 [ext_resource type="Script" path="res://scripts/visual/light_flicker.gd" id="2_av426"]
 
-[node name="ClockWorkbench" type="Node3D" unique_id=1635876088]
+[node name="ClockWorkbench" type="Node3D" unique_id=1000703996]
 
 [node name="Model" type="Node3D" parent="." unique_id=1880897524 instance=ExtResource("1_kp5co")]
 
-[node name="Lights" type="Node3D" parent="." unique_id=1387854260]
+[node name="Lights" type="Node3D" parent="." unique_id=806379009]
 
-[node name="desk_lamp_light" type="OmniLight3D" parent="Lights" unique_id=1031291184]
+[node name="desk_lamp_light" type="OmniLight3D" parent="Lights" unique_id=1981495499]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 1.1, 0.02)
 light_color = Color(1, 0.8, 0.5, 1)
 light_energy = 0.8

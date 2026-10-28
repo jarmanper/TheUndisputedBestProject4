@@ -2,6 +2,6 @@
 
 [ext_resource type="PackedScene" path="res://assets/models/props/wall_bloodsmear.glb" id="1_eqkxu"]
 
-[node name="WallBloodsmear" type="Node3D" unique_id=464307694]
+[node name="WallBloodsmear" type="Node3D" unique_id=1826721335]
 
 [node name="Model" type="Node3D" parent="." unique_id=855464720 instance=ExtResource("1_eqkxu")]

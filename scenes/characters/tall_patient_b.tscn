@@ -1,0 +1,24 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/visual/creature_visual.gd" id="1_6kw5a"]
+[ext_resource type="PackedScene" path="res://assets/models/characters/tall_patient_b.glb" id="2_tmvx0"]
+[ext_resource type="Script" path="res://scripts/visual/creature_audio.gd" id="3_f381r"]
+[ext_resource type="AudioStream" path="res://assets/audio/creatures/augmented_servo_loop.wav" id="4_g4yxr"]
+[ext_resource type="AudioStream" path="res://assets/audio/creatures/failed_groan_1.wav" id="5_tuu2t"]
+[ext_resource type="AudioStream" path="res://assets/audio/creatures/augmented_glitch_0.wav" id="6_jj7qx"]
+[ext_resource type="AudioStream" path="res://assets/audio/voices/augmented_do_not_resist.wav" id="7_fosn5"]
+[ext_resource type="AudioStream" path="res://assets/audio/voices/augmented_i_can_still_feel_it.wav" id="8_dv6ok"]
+[ext_resource type="AudioStream" path="res://assets/audio/voices/augmented_procedure_incomplete.wav" id="9_m1tsx"]
+[ext_resource type="AudioStream" path="res://assets/audio/voices/augmented_subject_accepted.wav" id="10_s86xj"]
+
+[node name="TallPatientB" type="Node3D" unique_id=293558783]
+script = ExtResource("1_6kw5a")
+
+[node name="Model" type="Node3D" parent="." unique_id=1882290364 instance=ExtResource("2_tmvx0")]
+
+[node name="CreatureAudio" type="Node3D" parent="." unique_id=1498982536]
+script = ExtResource("3_f381r")
+loop_sound = ExtResource("4_g4yxr")
+noises = Array[AudioStream]([ExtResource("5_tuu2t"), ExtResource("6_jj7qx")])
+lines = Array[AudioStream]([ExtResource("7_fosn5"), ExtResource("8_dv6ok"), ExtResource("9_m1tsx"), ExtResource("10_s86xj")])
+word_chance = 0.5

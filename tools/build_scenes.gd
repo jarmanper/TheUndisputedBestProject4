@@ -76,9 +76,9 @@ const ROOM_AMBIENCE := {"lab": "amb_lab", "lobby": "amb_facility_hum", "industri
 
 # creature -> [loop, noises, voice prefix, word chance]
 const CREATURE_SOUNDS := {
-	"failed_humanoid": ["failed_breath_loop", ["failed_groan_0", "failed_groan_1", "failed_groan_2", "failed_shriek"], "failed", 0.45],
-	"augmented_subject": ["augmented_servo_loop", ["augmented_glitch_0", "augmented_glitch_1", "augmented_glitch_2"], "augmented", 0.5],
-	"chemical_subject": ["chemical_gurgle_loop", ["chemical_cough_0", "chemical_cough_1"], "chemical", 0.4],
+	"tall_patient_a": ["failed_breath_loop", ["failed_groan_0", "failed_groan_1", "failed_groan_2"], "failed", 0.45],
+	"tall_patient_b": ["augmented_servo_loop", ["failed_groan_1", "augmented_glitch_0"], "augmented", 0.5],
+	"tall_patient_c": ["failed_breath_loop", ["failed_groan_2", "failed_shriek"], "failed", 0.45],
 	"twin_monster": ["twin_tick_loop", ["twin_whirr"], "twin", 0.6],
 }
 
@@ -608,9 +608,9 @@ func build_reveal(twin_scene: String) -> void:
 
 ## Where each creature stands in the inspection scene (Blender coords, facing yaw deg)
 const SHOWCASE := {
-	"failed_humanoid": [Vector3(-10.6, 22.2, 0.0), 0.0, "idle", Vector3(-9.3, 21.5, 1.6)],
-	"augmented_subject": [Vector3(5.2, 45.6, 0.0), 0.0, "twitch", Vector3(4.6, 44.3, 1.65)],
-	"chemical_subject": [Vector3(0.1, 70.5, -6.0), 0.0, "idle", Vector3(0.05, 69.1, -4.4)],
+	"tall_patient_a": [Vector3(-10.6, 22.2, 0.0), 0.0, "idle", Vector3(-8.9, 20.9, 1.9)],
+	"tall_patient_b": [Vector3(5.2, 45.6, 0.0), 0.0, "idle", Vector3(4.2, 43.8, 1.9)],
+	"tall_patient_c": [Vector3(35.5, 50.0, 0.0), 0.0, "head_snap", Vector3(35.5, 47.6, 1.9)],
 	"twin_monster": [Vector3(14.7, 106.8, -5.1), 0.0, "idle", Vector3(14.7, 102.6, -3.6)],
 }
 

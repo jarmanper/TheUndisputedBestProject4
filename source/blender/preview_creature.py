@@ -29,6 +29,11 @@ cams = {
 lights = [("AREA", (-1.5, -2.5, 3.0), 500, (1.0, 0.92, 0.85), 2.0),
           ("AREA", (2.0, 1.5, 2.5), 350, (0.5, 0.7, 1.0), 1.5),
           ("POINT", (0.6, -1.2, 0.5), 30, (1.0, 0.4, 0.2))]
+if os.environ.get("MOODY"):
+    # one hard key from the side and a faint cold rim, like a dim room lit by a doorway
+    lights = [("SPOT", (-1.6, -1.4, H * 1.15), 900, (1.0, 0.86, 0.7), 35),
+              ("AREA", (1.4, 1.6, H * 1.0), 120, (0.45, 0.6, 0.8), 1.0)]
 for v in views:
     loc, tgt, lens = cams[v]
-    T.render_preview(f"{out}_{v}.png", loc, tgt, lens=lens, res=(640, 800), samples=32, world=0.02, lights=lights)
+    T.render_preview(f"{out}_{v}.png", loc, tgt, lens=lens, res=(640, 800), samples=48,
+                     world=0.004 if os.environ.get("MOODY") else 0.02, lights=lights)

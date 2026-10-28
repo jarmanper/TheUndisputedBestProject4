@@ -902,6 +902,114 @@ def skin_corpse():
     write("skin_corpse", base, np.clip(rough, 0.1, 1), h, 2.5)
 
 
+# ====================================================================
+# Graphics v3: realistic skin and eyes
+# ====================================================================
+
+def _skin(n, seed, base_lo, base_hi, red, sallow=0.0, stubble=0.0):
+    T.seed(seed)
+    big, mid, fine = grime_layers(n)
+    micro = fbm(n, 0.9, lo=120)
+    pores_f, _, _ = worley(n, 9000)
+    pores = (1 - remap(pores_f, 0, 0.22)) * 0.8
+    blotch = smooth(remap(fbm(n, 2.6, lo=2), 0.45, 0.85))
+    capill = smooth(remap(fbm(n, 1.6, lo=10), 0.72, 0.9)) * 0.5
+    veins_e = worley(n, 26)[1]
+    veins = (1 - remap(veins_e, 0, 0.006)) * smooth(remap(fbm(n, 2, lo=2), 0.55, 0.8)) * 0.35
+    freck_f, _, _ = worley(n, 600)
+    freck = (1 - remap(freck_f, 0, 0.12)) * (RNG.random((n, n)) < 0.0) + 0
+    base = lerp(srgb(base_lo), srgb(base_hi), mid * 0.7 + micro * 0.3)
+    base = lerp(base, srgb(red), blotch * 0.25 + capill * 0.2)
+    base = lerp(base, srgb("8f9a7e"), sallow * smooth(remap(big, 0.3, 0.8)) * 0.35)
+    base = lerp(base, srgb("6f7e96"), veins)
+    if stubble:
+        st = (RNG.random((n, n)) < stubble * 0.06).astype(float)
+        st = blur(st, 0.6)
+        base = lerp(base, srgb("3a3028"), np.clip(st * 3, 0, 1) * 0.6)
+    base = base * (1 - pores[:, :, None] * 0.05)
+    h = -pores * 0.35 + micro * 0.25 + fine * 0.1 + veins * 0.1
+    rough = 0.48 + micro * 0.12 + pores * 0.1 - blotch * 0.05
+    return base, rough, h
+
+
+@tex
+def skin_real():
+    base, rough, h = _skin(2048, 300, "c9a690", "dcbaa3", "c47f72")
+    write("skin_real", base, rough, h, 1.6)
+
+
+@tex
+def skin_patient():
+    """Pale, under-lit institutional skin with a faint sallow cast."""
+    base, rough, h = _skin(2048, 301, "c4b0a2", "d6c6ba", "b98a86", sallow=0.8)
+    write("skin_patient", base, rough, h, 1.6)
+
+
+@tex
+def skin_stubble():
+    """Adult male lower face: same skin with dark stubble."""
+    base, rough, h = _skin(2048, 302, "c7a28a", "d8b39b", "c27a6c", stubble=1.0)
+    write("skin_stubble", base, rough, h, 1.6)
+
+
+def _eye(name, iris_lo, iris_hi, seed):
+    T.seed(seed)
+    n = 512
+    yy, xx = np.mgrid[0:n, 0:n] / n
+    r = np.sqrt((xx - 0.5) ** 2 + (yy - 0.5) ** 2)
+    ang = np.arctan2(yy - 0.5, xx - 0.5)
+    big, mid, fine = grime_layers(n)
+    ri, rp = 0.255, 0.085
+    sclera = lerp(srgb("e9e2d8"), srgb("d8cfc2"), mid)
+    vein_e = worley(n, 60)[1]
+    vein = (1 - remap(vein_e, 0, 0.008)) * smooth(remap(r, 0.3, 0.48))
+    sclera = lerp(sclera, srgb("b0473f"), vein * 0.7)
+    sclera = lerp(sclera, srgb("c8a890"), smooth(remap(r, 0.35, 0.5)) * 0.4)
+    fibres = 0.5 + 0.5 * np.sin(ang * 90 + fbm(n, 1.5, lo=6) * 8)
+    iris = lerp(srgb(iris_lo), srgb(iris_hi), fibres * 0.6 + remap(r, rp, ri) * 0.4)
+    iris = lerp(iris, srgb("e0c070"), np.exp(-((r - 0.12) / 0.03) ** 2) * 0.3)
+    limbal = np.exp(-((r - ri) / 0.018) ** 2)
+    col = sclera.copy()
+    m = (r < ri)[:, :, None]
+    col = np.where(m, iris, col)
+    col = lerp(col, srgb("1a1d22"), limbal * 0.8)
+    col = lerp(col, srgb("050505"), smooth(remap(rp + 0.01 - r, 0, 0.015)))
+    rough = np.full((n, n), 0.04)
+    h = np.where(r < ri, -0.2, 0.0) + limbal * -0.3
+    write(name, col, rough, h, 1.0)
+
+
+@tex
+def eye_grey():
+    _eye("eye_grey", "4f6170", "8c9ba4", 310)
+
+
+@tex
+def eye_brown():
+    _eye("eye_brown", "3a2414", "6e4a2a", 311)
+
+
+@tex
+def porcelain_crack():
+    """Yellowed porcelain skull plating with crazing, cracks and faded painted marks."""
+    T.seed(320)
+    n = 1024
+    big, mid, fine = grime_layers(n)
+    _, edge, _ = worley(n, 700)
+    craze = 1 - remap(edge, 0, 0.012)
+    _, edge2, _ = worley(n, 30)
+    crack = (1 - remap(edge2, 0, 0.004)) * smooth(remap(fbm(n, 2, lo=2), 0.4, 0.65))
+    base = lerp(srgb("c8ad78"), srgb("e0cfa4"), mid * 0.7 + fine * 0.3)
+    base = lerp(base, srgb("8a7348"), smooth(remap(big, 0.55, 0.9)) * 0.45)
+    base = lerp(base, srgb("5e4a2a"), craze * 0.35)
+    base = lerp(base, srgb("21170e"), crack * 0.9)
+    paint = smooth(remap(fbm(n, 1.4, lo=8, stretch=(4, 1)), 0.8, 0.86)) * smooth(remap(big, 0.3, 0.6))
+    base = lerp(base, srgb("2b3a44"), paint * 0.6)
+    h = -craze * 0.4 - crack * 1.2 + fine * 0.05
+    rough = 0.3 + craze * 0.2 + crack * 0.4 + smooth(remap(big, 0.6, 0.9)) * 0.2
+    write("porcelain_crack", base, np.clip(rough, 0, 1), h, 2.5)
+
+
 def contact_sheet():
     """Small preview of every albedo so a human can eyeball them at once."""
     names = sorted(f[:-11] for f in os.listdir(OUT) if f.endswith("_albedo.png"))
