@@ -7,7 +7,7 @@ Shared context for every person and coding agent working in this repo. Read it a
 - **Assignment:** Project 4, "Someone Else's Mechanics, Your Story." Theme: **Found** (the player finds the story in places, objects, sounds and what's left behind).
 - **Team 4:** Daniel Animashaun, Rickey Johnson, Rhaiyn Newby, Jarman Perry.
 - **We build Team 3's four mechanics** (Combat, Marking, Suspend, Explosion) exactly as written, and we write the story.
-- **Engine:** Godot 4.7, GDScript, Forward+, Jolt Physics. 1 world unit = 1 meter.
+- **Engine:** Godot 4.7, GDScript, Compatibility (required by the assignment for web export), Jolt Physics. 1 world unit = 1 meter.
 - **Game due:** Wednesday, November 4, 2026 (final playtest).
 - **Grading:** Team 3 reports whether each mechanic was built exactly as written. Another team judges the story.
 
@@ -235,6 +235,7 @@ Implemented integration details (Oct 28):
 - Player traversal speed is a prototype choice of 4 m/s. The upright capsule is 1.8 m high; its bottom defines the 1.4 m upper-body point. No jump action exists. The spring arm collides with layer 1.
 - `level_manager.gd` snapshots required targets at start, records victory immediately, gives same-step loss priority before notifying victory listeners, and reloads the scene 2 active seconds after loss. There is no progression UI or new story text. Esc toggles pause and releases/recaptures the mouse; loss of application focus pauses too.
 - `facility_instance.gd` instances the existing full facility at runtime under `Facility/Graphics`. For Compatibility it caches inert replacements for the four unsupported FogMaterials in memory before loading the scene, removes FogVolumes from the runtime instance, and duplicates the existing Environment for fixed ambient lighting without auto-exposure. No generated scene, asset or import file is edited. The map appears when running, not in the prototype's editor viewport. The map already includes paper/photo story props; no new dialogue or labels were added.
+- `project.godot` now uses Compatibility on desktop/mobile, the playable prototype as main scene, all nine agreed input actions, and named physics layers 1–3. These shared settings are one coordinated change. F6 still runs whichever scene is open; open the prototype to play it.
 
 ### Godot gotchas
 - **Timers:** count down with `delta` in `_physics_process` (or use Timer nodes). Both freeze when `get_tree().paused = true`. Never use wall-clock time. The pause menu node needs `PROCESS_MODE_WHEN_PAUSED`.
@@ -242,7 +243,7 @@ Implemented integration details (Oct 28):
 - **Creatures have no collider or body.** `scenes/characters/*.tscn` roots are plain `Node3D` visuals. Wrap them in an enemy scene.
 - **Models face +Z** (Godot's forward is −Z). Use `look_at(target, Vector3.UP, true)` so creatures face where they walk.
 - **Numbers live in named constants** at the top of the owning script (`const DAMAGE := 20`). The post-build PDF asks for the exact file, value and edit that would double the difficulty.
-- **Playable scene:** `scenes/game/marking_prototype.tscn`. Open it and press F6. The graphics inspection scene remains available separately; the shared project launch settings are coordinated separately.
+- **Main scene:** `scenes/game/marking_prototype.tscn`. Open it and press F6, or press F5 from anywhere. The graphics inspection scene remains available separately.
 - The flycam's Q/E fly up and down. That only applies to the inspection scene.
 
 ## 8. Art and audio to use
