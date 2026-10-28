@@ -56,9 +56,9 @@ scale_max = 1.5
 material = ExtResource("2_hbxn2")
 size = Vector3(0.06, 0.03, 0.05)
 
-[node name="SuspendedParticles" type="Node3D" unique_id=314490173]
+[node name="SuspendedParticles" type="Node3D" unique_id=316182633]
 
-[node name="Dust" type="GPUParticles3D" parent="." unique_id=1891330017]
+[node name="Dust" type="GPUParticles3D" parent="." unique_id=1781922129]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2, 0)
 cast_shadow = 0
 amount = 120
@@ -68,7 +68,7 @@ visibility_aabb = AABB(-8, -2, -8, 16, 14, 16)
 process_material = SubResource("ParticleProcessMaterial_o87bn")
 draw_pass_1 = SubResource("QuadMesh_4ca88")
 
-[node name="Debris" type="GPUParticles3D" parent="." unique_id=1105818761]
+[node name="Debris" type="GPUParticles3D" parent="." unique_id=1777892509]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2, 0)
 amount = 18
 lifetime = 12.0

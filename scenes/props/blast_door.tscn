@@ -1,15 +1,16 @@
 [gd_scene format=3]
 
-[ext_resource type="PackedScene" path="res://assets/models/props/blast_door.glb" id="1_1hyyu"]
-[ext_resource type="Script" path="res://scripts/visual/light_flicker.gd" id="2_gg51j"]
+[ext_resource type="PackedScene" path="res://assets/models/props/blast_door.glb" id="1_gg51j"]
+[ext_resource type="Script" path="res://scripts/visual/light_flicker.gd" id="2_0u8up"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/alarm_beacon_loop.wav" id="3_11eyh"]
 
-[node name="BlastDoor" type="Node3D" unique_id=1265645371]
+[node name="BlastDoor" type="Node3D" unique_id=1650096254]
 
-[node name="Model" type="Node3D" parent="." unique_id=1386736192 instance=ExtResource("1_1hyyu")]
+[node name="Model" type="Node3D" parent="." unique_id=1386736192 instance=ExtResource("1_gg51j")]
 
-[node name="Lights" type="Node3D" parent="." unique_id=1258666204]
+[node name="Lights" type="Node3D" parent="." unique_id=1205141971]
 
-[node name="beacon_light" type="OmniLight3D" parent="Lights" unique_id=1054746610]
+[node name="beacon_light" type="OmniLight3D" parent="Lights" unique_id=879981722]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.9, 0.9)
 light_color = Color(1, 0.08, 0.04, 1)
 light_energy = 2.5
@@ -20,5 +21,15 @@ distance_fade_begin = 30.0
 distance_fade_shadow = 18.0
 omni_range = 9.0
 omni_attenuation = 1.2
-script = ExtResource("2_gg51j")
+script = ExtResource("2_0u8up")
 pulse = 1.2
+
+[node name="Audio_alarm_beacon_loop" type="AudioStreamPlayer3D" parent="." unique_id=1226023962]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+stream = ExtResource("3_11eyh")
+volume_db = -8.0
+unit_size = 4.0
+autoplay = true
+max_distance = 28.0
+bus = &"SFX"
+attenuation_filter_cutoff_hz = 6000.0

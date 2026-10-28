@@ -2,6 +2,6 @@
 
 [ext_resource type="PackedScene" path="res://assets/models/props/cardboard_boxes.glb" id="1_s4h18"]
 
-[node name="CardboardBoxes" type="Node3D" unique_id=140016239]
+[node name="CardboardBoxes" type="Node3D" unique_id=1621457687]
 
 [node name="Model" type="Node3D" parent="." unique_id=501437219 instance=ExtResource("1_s4h18")]

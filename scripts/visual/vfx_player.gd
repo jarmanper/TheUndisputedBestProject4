@@ -28,6 +28,9 @@ func play() -> void:
 	for p in find_children("*", "GPUParticles3D", true, false):
 		p.restart()
 		p.emitting = true
+	for a in find_children("Sfx_*", "AudioStreamPlayer3D", false, false):
+		if not a.autoplay:
+			a.play()
 	for l in _lights:
 		var tw := create_tween()
 		l.light_energy = _lights[l]

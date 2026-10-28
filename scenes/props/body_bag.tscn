@@ -1,0 +1,7 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://assets/models/props/body_bag.glb" id="1_6cgjj"]
+
+[node name="BodyBag" type="Node3D" unique_id=2005024801]
+
+[node name="Model" type="Node3D" parent="." unique_id=2068536653 instance=ExtResource("1_6cgjj")]

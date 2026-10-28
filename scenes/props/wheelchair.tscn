@@ -1,0 +1,7 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://assets/models/props/wheelchair.glb" id="1_eo4wq"]
+
+[node name="Wheelchair" type="Node3D" unique_id=1107519292]
+
+[node name="Model" type="Node3D" parent="." unique_id=1874161765 instance=ExtResource("1_eo4wq")]

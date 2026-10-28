@@ -6,6 +6,7 @@ where a material needs them, _metal.png and _emit.png.
 """
 import math
 import os
+import random
 import sys
 
 import numpy as np
@@ -681,6 +682,224 @@ def vfx_sprites():
     chev = draw_segments(nn, [(0.5, 0.02, 0.44, 0.1), (0.5, 0.02, 0.56, 0.1), (0.5, 0.98, 0.44, 0.9), (0.5, 0.98, 0.56, 0.9),
                               (0.02, 0.5, 0.1, 0.44), (0.02, 0.5, 0.1, 0.56), (0.98, 0.5, 0.9, 0.44), (0.98, 0.5, 0.9, 0.56)], 5)
     vfx("reticle", np.stack([np.ones((nn, nn))] * 3 + [np.clip(seg_ring + inner * 0.7 + chev, 0, 1)], -1))
+
+
+# ====================================================================
+# Twin head texture (matches the reference: painted clock skull)
+# Cylindrical projection around the head: u = 0.5 + atan2(x, -y) / 2pi,
+# v = (z + 0.01) / 0.34 with z measured from the chin. Must match
+# HEAD_UV in source/blender/twin_monster.py.
+# ====================================================================
+
+TWIN_HEAD = dict(rx=0.118, ry=0.125, rz=0.125, cz=0.19, cy=0.01)
+
+
+def twin_uv(x, y, z):
+    u = 0.5 + math.atan2(x, -(y - TWIN_HEAD["cy"])) / (2 * math.pi)
+    v = (z + 0.01) / 0.34
+    return u, 1.0 - v      # image row coordinate (0 = top)
+
+
+def dome_point(x, z):
+    h = TWIN_HEAD
+    k = 1 - (x / h["rx"]) ** 2 - ((z - h["cz"]) / h["rz"]) ** 2
+    y = -h["ry"] * math.sqrt(max(0.0, k)) + h["cy"]
+    return x, y, z
+
+
+def blob_uv(n, cx, cy, ru, rv):
+    yy, xx = np.mgrid[0:n, 0:n] / n
+    return np.exp(-(((xx - cx) / ru) ** 2 + ((yy - cy) / rv) ** 2))
+
+
+@tex
+def twin_face():
+    T.seed(77)
+    n = 2048
+    big, mid, fine = grime_layers(n)
+    yy, xx = np.mgrid[0:n, 0:n] / n
+    # yellowed porcelain skin, darker and greener toward the back/top
+    front = np.exp(-((xx - 0.5) / 0.28) ** 2)
+    base = lerp(srgb("a8843f"), srgb("cfab5e"), mid * 0.6 + front * 0.4)
+    base = lerp(base, srgb("6f6a4c"), (1 - front) * 0.55)
+    base = lerp(base, srgb("8a7344"), smooth(remap(big, 0.55, 0.9)) * 0.5)
+    base = base * (0.92 + 0.12 * fine[:, :, None])
+    # crazing everywhere + a few long cracks
+    _, edge, _ = worley(n, 1400)
+    craze = (1 - remap(edge, 0, 0.012)) * (0.45 + 0.55 * smooth(remap(fbm(n, 2, lo=2), 0.3, 0.7)))
+    segs = []
+    rnd = random.Random(5)
+    starts = [twin_uv(*dome_point(0.0, 0.13)), twin_uv(*dome_point(0.03, 0.24)), twin_uv(*dome_point(-0.05, 0.27)),
+              twin_uv(*dome_point(0.07, 0.09))]
+    for (u0, v0) in starts:
+        u, v = u0, v0
+        ang = rnd.uniform(0, 2 * math.pi)
+        for k in range(14):
+            ang += rnd.gauss(0, 0.5)
+            nu, nv = u + math.cos(ang) * 0.012, v + math.sin(ang) * 0.016
+            segs.append((u, v, nu, nv))
+            u, v = nu, nv
+    cracks = draw_segments(n, segs, 2.2, 1.0)
+    # red flush: nose tip, cheeks, lips, rims around the eye housings
+    def B(x, y, z, ru, rv):
+        u, v = twin_uv(x, y, z)
+        return blob_uv(n, u, v, ru, rv)
+    blush = (B(0, -0.128, 0.08, 0.025, 0.035) * 1.0 + B(0.06, -0.095, 0.085, 0.035, 0.05) * 0.8
+             + B(-0.06, -0.095, 0.085, 0.035, 0.05) * 0.8)
+    lips = B(0, -0.1, 0.045, 0.03, 0.022)
+    rims = (B(0.0, -0.11, 0.15, 0.06, 0.09) + B(0.085, -0.085, 0.15, 0.05, 0.08) + B(-0.085, -0.085, 0.15, 0.05, 0.08)) * 0.35
+    base = lerp(base, srgb("b04a3c"), np.clip(blush, 0, 1) * 0.7)
+    base = lerp(base, srgb("8a2f2c"), np.clip(lips, 0, 1) * 0.7)
+    base = lerp(base, srgb("8a4a34"), np.clip(rims, 0, 1) * 0.5)
+    # painted clock numerals in a ring around the forehead pivot
+    ink = np.zeros((n, n), np.float32)
+    nsegs = []
+    numerals = ["XII", "I", "II", "III", "IIII", "V", "VI", "VII", "VIII", "IX", "X", "XI"]
+    piv = (0.0, 0.215)
+    R = 0.098
+    for i, s_ in enumerate(numerals):
+        a = math.pi / 2 - i / 12 * 2 * math.pi        # 12 o'clock at the top
+        x = piv[0] + math.cos(a) * R
+        z = piv[1] + math.sin(a) * R
+        if z < 0.175:        # lower numerals are hidden by the eyes/gauges anyway
+            continue
+        cu, cv = twin_uv(*dome_point(x, z))
+        h = 0.06
+        glyph, w = text_segments(s_, 0, 0, h, w_ratio=0.45)
+        rot = -(a - math.pi / 2)   # rotate glyph so it reads radially
+        cr, sr = math.cos(rot), math.sin(rot)
+        for x0, y0, x1, y1 in glyph:
+            pts = []
+            for gx, gy in ((x0 - w / 2, y0 - h / 2), (x1 - w / 2, y1 - h / 2)):
+                rx_ = gx * cr - gy * sr
+                ry_ = gx * sr + gy * cr
+                pts += [cu + rx_ * 0.55, cv + ry_]
+            nsegs.append(tuple(pts))
+    ink = np.maximum(ink, draw_segments(n, nsegs, 13, 1.5))
+    # minute ticks + a faint dial ring
+    ticks = []
+    for i in range(60):
+        a = math.pi / 2 - i / 60 * 2 * math.pi
+        z0 = piv[1] + math.sin(a) * (R + 0.022)
+        z1 = piv[1] + math.sin(a) * (R + (0.034 if i % 5 == 0 else 0.028))
+        x0_ = piv[0] + math.cos(a) * (R + 0.022)
+        h_ = TWIN_HEAD
+        if z0 < 0.17 or 1 - (x0_ / h_["rx"]) ** 2 - ((z1 - h_["cz"]) / h_["rz"]) ** 2 < 0.08:
+            continue
+        u0, v0 = twin_uv(*dome_point(piv[0] + math.cos(a) * (R + 0.022), z0))
+        u1, v1 = twin_uv(*dome_point(piv[0] + math.cos(a) * (R + (0.034 if i % 5 == 0 else 0.028)), z1))
+        ticks.append((u0, v0, u1, v1))
+    ink = np.maximum(ink, draw_segments(n, ticks, 4, 1.0))
+    # teal painted script swirls on the dome (like the reference's blue marks)
+    swirl = []
+    for k in range(18):
+        x = rnd.uniform(-0.1, 0.1)
+        z = rnd.uniform(0.2, 0.31)
+        u, v = twin_uv(*dome_point(x, z))
+        r0 = rnd.uniform(0.006, 0.018)
+        a0 = rnd.uniform(0, 6.28)
+        pts = [(u + math.cos(a0 + t * 0.5) * r0 * (1 + t * 0.12) * 0.6, v + math.sin(a0 + t * 0.5) * r0 * (1 + t * 0.12)) for t in range(10)]
+        swirl += [(a[0], a[1], b[0], b[1]) for a, b in zip(pts, pts[1:])]
+    teal = draw_segments(n, swirl, 3, 1.0) * 0.8
+    ink *= 0.88 + 0.12 * remap(fine, 0.2, 0.8)
+    ink *= 1 - smooth(remap(big, 0.8, 0.98)) * 0.35
+    base = lerp(base, srgb("2e3a44"), teal * front[:, :, None] if False else teal)
+    base = lerp(base, srgb("1d1e22"), ink)
+    base = lerp(base, srgb("4a3418"), craze * 0.4)
+    base = lerp(base, srgb("2a1b10"), cracks * 0.85)
+    h = -craze * 0.5 - cracks * 1.2 - ink * 0.1 + fine * 0.1
+    rough = 0.42 + craze * 0.25 + cracks * 0.3 - lips * 0.1 + smooth(remap(big, 0.6, 0.9)) * 0.15
+    write("twin_face", base, np.clip(rough, 0, 1), h, 2.5)
+
+
+@tex
+def gauge_eye():
+    """Side 'eye' gauge from the reference: yellow dial, fine ticks, hot centre."""
+    T.seed(78)
+    n = 512
+    big, mid, fine = grime_layers(n)
+    yy, xx = np.mgrid[0:n, 0:n] / n
+    r = np.sqrt((xx - 0.5) ** 2 + (yy - 0.5) ** 2)
+    base = lerp(srgb("e8c45e"), srgb("c9952f"), smooth(remap(r, 0.05, 0.5)))
+    base = lerp(base, srgb("7a5520"), _crazing(n, 120, 0.5) + smooth(remap(big, 0.6, 0.9)) * 0.3)
+    segs = []
+    for i in range(48):
+        a = i / 48 * 2 * math.pi
+        r0 = 0.36 if i % 4 else 0.31
+        segs.append((0.5 + math.sin(a) * r0, 0.5 - math.cos(a) * r0, 0.5 + math.sin(a) * 0.42, 0.5 - math.cos(a) * 0.42))
+    ink = draw_segments(n, segs, 2.5)
+    ink = np.maximum(ink, ring(n, 0.5, 0.5, 0.43, 3))
+    ink = np.maximum(ink, draw_segments(n, [(0.5, 0.5, 0.62, 0.3), (0.5, 0.5, 0.36, 0.62)], 3))
+    hot = np.exp(-(r / 0.06) ** 2)
+    base = lerp(base, srgb("2a1a0c"), ink)
+    base = lerp(base, srgb("ff8a2a"), hot)
+    base = lerp(base, srgb("3a2410"), smooth(remap(r, 0.45, 0.5)))
+    emit = np.stack([hot * 1.0, hot * 0.45, hot * 0.1], -1) + np.stack([0.18 * (1 - r * 2).clip(0)] * 3, -1) * np.array([1, 0.7, 0.2])
+    write("gauge_eye", base, 0.3 + _crazing(n, 80, 0.3), None, emit=np.clip(emit, 0, 1),
+          normal=np.ones((n, n, 3)) * np.array([0.5, 0.5, 1.0]))
+
+
+@tex
+def fabric_bloody():
+    """Hospital fabric soaked with old and fresh blood."""
+    T.seed(90)
+    n = 1024
+    big, mid, fine = grime_layers(n)
+    x = np.arange(n) * 2 * math.pi * 160 / n
+    weave = (np.sin(x)[None, :] * 0.5 + 0.5) * (np.sin(x)[:, None] * 0.5 + 0.5)
+    soak = smooth(remap(fbm(n, 2.2, lo=2) * 0.7 + fine * 0.3, 0.52, 0.66))
+    drip = smooth(remap(fbm(n, 2.0, lo=3, stretch=(1, 9)), 0.66, 0.8))
+    edge = np.clip(1 - np.abs(fbm(n, 2.2, lo=2) * 0.7 + fine * 0.3 - 0.52) * 30, 0, 1)
+    base = lerp(srgb("b9bcb2"), srgb("cfd0c6"), mid) * (0.9 + 0.12 * weave[:, :, None])
+    base = lerp(base, srgb("7c705a"), smooth(remap(big, 0.5, 0.85)) * 0.5)
+    base = lerp(base, srgb("5a1410"), np.clip(soak + drip, 0, 1) * 0.85)
+    base = lerp(base, srgb("2e0806"), edge * 0.6)
+    rough = 0.9 - soak * 0.35
+    write("fabric_bloody", base, rough, weave * 0.5 + fine * 0.2, 2.0)
+
+
+@tex
+def porcelain_tile():
+    """Small white bathroom tiles with grimy grout and rust stains (6x6 per tile)."""
+    T.seed(91)
+    n = 1024
+    big, mid, fine = grime_layers(n)
+    grout = grid_lines(n, 6, 5, 1.5)
+    yy, xx = np.mgrid[0:n, 0:n]
+    tid = (yy * 6 // n) * 6 + (xx * 6 // n)
+    tint = RNG.random(36)[tid]
+    broken = (RNG.random(36)[tid] < 0.08)
+    stain = smooth(remap(fbm(n, 2.0, lo=2, stretch=(1, 6)), 0.6, 0.85))
+    base = lerp(srgb("d8d9d2"), srgb("e8e8e2"), tint * 0.5 + mid * 0.5)
+    base = lerp(base, srgb("8a6a40"), stain * 0.55)
+    base = lerp(base, srgb("4c4a42"), grout * 0.85)
+    base = lerp(base, srgb("6a6660"), broken[:, :, None] * 0.7)
+    h = 1 - grout * 0.8 - broken * 0.3
+    rough = 0.15 + grout * 0.6 + stain * 0.3 + broken * 0.5
+    write("porcelain_tile", base, rough, h, 2.5)
+
+
+@tex
+def skin_corpse():
+    """Grey-violet dead skin: livor mortis bruising, dark veins, sores."""
+    T.seed(92)
+    n = 1024
+    big, mid, fine = grime_layers(n)
+    pores_f, _, _ = worley(n, 3000)
+    pores = 1 - remap(pores_f, 0, 0.25)
+    veins_e = worley(n, 40)[1]
+    veins = (1 - remap(veins_e, 0, 0.008)) * smooth(remap(fbm(n, 2, lo=2), 0.4, 0.7))
+    bruise = smooth(remap(fbm(n, 2.4, lo=2), 0.55, 0.85))
+    sores_f, _, _ = worley(n, 90)
+    sores = (1 - remap(sores_f, 0, 0.18)) * smooth(remap(fbm(n, 1.5, lo=4), 0.65, 0.8))
+    base = lerp(srgb("a8a49c"), srgb("bdb6aa"), mid)
+    base = lerp(base, srgb("5d4a62"), bruise * 0.6)
+    base = lerp(base, srgb("2c3340"), veins * 0.6)
+    base = lerp(base, srgb("6a1e18"), sores * 0.9)
+    base = base * (1 - pores[:, :, None] * 0.06)
+    h = -pores * 0.4 + fine * 0.15 + veins * 0.2 - sores * 0.5
+    rough = 0.55 + fine * 0.1 - sores * 0.35
+    write("skin_corpse", base, np.clip(rough, 0.1, 1), h, 2.5)
 
 
 def contact_sheet():

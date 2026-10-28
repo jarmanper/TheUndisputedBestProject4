@@ -1,9 +1,23 @@
 [gd_scene format=3]
 
-[ext_resource type="Script" path="res://scripts/visual/creature_visual.gd" id="1_t6log"]
-[ext_resource type="PackedScene" path="res://assets/models/characters/chemical_subject.glb" id="2_fgsti"]
+[ext_resource type="Script" path="res://scripts/visual/creature_visual.gd" id="1_0jgku"]
+[ext_resource type="PackedScene" path="res://assets/models/characters/chemical_subject.glb" id="2_sh5y0"]
+[ext_resource type="Script" path="res://scripts/visual/creature_audio.gd" id="3_260jc"]
+[ext_resource type="AudioStream" path="res://assets/audio/creatures/chemical_gurgle_loop.wav" id="4_jyt6q"]
+[ext_resource type="AudioStream" path="res://assets/audio/creatures/chemical_cough_0.wav" id="5_y70nv"]
+[ext_resource type="AudioStream" path="res://assets/audio/creatures/chemical_cough_1.wav" id="6_5urpt"]
+[ext_resource type="AudioStream" path="res://assets/audio/voices/chemical_cant_breathe.wav" id="7_4vcq1"]
+[ext_resource type="AudioStream" path="res://assets/audio/voices/chemical_it_burns.wav" id="8_8sm8u"]
+[ext_resource type="AudioStream" path="res://assets/audio/voices/chemical_so_cold.wav" id="9_blr5t"]
 
-[node name="ChemicalSubject" type="Node3D" unique_id=772370324]
-script = ExtResource("1_t6log")
+[node name="ChemicalSubject" type="Node3D" unique_id=1046578134]
+script = ExtResource("1_0jgku")
 
-[node name="Model" type="Node3D" parent="." unique_id=194840228 instance=ExtResource("2_fgsti")]
+[node name="Model" type="Node3D" parent="." unique_id=256920709 instance=ExtResource("2_sh5y0")]
+
+[node name="CreatureAudio" type="Node3D" parent="." unique_id=157790118]
+script = ExtResource("3_260jc")
+loop_sound = ExtResource("4_jyt6q")
+noises = Array[AudioStream]([ExtResource("5_y70nv"), ExtResource("6_5urpt")])
+lines = Array[AudioStream]([ExtResource("7_4vcq1"), ExtResource("8_8sm8u"), ExtResource("9_blr5t")])
+word_chance = 0.4

@@ -1,9 +1,27 @@
 [gd_scene format=3]
 
-[ext_resource type="Script" path="res://scripts/visual/creature_visual.gd" id="1_te5x6"]
-[ext_resource type="PackedScene" path="res://assets/models/characters/failed_humanoid.glb" id="2_reyoq"]
+[ext_resource type="Script" path="res://scripts/visual/creature_visual.gd" id="1_gg4c7"]
+[ext_resource type="PackedScene" path="res://assets/models/characters/failed_humanoid.glb" id="2_rfsls"]
+[ext_resource type="Script" path="res://scripts/visual/creature_audio.gd" id="3_qunsc"]
+[ext_resource type="AudioStream" path="res://assets/audio/creatures/failed_breath_loop.wav" id="4_gheu7"]
+[ext_resource type="AudioStream" path="res://assets/audio/creatures/failed_groan_0.wav" id="5_v58no"]
+[ext_resource type="AudioStream" path="res://assets/audio/creatures/failed_groan_1.wav" id="6_r7ck1"]
+[ext_resource type="AudioStream" path="res://assets/audio/creatures/failed_groan_2.wav" id="7_hseyt"]
+[ext_resource type="AudioStream" path="res://assets/audio/creatures/failed_shriek.wav" id="8_1webl"]
+[ext_resource type="AudioStream" path="res://assets/audio/voices/failed_dont_look_at_me.wav" id="9_7kk0j"]
+[ext_resource type="AudioStream" path="res://assets/audio/voices/failed_help_me.wav" id="10_msuv5"]
+[ext_resource type="AudioStream" path="res://assets/audio/voices/failed_it_hurts.wav" id="11_plkhp"]
+[ext_resource type="AudioStream" path="res://assets/audio/voices/failed_make_it_stop.wav" id="12_sv2fr"]
+[ext_resource type="AudioStream" path="res://assets/audio/voices/failed_mother.wav" id="13_mj8hs"]
+[ext_resource type="AudioStream" path="res://assets/audio/voices/failed_where_are_you.wav" id="14_e7dk8"]
 
-[node name="FailedHumanoid" type="Node3D" unique_id=1703752037]
-script = ExtResource("1_te5x6")
+[node name="FailedHumanoid" type="Node3D" unique_id=1702132361]
+script = ExtResource("1_gg4c7")
 
-[node name="Model" type="Node3D" parent="." unique_id=599493447 instance=ExtResource("2_reyoq")]
+[node name="Model" type="Node3D" parent="." unique_id=2118440143 instance=ExtResource("2_rfsls")]
+
+[node name="CreatureAudio" type="Node3D" parent="." unique_id=1414294006]
+script = ExtResource("3_qunsc")
+loop_sound = ExtResource("4_gheu7")
+noises = Array[AudioStream]([ExtResource("5_v58no"), ExtResource("6_r7ck1"), ExtResource("7_hseyt"), ExtResource("8_1webl")])
+lines = Array[AudioStream]([ExtResource("9_7kk0j"), ExtResource("10_msuv5"), ExtResource("11_plkhp"), ExtResource("12_sv2fr"), ExtResource("13_mj8hs"), ExtResource("14_e7dk8")])

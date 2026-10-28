@@ -2,6 +2,6 @@
 
 [ext_resource type="PackedScene" path="res://assets/models/props/microscope.glb" id="1_mylsx"]
 
-[node name="Microscope" type="Node3D" unique_id=1104045521]
+[node name="Microscope" type="Node3D" unique_id=1129821284]
 
 [node name="Model" type="Node3D" parent="." unique_id=726767551 instance=ExtResource("1_mylsx")]

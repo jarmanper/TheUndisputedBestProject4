@@ -1,0 +1,15 @@
+[gd_resource type="StandardMaterial3D" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/textures/fabric_bloody_albedo.png" id="1_281av"]
+[ext_resource type="Texture2D" path="res://assets/textures/fabric_bloody_normal.png" id="2_w873e"]
+[ext_resource type="Texture2D" path="res://assets/textures/fabric_bloody_rough.png" id="3_mw2xp"]
+
+[resource]
+resource_name = "fabric_bloody"
+cull_mode = 2
+albedo_texture = ExtResource("1_281av")
+roughness_texture = ExtResource("3_mw2xp")
+normal_enabled = true
+normal_scale = 0.5
+normal_texture = ExtResource("2_w873e")
+uv1_scale = Vector3(2.5, 2.5, 2.5)

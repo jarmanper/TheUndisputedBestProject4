@@ -1,0 +1,17 @@
+[gd_resource type="StandardMaterial3D" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/textures/brushed_steel_albedo.png" id="1_wvpqr"]
+[ext_resource type="Texture2D" path="res://assets/textures/brushed_steel_metal.png" id="2_6twav"]
+[ext_resource type="Texture2D" path="res://assets/textures/brushed_steel_normal.png" id="3_bxs64"]
+[ext_resource type="Texture2D" path="res://assets/textures/brushed_steel_rough.png" id="4_ghljf"]
+
+[resource]
+resource_name = "brushed_steel_mat"
+albedo_texture = ExtResource("1_wvpqr")
+metallic = 0.9
+metallic_texture = ExtResource("2_6twav")
+roughness_texture = ExtResource("4_ghljf")
+normal_enabled = true
+normal_scale = 0.4
+normal_texture = ExtResource("3_bxs64")
+uv1_scale = Vector3(1.25, 1.25, 1.25)

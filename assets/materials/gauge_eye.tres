@@ -1,0 +1,19 @@
+[gd_resource type="StandardMaterial3D" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/textures/gauge_eye_albedo.png" id="1_elw1x"]
+[ext_resource type="Texture2D" path="res://assets/textures/gauge_eye_emit.png" id="2_cb4lu"]
+[ext_resource type="Texture2D" path="res://assets/textures/gauge_eye_normal.png" id="3_axac5"]
+[ext_resource type="Texture2D" path="res://assets/textures/gauge_eye_rough.png" id="4_4h4ec"]
+
+[resource]
+resource_name = "gauge_eye"
+albedo_texture = ExtResource("1_elw1x")
+roughness_texture = ExtResource("4_4h4ec")
+emission_enabled = true
+emission_energy_multiplier = 2.5
+emission_texture = ExtResource("2_cb4lu")
+normal_enabled = true
+normal_texture = ExtResource("3_axac5")
+clearcoat_enabled = true
+clearcoat = 0.8
+clearcoat_roughness = 0.35

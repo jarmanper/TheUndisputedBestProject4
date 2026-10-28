@@ -1,0 +1,7 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://assets/models/props/archive_shelf.glb" id="1_h2lej"]
+
+[node name="ArchiveShelf" type="Node3D" unique_id=1828625180]
+
+[node name="Model" type="Node3D" parent="." unique_id=471145086 instance=ExtResource("1_h2lej")]

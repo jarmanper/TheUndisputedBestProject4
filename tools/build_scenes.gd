@@ -47,6 +47,56 @@ const LIGHTS := {
 }
 
 
+const AUDIO := "res://assets/audio/%s/%s.wav"
+const CREATURE_AUDIO := preload("res://scripts/visual/creature_audio.gd")
+
+# prop -> [[folder/file, unit_size, max_distance, volume_db], ...]
+const PROP_AUDIO := {
+	"wall_clock": [["sfx/clock_tick_loop", 1.0, 7.0, -10.0]],
+	"grandfather_clock": [["sfx/clock_tick_loop", 1.5, 10.0, -4.0]],
+	"computer_terminal": [["sfx/computer_hum_loop", 1.0, 6.0, -12.0]],
+	"server_rack": [["sfx/computer_hum_loop", 1.5, 9.0, -8.0]],
+	"vending_machine": [["sfx/computer_hum_loop", 1.5, 8.0, -8.0]],
+	"containment_tank": [["sfx/tank_bubbles_loop", 2.0, 12.0, -6.0]],
+	"electrical_panel": [["sfx/electric_crackle_loop", 1.5, 10.0, -8.0]],
+	"hanging_light_broken": [["sfx/electric_crackle_loop", 1.5, 9.0, -6.0]],
+	"emergency_beacon": [["sfx/alarm_beacon_loop", 3.0, 22.0, -10.0]],
+	"blast_door": [["sfx/alarm_beacon_loop", 4.0, 28.0, -8.0]],
+	"failed_containment_device": [["sfx/machine_hum_loop", 5.0, 30.0, -2.0], ["sfx/electric_crackle_loop", 2.0, 14.0, -6.0]],
+	"chem_barrel_leaking": [["sfx/drip_loop", 1.5, 9.0, -6.0]],
+	"generator": [["sfx/machine_hum_loop", 5.0, 35.0, 0.0]],
+	"boiler": [["sfx/steam_hiss_loop", 2.5, 16.0, -6.0]],
+	"street_lamp": [["sfx/buzz_fluorescent_loop", 2.0, 14.0, -12.0]],
+	"surgical_lamp": [["sfx/buzz_fluorescent_loop", 1.5, 8.0, -12.0]],
+}
+
+# room style -> ambience loop
+const ROOM_AMBIENCE := {"lab": "amb_lab", "lobby": "amb_facility_hum", "industrial": "amb_containment",
+	"lower": "amb_lower", "chamber": "amb_chamber", "outdoor": "amb_exterior"}
+
+# creature -> [loop, noises, voice prefix, word chance]
+const CREATURE_SOUNDS := {
+	"failed_humanoid": ["failed_breath_loop", ["failed_groan_0", "failed_groan_1", "failed_groan_2", "failed_shriek"], "failed", 0.45],
+	"augmented_subject": ["augmented_servo_loop", ["augmented_glitch_0", "augmented_glitch_1", "augmented_glitch_2"], "augmented", 0.5],
+	"chemical_subject": ["chemical_gurgle_loop", ["chemical_cough_0", "chemical_cough_1"], "chemical", 0.4],
+	"twin_monster": ["twin_tick_loop", ["twin_whirr"], "twin", 0.6],
+}
+
+
+func audio3d(rel: String, unit: float, max_d: float, vol: float, bus := "SFX", autoplay := true) -> AudioStreamPlayer3D:
+	var parts := rel.split("/")
+	var a := AudioStreamPlayer3D.new()
+	a.name = "Audio_" + parts[1]
+	a.stream = load(AUDIO % [parts[0], parts[1]])
+	a.unit_size = unit
+	a.max_distance = max_d
+	a.volume_db = vol
+	a.bus = bus
+	a.autoplay = autoplay
+	a.attenuation_filter_cutoff_hz = 6000.0
+	return a
+
+
 func _init() -> void:
 	var prop_scenes := build_props()
 	var areas := build_areas(prop_scenes)
@@ -148,6 +198,8 @@ func make_light(kind: String, ex: Dictionary, xf: Transform3D) -> Light3D:
 		light.set_script(FLICKER)
 		light.set("flicker", flick)
 		light.set("pulse", pulse)
+	if flick > 0.25 and kind in ["fluor", "fluor_hanging", "cage", "highbay"]:
+		light.add_child(audio3d("sfx/buzz_fluorescent_loop", 1.2, 9.0, -16.0 + flick * 6.0))
 	return light
 
 
@@ -167,7 +219,7 @@ func glb_root(glb_path: String, root_name: String) -> Array:
 		var kind := String(m.name).get_slice("__", 1)
 		var light := make_light(kind, extras(m), rel_xform(m, root))
 		lights.add_child(light, true)
-		light.owner = root
+		own(light, root)
 	return [root, inst]
 
 
@@ -183,6 +235,11 @@ func build_props() -> Dictionary:
 		var root: Node3D = pair[0]
 		if root.get_node("Lights").get_child_count() == 0:
 			root.get_node("Lights").free()
+		for spec in PROP_AUDIO.get(name, []):
+			var a := audio3d(spec[0], spec[1], spec[2], spec[3])
+			a.position = Vector3(0, 1.0, 0)
+			root.add_child(a, true)
+			a.owner = root
 		var path := "res://scenes/props/%s.tscn" % name
 		save_scene(root, path)
 		out[name] = path
@@ -264,6 +321,13 @@ func add_room_extras(root: Node3D, inst: Node3D) -> void:
 			probe.position = xf.origin
 			probes.add_child(probe, true)
 			probe.owner = root
+		if ROOM_AMBIENCE.has(style):
+			var half := size.length() * 0.5
+			var amb := audio3d("ambience/" + ROOM_AMBIENCE[style], half, half + 6.0, -4.0, "Ambience")
+			amb.name = String(m.name).trim_prefix("ROOM__") + "_ambience"
+			amb.position = xf.origin
+			fogs.add_child(amb, true)
+			amb.owner = root
 		var density: float = {"lab": 0.0, "lobby": 0.0, "industrial": 0.02, "lower": 0.05, "chamber": 0.035, "outdoor": 0.015}.get(style, 0.0)
 		if density > 0.0:
 			var fog := FogVolume.new()
@@ -419,6 +483,27 @@ func build_characters() -> Dictionary:
 		if root.get_node("Lights").get_child_count() == 0:
 			root.get_node("Lights").free()
 		root.set_script(CREATURE_SCRIPT)
+		if CREATURE_SOUNDS.has(name):
+			var cs: Array = CREATURE_SOUNDS[name]
+			var ca := Node3D.new()
+			ca.name = "CreatureAudio"
+			ca.set_script(CREATURE_AUDIO)
+			ca.set("loop_sound", load(AUDIO % ["creatures", cs[0]]))
+			var noises: Array[AudioStream] = []
+			for n in cs[1]:
+				noises.append(load(AUDIO % ["creatures", n]))
+			var lines: Array[AudioStream] = []
+			for vf in DirAccess.get_files_at("res://assets/audio/voices"):
+				if vf.begins_with(cs[2] + "_") and vf.ends_with(".wav"):
+					lines.append(load("res://assets/audio/voices/" + vf))
+			ca.set("noises", noises)
+			ca.set("lines", lines)
+			ca.set("word_chance", cs[3])
+			if name == "twin_monster":
+				ca.set("min_gap", 14.0)
+				ca.set("max_gap", 30.0)
+			root.add_child(ca)
+			ca.owner = root
 		var path := "res://scenes/characters/%s.tscn" % name
 		save_scene(root, path)
 		out[name] = path
@@ -455,7 +540,7 @@ func build_reveal(twin_scene: String) -> void:
 	twin.set("desync", false)
 	root.add_child(twin)
 	# face key light + soft fill so the face always reads (never lost in darkness)
-	var face_c := bpos(Vector3(14.7, 106.7, -3.3))
+	var face_c := bpos(Vector3(14.7, 106.65, -3.22))
 	var key := SpotLight3D.new()
 	key.name = "FaceKey"
 	key.light_color = Color(1.0, 0.88, 0.75)
@@ -475,6 +560,11 @@ func build_reveal(twin_scene: String) -> void:
 	var rp := face_c + Vector3(1.4, 1.0, -1.6)
 	rim.transform = Transform3D(Basis.looking_at(face_c - rp, Vector3.UP), rp)
 	root.add_child(rim)
+	var sting := AudioStreamPlayer.new()
+	sting.name = "RevealSting"
+	sting.stream = load(AUDIO % ["sfx", "reveal_sting"])
+	sting.bus = "SFX"
+	root.add_child(sting)
 	var cam := Camera3D.new()
 	cam.name = "RevealCamera"
 	cam.fov = 50
@@ -485,8 +575,8 @@ func build_reveal(twin_scene: String) -> void:
 		[0.0, bpos(Vector3(14.7, 93.6, -4.3)), bpos(Vector3(14.7, 106.8, -4.0))],
 		[3.0, bpos(Vector3(14.9, 99.0, -4.2)), bpos(Vector3(14.7, 106.8, -3.6))],
 		[6.5, bpos(Vector3(15.0, 104.4, -3.4)), face_c],
-		[11.0, bpos(Vector3(14.8, 105.8, -3.22)), face_c],
-		[16.0, bpos(Vector3(14.62, 105.95, -3.18)), face_c],
+		[11.0, bpos(Vector3(14.78, 105.95, -3.18)), face_c],
+		[16.0, bpos(Vector3(14.66, 106.08, -3.16)), face_c],
 	])
 	for i in 6:   # inspection/capture viewpoints along the sequence
 		pass
@@ -497,7 +587,7 @@ func build_reveal(twin_scene: String) -> void:
 	root.add_child(v1)
 	var v2 := Node3D.new()
 	v2.name = "VIEW__reveal_face"
-	var e2 := bpos(Vector3(14.78, 105.85, -3.22))
+	var e2 := bpos(Vector3(14.76, 105.55, -3.15))
 	v2.transform = Transform3D(Basis.looking_at(face_c - e2, Vector3.UP), e2)
 	root.add_child(v2)
 	var v3 := Node3D.new()
@@ -505,6 +595,11 @@ func build_reveal(twin_scene: String) -> void:
 	var e3 := bpos(Vector3(15.9, 104.6, -3.6))
 	v3.transform = Transform3D(Basis.looking_at(bpos(Vector3(14.7, 106.8, -3.9)) - e3, Vector3.UP), e3)
 	root.add_child(v3)
+	var v4 := Node3D.new()
+	v4.name = "VIEW__reveal_portrait"
+	var e4 := bpos(Vector3(14.7, 106.05, -3.17))
+	v4.transform = Transform3D(Basis.looking_at(face_c + Vector3(0, 0.03, 0) - e4, Vector3.UP), e4)
+	root.add_child(v4)
 	own_shallow(root)
 	save_scene(root, "res://scenes/cinematics/twin_reveal.tscn")
 
@@ -513,9 +608,9 @@ func build_reveal(twin_scene: String) -> void:
 
 ## Where each creature stands in the inspection scene (Blender coords, facing yaw deg)
 const SHOWCASE := {
-	"failed_humanoid": [Vector3(-10.6, 22.2, 0.0), 0.0, "idle", Vector3(-7.6, 21.0, 1.55)],
-	"augmented_subject": [Vector3(5.2, 45.6, 0.0), 0.0, "twitch", Vector3(3.6, 43.0, 1.6)],
-	"chemical_subject": [Vector3(0.1, 70.5, -6.0), 0.0, "idle", Vector3(0.0, 67.4, -4.5)],
+	"failed_humanoid": [Vector3(-10.6, 22.2, 0.0), 0.0, "idle", Vector3(-9.3, 21.5, 1.6)],
+	"augmented_subject": [Vector3(5.2, 45.6, 0.0), 0.0, "twitch", Vector3(4.6, 44.3, 1.65)],
+	"chemical_subject": [Vector3(0.1, 70.5, -6.0), 0.0, "idle", Vector3(0.05, 69.1, -4.4)],
 	"twin_monster": [Vector3(14.7, 106.8, -5.1), 0.0, "idle", Vector3(14.7, 102.6, -3.6)],
 }
 

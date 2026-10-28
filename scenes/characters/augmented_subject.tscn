@@ -1,9 +1,25 @@
 [gd_scene format=3]
 
-[ext_resource type="Script" path="res://scripts/visual/creature_visual.gd" id="1_d22kn"]
-[ext_resource type="PackedScene" path="res://assets/models/characters/augmented_subject.glb" id="2_a3tbn"]
+[ext_resource type="Script" path="res://scripts/visual/creature_visual.gd" id="1_00j43"]
+[ext_resource type="PackedScene" path="res://assets/models/characters/augmented_subject.glb" id="2_agg02"]
+[ext_resource type="Script" path="res://scripts/visual/creature_audio.gd" id="3_02g8a"]
+[ext_resource type="AudioStream" path="res://assets/audio/creatures/augmented_servo_loop.wav" id="4_du3vl"]
+[ext_resource type="AudioStream" path="res://assets/audio/creatures/augmented_glitch_0.wav" id="5_w7ui0"]
+[ext_resource type="AudioStream" path="res://assets/audio/creatures/augmented_glitch_1.wav" id="6_cuhsv"]
+[ext_resource type="AudioStream" path="res://assets/audio/creatures/augmented_glitch_2.wav" id="7_c5o0a"]
+[ext_resource type="AudioStream" path="res://assets/audio/voices/augmented_do_not_resist.wav" id="8_j571a"]
+[ext_resource type="AudioStream" path="res://assets/audio/voices/augmented_i_can_still_feel_it.wav" id="9_ifqy7"]
+[ext_resource type="AudioStream" path="res://assets/audio/voices/augmented_procedure_incomplete.wav" id="10_oaqje"]
+[ext_resource type="AudioStream" path="res://assets/audio/voices/augmented_subject_accepted.wav" id="11_owx20"]
 
-[node name="AugmentedSubject" type="Node3D" unique_id=1564388338]
-script = ExtResource("1_d22kn")
+[node name="AugmentedSubject" type="Node3D" unique_id=1436074134]
+script = ExtResource("1_00j43")
 
-[node name="Model" type="Node3D" parent="." unique_id=150052692 instance=ExtResource("2_a3tbn")]
+[node name="Model" type="Node3D" parent="." unique_id=964539195 instance=ExtResource("2_agg02")]
+
+[node name="CreatureAudio" type="Node3D" parent="." unique_id=193613534]
+script = ExtResource("3_02g8a")
+loop_sound = ExtResource("4_du3vl")
+noises = Array[AudioStream]([ExtResource("5_w7ui0"), ExtResource("6_cuhsv"), ExtResource("7_c5o0a")])
+lines = Array[AudioStream]([ExtResource("8_j571a"), ExtResource("9_ifqy7"), ExtResource("10_oaqje"), ExtResource("11_owx20")])
+word_chance = 0.5

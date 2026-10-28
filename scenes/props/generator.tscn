@@ -1,0 +1,34 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://assets/models/props/generator.glb" id="1_uxloc"]
+[ext_resource type="Script" path="res://scripts/visual/light_flicker.gd" id="2_kbu1x"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/machine_hum_loop.wav" id="3_73bd8"]
+
+[node name="Generator" type="Node3D" unique_id=1159184454]
+
+[node name="Model" type="Node3D" parent="." unique_id=99469027 instance=ExtResource("1_uxloc")]
+
+[node name="Lights" type="Node3D" parent="." unique_id=4030638]
+
+[node name="panel_light" type="OmniLight3D" parent="Lights" unique_id=2138966493]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.6, 1.15, 0.9)
+light_color = Color(1, 0.6, 0.2, 1)
+light_energy = 0.4
+light_volumetric_fog_energy = 1.5
+shadow_blur = 1.5
+distance_fade_enabled = true
+distance_fade_begin = 30.0
+distance_fade_shadow = 18.0
+omni_range = 2.0
+omni_attenuation = 1.2
+script = ExtResource("2_kbu1x")
+pulse = 0.5
+
+[node name="Audio_machine_hum_loop" type="AudioStreamPlayer3D" parent="." unique_id=1687830662]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+stream = ExtResource("3_73bd8")
+unit_size = 5.0
+autoplay = true
+max_distance = 35.0
+bus = &"SFX"
+attenuation_filter_cutoff_hz = 6000.0

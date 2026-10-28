@@ -52,212 +52,212 @@ uv1_world_triplanar = true
 material = SubResource("StandardMaterial3D_45u2c")
 size = Vector3(60, 8, 0.3)
 
-[node name="EffectsGallery" type="Node3D" unique_id=524083696]
+[node name="EffectsGallery" type="Node3D" unique_id=1943020004]
 
-[node name="@WorldEnvironment@2" type="WorldEnvironment" parent="." unique_id=1707483044]
+[node name="@WorldEnvironment@2" type="WorldEnvironment" parent="." unique_id=1600283066]
 environment = ExtResource("1_fxt1a")
 
-[node name="Floor" type="MeshInstance3D" parent="." unique_id=2132300936]
+[node name="Floor" type="MeshInstance3D" parent="." unique_id=416539963]
 mesh = SubResource("PlaneMesh_noujn")
 
-[node name="Wall" type="MeshInstance3D" parent="." unique_id=1024590640]
+[node name="Wall" type="MeshInstance3D" parent="." unique_id=1533762436]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4, -4)
 mesh = SubResource("BoxMesh_n0y7y")
 
-[node name="@DirectionalLight3D@3" type="DirectionalLight3D" parent="." unique_id=1163258576]
+[node name="@DirectionalLight3D@3" type="DirectionalLight3D" parent="." unique_id=421728797]
 transform = Transform3D(0.8660254, -0.38302222, 0.32139382, 0, 0.64278764, 0.76604444, -0.5, -0.66341394, 0.5566704, 0, 0, 0)
 light_energy = 0.15
 
-[node name="MuzzleFlash" type="Node3D" parent="." unique_id=1480809334 instance=ExtResource("8_460sj")]
+[node name="MuzzleFlash" type="Node3D" parent="." unique_id=1513066308 instance=ExtResource("8_460sj")]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -24, 1.2, -1)
 script = ExtResource("9_20mvx")
 loop = true
 duration = 0.3
 
-[node name="@Label3D@4" type="Label3D" parent="." unique_id=1181638212]
+[node name="@Label3D@4" type="Label3D" parent="." unique_id=1103065575]
 transform = Transform3D(1, 0, 0, 0, 0.49999997, 0.86602545, 0, -0.86602545, 0.49999997, -24, 0.05, 0.6)
 pixel_size = 0.004
 modulate = Color(0.85, 0.85, 0.8, 1)
 text = "muzzle flash"
 font_size = 48
 
-[node name="VIEW__fx_muzzle_flash" type="Node3D" parent="." unique_id=1245699395]
+[node name="VIEW__fx_muzzle_flash" type="Node3D" parent="." unique_id=1770131188]
 transform = Transform3D(1, 0, 0, 0, 0.9999383, 0.011110481, 0, -0.011110481, 0.9999383, -24, 1.2, 0.8)
 
-[node name="ImpactSparks" type="Node3D" parent="." unique_id=1884058281 instance=ExtResource("10_cpjgi")]
+[node name="ImpactSparks" type="Node3D" parent="." unique_id=211118734 instance=ExtResource("10_cpjgi")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -21, 0, -1)
 script = ExtResource("9_20mvx")
 loop = true
 duration = 1.2
 
-[node name="@Label3D@5" type="Label3D" parent="." unique_id=807933637]
+[node name="@Label3D@5" type="Label3D" parent="." unique_id=983504687]
 transform = Transform3D(1, 0, 0, 0, 0.49999997, 0.86602545, 0, -0.86602545, 0.49999997, -21, 0.05, 0.6)
 pixel_size = 0.004
 modulate = Color(0.85, 0.85, 0.8, 1)
 text = "impact sparks"
 font_size = 48
 
-[node name="VIEW__fx_impact_sparks" type="Node3D" parent="." unique_id=443744167]
+[node name="VIEW__fx_impact_sparks" type="Node3D" parent="." unique_id=1748363227]
 transform = Transform3D(1, 0, 0, 0, 0.8532818, 0.52145004, 0, -0.52145004, 0.8532818, -21, 1.2, 0.8)
 
-[node name="TrackingIndicator" type="Node3D" parent="." unique_id=552714132 instance=ExtResource("11_evgh8")]
+[node name="TrackingIndicator" type="Node3D" parent="." unique_id=595798572 instance=ExtResource("11_evgh8")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -18, 0, -1)
 
-[node name="@Label3D@6" type="Label3D" parent="." unique_id=999257651]
+[node name="@Label3D@6" type="Label3D" parent="." unique_id=852000797]
 transform = Transform3D(1, 0, 0, 0, 0.49999997, 0.86602545, 0, -0.86602545, 0.49999997, -18, 0.05, 0.6)
 pixel_size = 0.004
 modulate = Color(0.85, 0.85, 0.8, 1)
 text = "tracking indicator"
 font_size = 48
 
-[node name="VIEW__fx_tracking_indicator" type="Node3D" parent="." unique_id=279790699]
+[node name="VIEW__fx_tracking_indicator" type="Node3D" parent="." unique_id=708294985]
 transform = Transform3D(1, 0, 0, 0, 0.99199796, 0.12625429, 0, -0.12625429, 0.99199796, -18, 1.7, 4.5)
 
-[node name="SuspendField" type="Node3D" parent="." unique_id=1755958935 instance=ExtResource("12_a1r7c")]
+[node name="SuspendField" type="Node3D" parent="." unique_id=1219802417 instance=ExtResource("12_a1r7c")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15, 0, -1)
 
-[node name="@Label3D@7" type="Label3D" parent="." unique_id=1571465794]
+[node name="@Label3D@7" type="Label3D" parent="." unique_id=1063330221]
 transform = Transform3D(1, 0, 0, 0, 0.49999997, 0.86602545, 0, -0.86602545, 0.49999997, -15, 0.05, 0.6)
 pixel_size = 0.004
 modulate = Color(0.85, 0.85, 0.8, 1)
 text = "suspend field"
 font_size = 48
 
-[node name="VIEW__fx_suspend_field" type="Node3D" parent="." unique_id=824174985]
+[node name="VIEW__fx_suspend_field" type="Node3D" parent="." unique_id=682342766]
 transform = Transform3D(1, 0, 0, 0, 0.99199796, 0.12625429, 0, -0.12625429, 0.99199796, -15, 1.7, 4.5)
 
-[node name="SuspendedParticles" type="Node3D" parent="." unique_id=314490173 instance=ExtResource("13_8ya7n")]
+[node name="SuspendedParticles" type="Node3D" parent="." unique_id=316182633 instance=ExtResource("13_8ya7n")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 0, -1)
 
-[node name="@Label3D@8" type="Label3D" parent="." unique_id=199913040]
+[node name="@Label3D@8" type="Label3D" parent="." unique_id=832875302]
 transform = Transform3D(1, 0, 0, 0, 0.49999997, 0.86602545, 0, -0.86602545, 0.49999997, -12, 0.05, 0.6)
 pixel_size = 0.004
 modulate = Color(0.85, 0.85, 0.8, 1)
 text = "suspended particles"
 font_size = 48
 
-[node name="VIEW__fx_suspended_particles" type="Node3D" parent="." unique_id=472257731]
+[node name="VIEW__fx_suspended_particles" type="Node3D" parent="." unique_id=469167906]
 transform = Transform3D(1, 0, 0, 0, 0.99199796, 0.12625429, 0, -0.12625429, 0.99199796, -12, 1.7, 4.5)
 
-[node name="ExplosionOrange" type="Node3D" parent="." unique_id=483402915 instance=ExtResource("14_hdwt4")]
+[node name="ExplosionOrange" type="Node3D" parent="." unique_id=1012086001 instance=ExtResource("14_hdwt4")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9, 0, -1)
 script = ExtResource("9_20mvx")
 loop = true
 loop_interval = 4.0
 duration = 4.0
 
-[node name="@Label3D@9" type="Label3D" parent="." unique_id=1067802897]
+[node name="@Label3D@9" type="Label3D" parent="." unique_id=908934781]
 transform = Transform3D(1, 0, 0, 0, 0.49999997, 0.86602545, 0, -0.86602545, 0.49999997, -9, 0.05, 0.6)
 pixel_size = 0.004
 modulate = Color(0.85, 0.85, 0.8, 1)
 text = "explosion orange"
 font_size = 48
 
-[node name="VIEW__fx_explosion_orange" type="Node3D" parent="." unique_id=850784867]
+[node name="VIEW__fx_explosion_orange" type="Node3D" parent="." unique_id=1719985643]
 transform = Transform3D(1, 0, 0, 0, 0.99199796, 0.12625429, 0, -0.12625429, 0.99199796, -9, 1.7, 4.5)
 
-[node name="ExplosionGreen" type="Node3D" parent="." unique_id=1208512553 instance=ExtResource("15_7a4ks")]
+[node name="ExplosionGreen" type="Node3D" parent="." unique_id=1163234193 instance=ExtResource("15_7a4ks")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 0, -1)
 script = ExtResource("9_20mvx")
 loop = true
 loop_interval = 4.0
 duration = 4.0
 
-[node name="@Label3D@10" type="Label3D" parent="." unique_id=196176680]
+[node name="@Label3D@10" type="Label3D" parent="." unique_id=1568672384]
 transform = Transform3D(1, 0, 0, 0, 0.49999997, 0.86602545, 0, -0.86602545, 0.49999997, -4, 0.05, 0.6)
 pixel_size = 0.004
 modulate = Color(0.85, 0.85, 0.8, 1)
 text = "explosion green"
 font_size = 48
 
-[node name="VIEW__fx_explosion_green" type="Node3D" parent="." unique_id=829947494]
+[node name="VIEW__fx_explosion_green" type="Node3D" parent="." unique_id=1523738881]
 transform = Transform3D(1, 0, 0, 0, 0.99199796, 0.12625429, 0, -0.12625429, 0.99199796, -4, 1.7, 4.5)
 
-[node name="ExplosionBlue" type="Node3D" parent="." unique_id=668036255 instance=ExtResource("16_875m4")]
+[node name="ExplosionBlue" type="Node3D" parent="." unique_id=1932382991 instance=ExtResource("16_875m4")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, -1)
 script = ExtResource("9_20mvx")
 loop = true
 loop_interval = 4.0
 duration = 4.0
 
-[node name="@Label3D@11" type="Label3D" parent="." unique_id=51429079]
+[node name="@Label3D@11" type="Label3D" parent="." unique_id=1000574554]
 transform = Transform3D(1, 0, 0, 0, 0.49999997, 0.86602545, 0, -0.86602545, 0.49999997, 1, 0.05, 0.6)
 pixel_size = 0.004
 modulate = Color(0.85, 0.85, 0.8, 1)
 text = "explosion blue"
 font_size = 48
 
-[node name="VIEW__fx_explosion_blue" type="Node3D" parent="." unique_id=437072954]
+[node name="VIEW__fx_explosion_blue" type="Node3D" parent="." unique_id=785940712]
 transform = Transform3D(1, 0, 0, 0, 0.99199796, 0.12625429, 0, -0.12625429, 0.99199796, 1, 1.7, 4.5)
 
-[node name="ExplosionPurple" type="Node3D" parent="." unique_id=777479064 instance=ExtResource("17_7ibvo")]
+[node name="ExplosionPurple" type="Node3D" parent="." unique_id=2068536129 instance=ExtResource("17_7ibvo")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 0, -1)
 script = ExtResource("9_20mvx")
 loop = true
 loop_interval = 4.0
 duration = 4.0
 
-[node name="@Label3D@12" type="Label3D" parent="." unique_id=1553599088]
+[node name="@Label3D@12" type="Label3D" parent="." unique_id=1638220979]
 transform = Transform3D(1, 0, 0, 0, 0.49999997, 0.86602545, 0, -0.86602545, 0.49999997, 6, 0.05, 0.6)
 pixel_size = 0.004
 modulate = Color(0.85, 0.85, 0.8, 1)
 text = "explosion purple"
 font_size = 48
 
-[node name="VIEW__fx_explosion_purple" type="Node3D" parent="." unique_id=1696157]
+[node name="VIEW__fx_explosion_purple" type="Node3D" parent="." unique_id=836692413]
 transform = Transform3D(1, 0, 0, 0, 0.99199796, 0.12625429, 0, -0.12625429, 0.99199796, 6, 1.7, 4.5)
 
-[node name="FireOrange" type="Node3D" parent="." unique_id=2028523986 instance=ExtResource("18_62exl")]
+[node name="FireOrange" type="Node3D" parent="." unique_id=445252158 instance=ExtResource("18_62exl")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11, 0, -1)
 
-[node name="@Label3D@13" type="Label3D" parent="." unique_id=1941557579]
+[node name="@Label3D@13" type="Label3D" parent="." unique_id=129160578]
 transform = Transform3D(1, 0, 0, 0, 0.49999997, 0.86602545, 0, -0.86602545, 0.49999997, 11, 0.05, 0.6)
 pixel_size = 0.004
 modulate = Color(0.85, 0.85, 0.8, 1)
 text = "fire orange"
 font_size = 48
 
-[node name="VIEW__fx_fire_orange" type="Node3D" parent="." unique_id=350166486]
+[node name="VIEW__fx_fire_orange" type="Node3D" parent="." unique_id=1055500523]
 transform = Transform3D(1, 0, 0, 0, 0.99199796, 0.12625429, 0, -0.12625429, 0.99199796, 11, 1.7, 4.5)
 
-[node name="FireGreen" type="Node3D" parent="." unique_id=1065264755 instance=ExtResource("19_cw48t")]
+[node name="FireGreen" type="Node3D" parent="." unique_id=24579595 instance=ExtResource("19_cw48t")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14, 0, -1)
 
-[node name="@Label3D@14" type="Label3D" parent="." unique_id=541943220]
+[node name="@Label3D@14" type="Label3D" parent="." unique_id=7340101]
 transform = Transform3D(1, 0, 0, 0, 0.49999997, 0.86602545, 0, -0.86602545, 0.49999997, 14, 0.05, 0.6)
 pixel_size = 0.004
 modulate = Color(0.85, 0.85, 0.8, 1)
 text = "fire green"
 font_size = 48
 
-[node name="VIEW__fx_fire_green" type="Node3D" parent="." unique_id=7151570]
+[node name="VIEW__fx_fire_green" type="Node3D" parent="." unique_id=40569147]
 transform = Transform3D(1, 0, 0, 0, 0.99199796, 0.12625429, 0, -0.12625429, 0.99199796, 14, 1.7, 4.5)
 
-[node name="FireBlue" type="Node3D" parent="." unique_id=161348127 instance=ExtResource("20_g417y")]
+[node name="FireBlue" type="Node3D" parent="." unique_id=15118111 instance=ExtResource("20_g417y")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 17, 0, -1)
 
-[node name="@Label3D@15" type="Label3D" parent="." unique_id=255256619]
+[node name="@Label3D@15" type="Label3D" parent="." unique_id=996286833]
 transform = Transform3D(1, 0, 0, 0, 0.49999997, 0.86602545, 0, -0.86602545, 0.49999997, 17, 0.05, 0.6)
 pixel_size = 0.004
 modulate = Color(0.85, 0.85, 0.8, 1)
 text = "fire blue"
 font_size = 48
 
-[node name="VIEW__fx_fire_blue" type="Node3D" parent="." unique_id=1152806308]
+[node name="VIEW__fx_fire_blue" type="Node3D" parent="." unique_id=1277365725]
 transform = Transform3D(1, 0, 0, 0, 0.99199796, 0.12625429, 0, -0.12625429, 0.99199796, 17, 1.7, 4.5)
 
-[node name="FirePurple" type="Node3D" parent="." unique_id=1899928208 instance=ExtResource("21_a3310")]
+[node name="FirePurple" type="Node3D" parent="." unique_id=48693619 instance=ExtResource("21_a3310")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, 0, -1)
 
-[node name="@Label3D@16" type="Label3D" parent="." unique_id=146116579]
+[node name="@Label3D@16" type="Label3D" parent="." unique_id=680000209]
 transform = Transform3D(1, 0, 0, 0, 0.49999997, 0.86602545, 0, -0.86602545, 0.49999997, 20, 0.05, 0.6)
 pixel_size = 0.004
 modulate = Color(0.85, 0.85, 0.8, 1)
 text = "fire purple"
 font_size = 48
 
-[node name="VIEW__fx_fire_purple" type="Node3D" parent="." unique_id=1580937222]
+[node name="VIEW__fx_fire_purple" type="Node3D" parent="." unique_id=1739667273]
 transform = Transform3D(1, 0, 0, 0, 0.99199796, 0.12625429, 0, -0.12625429, 0.99199796, 20, 1.7, 4.5)
 
-[node name="VIEW__fx_overview" type="Node3D" parent="." unique_id=423558167]
+[node name="VIEW__fx_overview" type="Node3D" parent="." unique_id=177528296]
 transform = Transform3D(1, 0, 0, 0, 0.96761733, 0.25242192, 0, -0.25242192, 0.96761733, 0, 7, 22)

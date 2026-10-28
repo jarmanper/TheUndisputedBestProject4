@@ -2,9 +2,9 @@
 
 [ext_resource type="Texture2D" path="res://assets/textures/vfx/bullet_hole.png" id="1_3x1fu"]
 
-[node name="BulletHole" type="Node3D" unique_id=59810677]
+[node name="BulletHole" type="Node3D" unique_id=616167552]
 
-[node name="Decal" type="Decal" parent="." unique_id=789535086]
+[node name="Decal" type="Decal" parent="." unique_id=1794853792]
 size = Vector3(0.12, 0.2, 0.12)
 texture_albedo = ExtResource("1_3x1fu")
 cull_mask = 1

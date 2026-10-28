@@ -1,50 +1,51 @@
 [gd_scene format=3]
 
-[ext_resource type="Material" path="res://assets/materials/fx_temporal_distortion.tres" id="1_0opur"]
-[ext_resource type="Texture2D" path="res://assets/textures/vfx/clock_ring.png" id="2_1wg6t"]
-[ext_resource type="Script" path="res://scripts/visual/spin.gd" id="3_6tf10"]
-[ext_resource type="Texture2D" path="res://assets/textures/vfx/flare.png" id="4_c42ku"]
+[ext_resource type="Material" path="res://assets/materials/fx_temporal_distortion.tres" id="1_1wg6t"]
+[ext_resource type="Texture2D" path="res://assets/textures/vfx/clock_ring.png" id="2_6tf10"]
+[ext_resource type="Script" path="res://scripts/visual/spin.gd" id="3_c42ku"]
+[ext_resource type="Texture2D" path="res://assets/textures/vfx/flare.png" id="4_mg2nk"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/suspend_loop.wav" id="5_hyb7m"]
 
-[sub_resource type="SphereMesh" id="SphereMesh_mg2nk"]
-material = ExtResource("1_0opur")
+[sub_resource type="SphereMesh" id="SphereMesh_3ah3c"]
+material = ExtResource("1_1wg6t")
 radius = 1.3
 height = 2.6
 radial_segments = 48
 rings = 24
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_hyb7m"]
-transparency = 1
-blend_mode = 1
-cull_mode = 2
-shading_mode = 0
-albedo_color = Color(0.5, 0.85, 1, 0.8)
-albedo_texture = ExtResource("2_1wg6t")
-
-[sub_resource type="QuadMesh" id="QuadMesh_3ah3c"]
-material = SubResource("StandardMaterial3D_hyb7m")
-size = Vector2(2.6, 2.6)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_rwya1"]
 transparency = 1
 blend_mode = 1
 cull_mode = 2
 shading_mode = 0
-albedo_color = Color(0.5, 0.85, 1, 0.45)
-albedo_texture = ExtResource("2_1wg6t")
+albedo_color = Color(0.5, 0.85, 1, 0.8)
+albedo_texture = ExtResource("2_6tf10")
 
 [sub_resource type="QuadMesh" id="QuadMesh_7ji5w"]
 material = SubResource("StandardMaterial3D_rwya1")
+size = Vector2(2.6, 2.6)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_s2aa3"]
+transparency = 1
+blend_mode = 1
+cull_mode = 2
+shading_mode = 0
+albedo_color = Color(0.5, 0.85, 1, 0.45)
+albedo_texture = ExtResource("2_6tf10")
+
+[sub_resource type="QuadMesh" id="QuadMesh_jgqwe"]
+material = SubResource("StandardMaterial3D_s2aa3")
 size = Vector2(3.2, 3.2)
 
-[sub_resource type="Gradient" id="Gradient_s2aa3"]
+[sub_resource type="Gradient" id="Gradient_sa2wf"]
 offsets = PackedFloat32Array(0, 0.15, 0.85, 1)
 colors = PackedColorArray(0.5, 0.9, 1, 0, 0.5, 0.9, 1, 1, 0.5, 0.9, 1, 1, 0.5, 0.9, 1, 0)
 
-[sub_resource type="GradientTexture1D" id="GradientTexture1D_jgqwe"]
-gradient = SubResource("Gradient_s2aa3")
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_nogiv"]
+gradient = SubResource("Gradient_sa2wf")
 use_hdr = true
 
-[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_sa2wf"]
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_rfcww"]
 emission_shape = 1
 emission_sphere_radius = 1.2
 direction = Vector3(0, 1, 0)
@@ -52,15 +53,15 @@ spread = 180.0
 initial_velocity_min = 0.01
 initial_velocity_max = 0.05
 gravity = Vector3(0, 0, 0)
-color_ramp = SubResource("GradientTexture1D_jgqwe")
+color_ramp = SubResource("GradientTexture1D_nogiv")
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_nogiv"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_utpfm"]
 transparency = 1
 blend_mode = 1
 depth_draw_mode = 2
 shading_mode = 0
 vertex_color_use_as_albedo = true
-albedo_texture = ExtResource("4_c42ku")
+albedo_texture = ExtResource("4_mg2nk")
 disable_receive_shadows = true
 billboard_mode = 3
 billboard_keep_scale = true
@@ -69,40 +70,47 @@ particles_anim_v_frames = 1
 particles_anim_loop = false
 proximity_fade_distance = 0.4
 
-[sub_resource type="QuadMesh" id="QuadMesh_rfcww"]
-material = SubResource("StandardMaterial3D_nogiv")
+[sub_resource type="QuadMesh" id="QuadMesh_ebbbp"]
+material = SubResource("StandardMaterial3D_utpfm")
 size = Vector2(0.025, 0.025)
 
-[node name="SuspendField" type="Node3D" unique_id=1755958935]
+[node name="SuspendField" type="Node3D" unique_id=1219802417]
 
-[node name="Distortion" type="MeshInstance3D" parent="." unique_id=173219984]
+[node name="Distortion" type="MeshInstance3D" parent="." unique_id=389105821]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 cast_shadow = 0
-mesh = SubResource("SphereMesh_mg2nk")
+mesh = SubResource("SphereMesh_3ah3c")
 
-[node name="ClockRing0" type="MeshInstance3D" parent="." unique_id=652923817]
+[node name="ClockRing0" type="MeshInstance3D" parent="." unique_id=1655800970]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0.05, 0)
-mesh = SubResource("QuadMesh_3ah3c")
-script = ExtResource("3_6tf10")
+mesh = SubResource("QuadMesh_7ji5w")
+script = ExtResource("3_c42ku")
 speed_deg = 6.0
 
-[node name="ClockRing1" type="MeshInstance3D" parent="." unique_id=2082311517]
+[node name="ClockRing1" type="MeshInstance3D" parent="." unique_id=414634600]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 1.95, 0)
-mesh = SubResource("QuadMesh_7ji5w")
-script = ExtResource("3_6tf10")
+mesh = SubResource("QuadMesh_jgqwe")
+script = ExtResource("3_c42ku")
 speed_deg = -4.0
 
-[node name="FrozenMotes" type="GPUParticles3D" parent="." unique_id=126612075]
+[node name="FrozenMotes" type="GPUParticles3D" parent="." unique_id=83706526]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 cast_shadow = 0
 amount = 80
 lifetime = 6.0
 visibility_aabb = AABB(-8, -2, -8, 16, 14, 16)
-process_material = SubResource("ParticleProcessMaterial_sa2wf")
-draw_pass_1 = SubResource("QuadMesh_rfcww")
+process_material = SubResource("ParticleProcessMaterial_rfcww")
+draw_pass_1 = SubResource("QuadMesh_ebbbp")
 
-[node name="ColdLight" type="OmniLight3D" parent="." unique_id=21945620]
+[node name="ColdLight" type="OmniLight3D" parent="." unique_id=1573184026]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2, 0)
 light_color = Color(0.45, 0.8, 1, 1)
 light_energy = 1.2
 omni_range = 4.0
+
+[node name="Sfx_suspend_loop" type="AudioStreamPlayer3D" parent="." unique_id=1431899295]
+stream = ExtResource("5_hyb7m")
+unit_size = 3.0
+autoplay = true
+max_distance = 20.0
+bus = &"SFX"

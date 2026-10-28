@@ -2,9 +2,9 @@
 
 [ext_resource type="Texture2D" path="res://assets/textures/vfx/scorch.png" id="1_yagly"]
 
-[node name="ScorchMark" type="Node3D" unique_id=1678063442]
+[node name="ScorchMark" type="Node3D" unique_id=526068487]
 
-[node name="Decal" type="Decal" parent="." unique_id=638339986]
+[node name="Decal" type="Decal" parent="." unique_id=487244313]
 size = Vector3(2.4, 0.2, 2.4)
 texture_albedo = ExtResource("1_yagly")
 cull_mask = 1
