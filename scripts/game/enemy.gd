@@ -3,6 +3,10 @@ extends CharacterBody3D
 ## Patient enemy: idle/wander -> chase (sight or noise) -> attack -> dead.
 ## Gameplay hooks used by the mechanics: damage(), mark(), unmark(),
 ## is_marked(), suspend(), is_suspended(), hear_noise(), apply_knockback().
+## Hit zones: the body collider is sized at runtime from the model's mesh
+## AABB + skeleton (head/neck bones). Shape 0 = body capsule, shape 1 = head
+## sphere. damage(amount, hit_position) applies headshot_mult when the hit
+## point is above the neck; get_hit_multiplier() exposes the same lookup.
 
 signal died(enemy)
 
@@ -21,8 +25,12 @@ const TRACKER := "res://scenes/effects/tracking_indicator.tscn"
 @export var attack_damage := 15.0
 @export var attack_interval := 1.2
 @export var marked_damage_mult := 2.0
-@export var capsule_radius := 0.4
-@export var capsule_height := 2.0
+## <= 0 means "derive from the model" (recommended).
+@export var capsule_radius := 0.0
+@export var capsule_height := 0.0
+@export var headshot_mult := 2.0
+## Soft push-apart between enemies so they don't stack/overlap.
+@export var separation_radius := 0.9
 @export var forget_time := 6.0
 
 var health: float
@@ -42,6 +50,12 @@ var _knockback := Vector3.ZERO
 var _cur_anim := ""
 var _flash_mat: ShaderMaterial
 var _gravity: float = ProjectSettings.get_setting("physics/3d/default_gravity", 9.8)
+## Local-space height (above the feet) where the head zone starts / its centre.
+var head_min_y := 1.65
+var head_center := Vector3(0, 1.8, 0)
+var head_radius := 0.16
+var _body_shape: CollisionShape3D
+var _head_shape: CollisionShape3D
 
 
 func _ready() -> void:
@@ -50,18 +64,80 @@ func _ready() -> void:
 	collision_layer = 4
 	collision_mask = 1 | 2
 	floor_snap_length = 0.4
-	var shape := CollisionShape3D.new()
-	var cap := CapsuleShape3D.new()
-	cap.radius = capsule_radius
-	cap.height = capsule_height
-	shape.shape = cap
-	shape.position.y = capsule_height * 0.5
-	add_child(shape)
+	floor_max_angle = deg_to_rad(50.0)
+	floor_stop_on_slope = true
+	wall_min_slide_angle = deg_to_rad(5.0)
+	max_slides = 6
+	safe_margin = 0.02
 	if model_scene:
 		model = model_scene.instantiate()
 		add_child(model)
 		_anim = model.find_child("AnimationPlayer", true, false)
+	_build_hitboxes()
 	_play("idle")
+
+
+func _rel_xform(n: Node, top: Node) -> Transform3D:
+	var t := Transform3D()
+	while n and n != top:
+		if n is Node3D:
+			t = (n as Node3D).transform * t
+		n = n.get_parent()
+	return t
+
+
+## Measure the model (rest pose) and fit the body capsule + head sphere to it.
+func _build_hitboxes() -> void:
+	var box := AABB(Vector3(-0.3, 0, -0.2), Vector3(0.6, 2.0, 0.4))
+	var neck_y := -1.0
+	var head_y := -1.0
+	if model:
+		var first := true
+		for m: MeshInstance3D in model.find_children("*", "MeshInstance3D", true, false):
+			var a := _rel_xform(m, self) * m.get_aabb()
+			box = a if first else box.merge(a)
+			first = false
+		for sk: Skeleton3D in model.find_children("*", "Skeleton3D", true, false):
+			var sx := _rel_xform(sk, self)
+			var ni := sk.find_bone("neck")
+			var hi := sk.find_bone("head")
+			if ni >= 0:
+				neck_y = (sx * sk.get_bone_global_rest(ni)).origin.y
+			if hi >= 0:
+				head_y = (sx * sk.get_bone_global_rest(hi)).origin.y
+		# feet on the floor: lift the model so its lowest vertex sits at y=0
+		if absf(box.position.y) < 0.25:
+			model.position.y -= box.position.y
+			box.position.y = 0.0
+	var top := box.end.y
+	if neck_y < 0.0:
+		neck_y = top * 0.83
+	if head_y < 0.0:
+		head_y = lerpf(neck_y, top, 0.45)
+	# torso depth (Z) is the reliable width; X includes the rest-pose arms
+	var r := capsule_radius if capsule_radius > 0.0 else clampf(maxf(box.size.z * 0.5, 0.16) + 0.12, 0.25, 0.6)
+	var body_top := neck_y + 0.04
+	var h := capsule_height if capsule_height > 0.0 else maxf(body_top, r * 2.0)
+	_body_shape = CollisionShape3D.new()
+	_body_shape.name = "BodyHitbox"
+	var cap := CapsuleShape3D.new()
+	cap.radius = r
+	cap.height = h
+	_body_shape.shape = cap
+	_body_shape.position.y = h * 0.5
+	add_child(_body_shape)
+	head_min_y = neck_y + 0.02
+	head_radius = clampf((top - neck_y) * 0.5 + 0.03, 0.12, 0.3)
+	head_center = Vector3(0, (neck_y + top) * 0.5, box.get_center().z + 0.02)
+	_head_shape = CollisionShape3D.new()
+	_head_shape.name = "HeadHitbox"
+	var sph := SphereShape3D.new()
+	sph.radius = head_radius
+	_head_shape.shape = sph
+	_head_shape.position = head_center
+	add_child(_head_shape)
+	capsule_radius = r
+	capsule_height = h
 
 
 func _physics_process(delta: float) -> void:
@@ -99,6 +175,7 @@ func _physics_process(delta: float) -> void:
 				_player.damage(attack_damage)
 	if move.length() > 0.01:
 		_face(global_position + move)
+		move += _separation() * move.length()
 	velocity.x = move.x + _knockback.x
 	velocity.z = move.z + _knockback.z
 	_knockback = _knockback.move_toward(Vector3.ZERO, 12.0 * delta)
@@ -162,6 +239,23 @@ func _can_see_player() -> bool:
 	return get_world_3d().direct_space_state.intersect_ray(q).is_empty()
 
 
+## Push-apart vector from nearby living enemies (they don't physically
+## collide with each other, so this keeps groups from merging into one blob).
+func _separation() -> Vector3:
+	var push := Vector3.ZERO
+	for e in get_tree().get_nodes_in_group("enemy"):
+		if e == self or not (e is Node3D) or (e.has_method("is_dead") and e.is_dead()):
+			continue
+		var d: Vector3 = global_position - (e as Node3D).global_position
+		d.y = 0.0
+		var l := d.length()
+		var other_r: float = e.get("capsule_radius") if e.get("capsule_radius") else 0.3
+		var min_d: float = separation_radius + other_r
+		if l < min_d and l > 0.001:
+			push += d / l * (1.0 - l / min_d)
+	return push.limit_length(0.6)
+
+
 func _flat_dir_to(p: Vector3) -> Vector3:
 	var d := p - global_position
 	d.y = 0.0
@@ -209,9 +303,24 @@ func hear_noise(where: Vector3, radius: float) -> void:
 		_last_known = where
 
 
-func damage(amount: float) -> void:
+## Damage API. `hit_position` (world space) is optional; when given and it
+## lands in the head zone, headshot_mult is applied. When omitted for a
+## pistol shot fired this frame, the hit point is recovered from the
+## player's aim ray so headshots work with the existing combat call.
+func damage(amount: float, hit_position: Vector3 = Vector3.INF) -> void:
 	if state == State.DEAD:
 		return
+	if hit_position == Vector3.INF:
+		hit_position = _infer_shot_position()
+	take_hit(amount, hit_position, is_headshot(hit_position))
+
+
+## Same as damage() but the caller decides whether it was a headshot.
+func take_hit(amount: float, hit_position: Vector3 = Vector3.INF, headshot := false) -> void:
+	if state == State.DEAD:
+		return
+	if headshot:
+		amount *= headshot_mult
 	if is_marked():
 		amount *= marked_damage_mult
 	health -= amount
@@ -220,6 +329,38 @@ func damage(amount: float) -> void:
 		hear_noise(_player.global_position, INF)
 	if health <= 0.0:
 		_die()
+
+
+## True if the world-space point is in this enemy's head zone.
+func is_headshot(hit_position: Vector3) -> bool:
+	if hit_position == Vector3.INF or not hit_position.is_finite():
+		return false
+	var local := to_local(hit_position)
+	return local.y >= head_min_y
+
+
+## Damage multiplier for a hit, from a world-space hit position (Vector3)
+## or a collider shape index from a ray result (int: 1 = head).
+func get_hit_multiplier(where: Variant) -> float:
+	if where is int:
+		return headshot_mult if shape_owner_get_owner(shape_find_owner(where)) == _head_shape else 1.0
+	if where is Vector3:
+		return headshot_mult if is_headshot(where) else 1.0
+	return 1.0
+
+
+func _infer_shot_position() -> Vector3:
+	if _player == null or not _player.has_method("aim"):
+		return Vector3.INF
+	var c := _player.get_node_or_null("Combat")
+	if c == null or c.get("_cd") == null or c.get("fire_interval") == null:
+		return Vector3.INF
+	if float(c.get("_cd")) < float(c.get("fire_interval")) - 0.0001:
+		return Vector3.INF  # not a shot fired this frame (e.g. explosion)
+	var hit: Dictionary = _player.aim(float(c.get("max_range")) if c.get("max_range") else 60.0)
+	if hit.get("collider") == self:
+		return hit.position
+	return Vector3.INF
 
 
 func apply_knockback(v: Vector3) -> void:

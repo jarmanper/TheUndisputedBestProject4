@@ -14,8 +14,11 @@ func _ready() -> void:
 	sight_range = 22.0
 	attack_damage = 25.0
 	attack_range = 2.4
-	capsule_radius = 0.6
-	capsule_height = 2.6
+	# hitbox is auto-fitted to the twin model (enemy.gd); just a bit bulkier
+	# and the head (clock/gauge cluster) is a smaller weak point
+	headshot_mult = 1.6
+	capsule_radius = 0.36
+	separation_radius = 1.2
 	super._ready()
 	add_to_group("boss")
 	_play("idle")
@@ -28,8 +31,8 @@ func hear_noise(where: Vector3, _radius: float) -> void:
 		super.hear_noise(where, INF)
 
 
-func damage(amount: float) -> void:
-	super.damage(amount)
+func take_hit(amount: float, hit_position: Vector3 = Vector3.INF, headshot := false) -> void:
+	super.take_hit(amount, hit_position, headshot)
 	if phase == 1 and health > 0.0 and health <= max_health * 0.5:
 		phase = 2
 		chase_speed *= phase2_speed_mult
