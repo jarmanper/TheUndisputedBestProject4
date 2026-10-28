@@ -2,6 +2,6 @@
 
 [ext_resource type="PackedScene" path="res://assets/models/props/cot.glb" id="1_o410e"]
 
-[node name="Cot" type="Node3D" unique_id=2015050985]
+[node name="Cot" type="Node3D" unique_id=1650460521]
 
 [node name="Model" type="Node3D" parent="." unique_id=760553425 instance=ExtResource("1_o410e")]

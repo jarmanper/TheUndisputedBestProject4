@@ -2,13 +2,13 @@
 
 [ext_resource type="PackedScene" path="res://assets/models/props/security_door.glb" id="1_s6oqg"]
 
-[node name="SecurityDoor" type="Node3D" unique_id=1256903491]
+[node name="SecurityDoor" type="Node3D" unique_id=1262891408]
 
 [node name="Model" type="Node3D" parent="." unique_id=1427284322 instance=ExtResource("1_s6oqg")]
 
-[node name="Lights" type="Node3D" parent="." unique_id=1975963703]
+[node name="Lights" type="Node3D" parent="." unique_id=809780528]
 
-[node name="keypad_light" type="OmniLight3D" parent="Lights" unique_id=1361367391]
+[node name="keypad_light" type="OmniLight3D" parent="Lights" unique_id=35913273]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.1, 1.38, 0.35)
 light_color = Color(1, 0.1, 0.05, 1)
 light_energy = 0.15

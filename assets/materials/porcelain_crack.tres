@@ -1,0 +1,17 @@
+[gd_resource type="StandardMaterial3D" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/textures/porcelain_crack_albedo.png" id="1_mm76d"]
+[ext_resource type="Texture2D" path="res://assets/textures/porcelain_crack_normal.png" id="2_qs3ey"]
+[ext_resource type="Texture2D" path="res://assets/textures/porcelain_crack_rough.png" id="3_e8r2v"]
+
+[resource]
+resource_name = "porcelain_crack"
+albedo_texture = ExtResource("1_mm76d")
+roughness_texture = ExtResource("3_e8r2v")
+normal_enabled = true
+normal_scale = 0.7
+normal_texture = ExtResource("2_qs3ey")
+clearcoat_enabled = true
+clearcoat = 0.5
+clearcoat_roughness = 0.35
+uv1_scale = Vector3(5.5555553, 5.5555553, 5.5555553)

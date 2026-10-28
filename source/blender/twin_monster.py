@@ -415,11 +415,27 @@ def add_extra_bones(arm, bones):
         pb.rotation_mode = "QUATERNION"
 
 
-def twin_animations(anim, h):
+def twin_animations(anim, h, contort=0.0):
     clock_axis = tuple(h.pivot_n)
     eye_up = (0, 0, 1)
 
     def base(t, slump=0.0):
+        p = _base(t, slump)
+        if contort:
+            # a body that sets wrong: spine arched back, head lolled to one side,
+            # one shoulder hiked and the other arm hanging low
+            c = contort
+            p["chest"] = p["chest"] + [(X, -8 * c), (Y, -5 * c)]
+            p["spine2"] = p["spine2"] + [(Z, 6 * c)]
+            p["neck"] = p["neck"] + [(Y, 10 * c), (X, 6 * c)]
+            p["head"] = p["head"] + [(Y, 18 * c), (Z, -8 * c)]
+            p["clav.L"] = [(X, -9 * c)]
+            p["clav.R"] = [(X, 7 * c)]
+            p["uarm.R"] = p["uarm.R"] + [(Y, -3 * c)]
+            p["pelvis"] = [(Y, 4 * c)]
+        return p
+
+    def _base(t, slump=0.0):
         breath = wave(t, 0, 2) * 1.2
         return {
             "spine1": [(X, 4 + slump * 10 + breath * 0.3)],
@@ -427,7 +443,7 @@ def twin_animations(anim, h):
             "chest": [(X, 2 + slump * 10 + breath), (Y, 2)],
             "neck": [(X, -4 + slump * 18)],
             "head": [(X, -2 + slump * 20), (Y, 6)],
-            "uarm.L": [(Y, 34 + slump * 6), (X, 4)], "uarm.R": [(Y, -34 - slump * 6), (X, 4)],
+            "uarm.L": [(Y, 13 + slump * 3), (X, 6)], "uarm.R": [(Y, -13 - slump * 3), (X, 6)],
             "farm.L": [(X, -10)], "farm.R": [(X, -12)],
             "hand.L": [(X, -6)], "hand.R": [(X, -6)],
             "thigh.L": [(X, -2 - slump * 4)], "thigh.R": [(X, -2 - slump * 4)],
@@ -466,8 +482,8 @@ def twin_animations(anim, h):
     def head_tilt(t):
         p = base(t)
         k = math.sin(t * math.pi) ** 2        # slow tilt and return
-        add(p, "head", [(Y, 38 * k), (Z, -12 * k)])
-        add(p, "neck", [(Y, 10 * k)])
+        add(p, "head", [(Y, (38 - 20 * contort) * k), (Z, -12 * k)])
+        add(p, "neck", [(Y, (10 - 4 * contort) * k)])
         add(p, "eye", [(eye_up, -15 * k)])
         clock(p, t, 0.5)
         gauges(p, t, 0.5)
@@ -546,8 +562,8 @@ def twin_animations(anim, h):
         # head hangs low, then rises slowly; arms open slightly; ends held
         u = min(1.0, max(0.0, (t - 0.1) / 0.75))
         u = u * u * (3 - 2 * u)
-        p = base(t, 1.0 - u)
-        add(p, "head", [(X, 25 * (1 - u) - 6 * u), (Y, 8 * (1 - u))])
+        p = base(t, 0.55 * (1.0 - u))
+        add(p, "head", [(X, 10 * (1 - u) - 6 * u), (Y, 8 * (1 - u))])
         add(p, "uarm.L", [(Y, -12 * u), (X, -6 * u)])
         add(p, "uarm.R", [(Y, 12 * u), (X, -6 * u)])
         add(p, "farm.L", [(X, -14 * u)])

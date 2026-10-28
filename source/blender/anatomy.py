@@ -316,6 +316,28 @@ def skin_to(ob, arm, overrides=None, falloff=4.0, max_infl=3, bone_filter=None, 
         mod.object = arm
 
 
+def copy_weights(src, dst, bone_filter=None):
+    """Give every vertex of `dst` the bone weights of the nearest `src` vertex,
+    so garments, cables and straps move exactly with the skin beneath them."""
+    from mathutils.kdtree import KDTree
+    sv = src.data.vertices
+    kd = KDTree(len(sv))
+    for i, v in enumerate(sv):
+        kd.insert(src.matrix_world @ v.co, i)
+    kd.balance()
+    names = {g.index: g.name for g in src.vertex_groups}
+    per_vert = [[(names[g.group], g.weight) for g in v.groups if g.weight > 0.001] for v in sv]
+    groups = {}
+    for v in dst.data.vertices:
+        _, i, _ = kd.find(dst.matrix_world @ v.co)
+        ws = [(n, w) for n, w in per_vert[i] if bone_filter is None or bone_filter(n)]
+        tot = sum(w for _, w in ws) or 1.0
+        for n, w in ws:
+            g = groups.get(n) or dst.vertex_groups.get(n) or dst.vertex_groups.new(name=n)
+            groups[n] = g
+            g.add([v.index], w / tot, "REPLACE")
+
+
 def attach_to_bone(ob, arm, bone):
     """Rigidly parent a hard-surface part (implant, gauge...) to a bone."""
     mw = ob.matrix_world.copy()

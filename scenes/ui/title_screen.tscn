@@ -1,0 +1,411 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/title_screen.gd" id="1_title"]
+[ext_resource type="Script" path="res://scripts/ui/title_backdrop.gd" id="2_backdrop"]
+[ext_resource type="Shader" path="res://scripts/ui/title_overlay.gdshader" id="3_overlay"]
+[ext_resource type="AudioStream" path="res://assets/audio/ambience/amb_chamber.wav" id="4_amb"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/clock_tick_loop.wav" id="5_tick"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/reveal_sting.wav" id="6_sting"]
+
+[sub_resource type="SystemFont" id="Font_serif"]
+font_names = PackedStringArray("Cormorant Garamond", "Playfair Display", "Georgia", "Times New Roman", "Liberation Serif", "DejaVu Serif", "serif")
+font_weight = 600
+
+[sub_resource type="SystemFont" id="Font_sans"]
+font_names = PackedStringArray("Oswald", "Bebas Neue", "Arial Narrow", "Liberation Sans Narrow", "DejaVu Sans Condensed", "Helvetica", "sans-serif")
+
+[sub_resource type="StyleBoxEmpty" id="Style_btn"]
+content_margin_left = 18.0
+content_margin_top = 6.0
+content_margin_right = 18.0
+content_margin_bottom = 6.0
+
+[sub_resource type="StyleBoxFlat" id="Style_btn_hover"]
+bg_color = Color(0.45, 0.05, 0.04, 0.35)
+border_width_left = 3
+border_color = Color(0.9, 0.22, 0.16, 1)
+content_margin_left = 30.0
+content_margin_top = 6.0
+content_margin_right = 18.0
+content_margin_bottom = 6.0
+
+[sub_resource type="StyleBoxFlat" id="Style_btn_pressed"]
+bg_color = Color(0.6, 0.06, 0.05, 0.55)
+border_width_left = 3
+border_color = Color(1, 0.35, 0.25, 1)
+content_margin_left = 32.0
+content_margin_top = 6.0
+content_margin_right = 18.0
+content_margin_bottom = 6.0
+
+[sub_resource type="StyleBoxFlat" id="Style_panel"]
+bg_color = Color(0.02, 0.018, 0.02, 0.82)
+border_width_left = 2
+border_color = Color(0.6, 0.12, 0.1, 0.9)
+content_margin_left = 32.0
+content_margin_top = 24.0
+content_margin_right = 32.0
+content_margin_bottom = 24.0
+
+[sub_resource type="StyleBoxFlat" id="Style_slider"]
+bg_color = Color(0.25, 0.22, 0.21, 0.8)
+content_margin_top = 2.0
+content_margin_bottom = 2.0
+
+[sub_resource type="StyleBoxFlat" id="Style_slider_fill"]
+bg_color = Color(0.8, 0.18, 0.13, 1)
+content_margin_top = 2.0
+content_margin_bottom = 2.0
+
+[sub_resource type="StyleBoxFlat" id="Style_focus_line"]
+draw_center = false
+border_width_bottom = 1
+border_color = Color(0.9, 0.22, 0.16, 0.8)
+
+[sub_resource type="Theme" id="Theme_menu"]
+default_font = SubResource("Font_sans")
+Button/colors/font_color = Color(0.72, 0.69, 0.64, 1)
+Button/colors/font_hover_color = Color(1, 0.94, 0.88, 1)
+Button/colors/font_focus_color = Color(1, 0.94, 0.88, 1)
+Button/colors/font_pressed_color = Color(1, 1, 1, 1)
+Button/colors/font_disabled_color = Color(0.4, 0.38, 0.36, 1)
+Button/font_sizes/font_size = 26
+Button/styles/normal = SubResource("Style_btn")
+Button/styles/hover = SubResource("Style_btn_hover")
+Button/styles/focus = SubResource("Style_btn_hover")
+Button/styles/pressed = SubResource("Style_btn_pressed")
+Button/styles/disabled = SubResource("Style_btn")
+CheckButton/colors/font_color = Color(0.8, 0.78, 0.72, 1)
+CheckButton/colors/font_hover_color = Color(1, 0.94, 0.88, 1)
+CheckButton/colors/font_focus_color = Color(1, 0.94, 0.88, 1)
+CheckButton/font_sizes/font_size = 20
+CheckButton/styles/normal = SubResource("Style_btn")
+CheckButton/styles/hover = SubResource("Style_btn")
+CheckButton/styles/focus = SubResource("Style_focus_line")
+CheckButton/styles/pressed = SubResource("Style_btn")
+HSlider/styles/slider = SubResource("Style_slider")
+HSlider/styles/grabber_area = SubResource("Style_slider_fill")
+HSlider/styles/grabber_area_highlight = SubResource("Style_slider_fill")
+HSlider/styles/focus = SubResource("Style_focus_line")
+Label/colors/font_color = Color(0.8, 0.78, 0.72, 1)
+Label/font_sizes/font_size = 20
+
+[sub_resource type="ShaderMaterial" id="Mat_overlay"]
+shader = ExtResource("3_overlay")
+
+[sub_resource type="Gradient" id="Grad_left"]
+offsets = PackedFloat32Array(0, 0.45, 1)
+colors = PackedColorArray(0, 0, 0, 0.88, 0, 0, 0, 0.55, 0, 0, 0, 0)
+
+[sub_resource type="GradientTexture2D" id="Tex_left"]
+gradient = SubResource("Grad_left")
+width = 256
+height = 4
+
+[sub_resource type="Gradient" id="Grad_rule"]
+offsets = PackedFloat32Array(0, 1)
+colors = PackedColorArray(0.85, 0.18, 0.13, 1, 0.85, 0.18, 0.13, 0)
+
+[sub_resource type="GradientTexture2D" id="Tex_rule"]
+gradient = SubResource("Grad_rule")
+width = 256
+height = 2
+
+[node name="TitleScreen" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = SubResource("Theme_menu")
+script = ExtResource("1_title")
+
+[node name="Backdrop" type="Node3D" parent="."]
+script = ExtResource("2_backdrop")
+
+[node name="LeftShade" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 9
+anchor_bottom = 1.0
+anchor_right = 0.62
+grow_vertical = 2
+mouse_filter = 2
+texture = SubResource("Tex_left")
+expand_mode = 1
+stretch_mode = 0
+
+[node name="Overlay" type="ColorRect" parent="."]
+material = SubResource("Mat_overlay")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Margin" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 96
+theme_override_constants/margin_top = 72
+theme_override_constants/margin_right = 72
+theme_override_constants/margin_bottom = 48
+
+[node name="VBox" type="VBoxContainer" parent="Margin"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="Kicker" type="Label" parent="Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.55, 0.5, 0.46, 1)
+theme_override_font_sizes/font_size = 15
+text = "A  HORROR  IN  BORROWED  TIME"
+
+[node name="Title" type="Label" parent="Margin/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.92, 0.88, 0.8, 1)
+theme_override_colors/font_shadow_color = Color(0.4, 0.03, 0.02, 0.55)
+theme_override_constants/shadow_offset_x = 3
+theme_override_constants/shadow_offset_y = 3
+theme_override_constants/shadow_outline_size = 10
+theme_override_fonts/font = SubResource("Font_serif")
+theme_override_font_sizes/font_size = 136
+text = "TIMBUK"
+
+[node name="Rule" type="TextureRect" parent="Margin/VBox"]
+custom_minimum_size = Vector2(460, 2)
+layout_mode = 2
+size_flags_horizontal = 0
+texture = SubResource("Tex_rule")
+expand_mode = 1
+
+[node name="SubRow" type="HBoxContainer" parent="Margin/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="Subtitle" type="Label" parent="Margin/VBox/SubRow"]
+unique_name_in_owner = true
+modulate = Color(0.8, 0.8, 0.8, 1)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.85, 0.24, 0.18, 1)
+theme_override_font_sizes/font_size = 30
+text = "S E C O N D    H A N D"
+
+[node name="Tick" type="Label" parent="Margin/VBox/SubRow"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 8
+theme_override_colors/font_color = Color(0.55, 0.5, 0.45, 1)
+theme_override_fonts/font = SubResource("Font_serif")
+theme_override_font_sizes/font_size = 16
+text = "tick"
+
+[node name="Spacer" type="Control" parent="Margin/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Menu" type="VBoxContainer" parent="Margin/VBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(320, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_constants/separation = 4
+
+[node name="NewGame" type="Button" parent="Margin/VBox/Menu"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "NEW GAME"
+alignment = 0
+
+[node name="Settings" type="Button" parent="Margin/VBox/Menu"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "SETTINGS"
+alignment = 0
+
+[node name="Controls" type="Button" parent="Margin/VBox/Menu"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "CONTROLS"
+alignment = 0
+
+[node name="Quit" type="Button" parent="Margin/VBox/Menu"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "QUIT"
+alignment = 0
+
+[node name="ControlsPanel" type="PanelContainer" parent="Margin/VBox"]
+unique_name_in_owner = true
+visible = false
+custom_minimum_size = Vector2(520, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_styles/panel = SubResource("Style_panel")
+
+[node name="VBox" type="VBoxContainer" parent="Margin/VBox/ControlsPanel"]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="Heading" type="Label" parent="Margin/VBox/ControlsPanel/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.88, 0.25, 0.19, 1)
+theme_override_font_sizes/font_size = 24
+text = "CONTROLS"
+
+[node name="List" type="GridContainer" parent="Margin/VBox/ControlsPanel/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/h_separation = 48
+theme_override_constants/v_separation = 6
+columns = 2
+
+[node name="Back" type="Button" parent="Margin/VBox/ControlsPanel/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 0
+text = "BACK"
+
+[node name="SettingsPanel" type="PanelContainer" parent="Margin/VBox"]
+unique_name_in_owner = true
+visible = false
+custom_minimum_size = Vector2(560, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_styles/panel = SubResource("Style_panel")
+
+[node name="VBox" type="VBoxContainer" parent="Margin/VBox/SettingsPanel"]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="Heading" type="Label" parent="Margin/VBox/SettingsPanel/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.88, 0.25, 0.19, 1)
+theme_override_font_sizes/font_size = 24
+text = "SETTINGS"
+
+[node name="Grid" type="GridContainer" parent="Margin/VBox/SettingsPanel/VBox"]
+layout_mode = 2
+theme_override_constants/h_separation = 24
+theme_override_constants/v_separation = 14
+columns = 3
+
+[node name="VolLabel" type="Label" parent="Margin/VBox/SettingsPanel/VBox/Grid"]
+layout_mode = 2
+text = "Master volume"
+
+[node name="Volume" type="HSlider" parent="Margin/VBox/SettingsPanel/VBox/Grid"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(240, 24)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+max_value = 1.0
+step = 0.05
+value = 0.8
+
+[node name="VolValue" type="Label" parent="Margin/VBox/SettingsPanel/VBox/Grid"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(56, 0)
+layout_mode = 2
+horizontal_alignment = 2
+text = "80%"
+
+[node name="SensLabel" type="Label" parent="Margin/VBox/SettingsPanel/VBox/Grid"]
+layout_mode = 2
+text = "Mouse sensitivity"
+
+[node name="Sensitivity" type="HSlider" parent="Margin/VBox/SettingsPanel/VBox/Grid"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(240, 24)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+min_value = 0.25
+max_value = 3.0
+step = 0.05
+value = 1.0
+
+[node name="SensValue" type="Label" parent="Margin/VBox/SettingsPanel/VBox/Grid"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(56, 0)
+layout_mode = 2
+horizontal_alignment = 2
+text = "1.00x"
+
+[node name="FsLabel" type="Label" parent="Margin/VBox/SettingsPanel/VBox/Grid"]
+layout_mode = 2
+text = "Fullscreen"
+
+[node name="Fullscreen" type="CheckButton" parent="Margin/VBox/SettingsPanel/VBox/Grid"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 0
+
+[node name="FsPad" type="Control" parent="Margin/VBox/SettingsPanel/VBox/Grid"]
+layout_mode = 2
+
+[node name="SettingsBack" type="Button" parent="Margin/VBox/SettingsPanel/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 0
+text = "BACK"
+
+[node name="FooterGap" type="Control" parent="Margin/VBox"]
+custom_minimum_size = Vector2(0, 28)
+layout_mode = 2
+
+[node name="FooterRow" type="HBoxContainer" parent="Margin/VBox"]
+layout_mode = 2
+
+[node name="Footer" type="Label" parent="Margin/VBox/FooterRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.48, 0.44, 0.4, 1)
+theme_override_fonts/font = SubResource("Font_serif")
+theme_override_font_sizes/font_size = 16
+text = "It hunts by sound. Walk softly."
+
+[node name="Hint" type="Label" parent="Margin/VBox/FooterRow"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.4, 0.37, 0.34, 1)
+theme_override_font_sizes/font_size = 14
+text = "ENTER  select     ESC  back"
+
+[node name="Fade" type="ColorRect" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0, 0, 0, 1)
+
+[node name="Ambience" type="AudioStreamPlayer" parent="."]
+unique_name_in_owner = true
+stream = ExtResource("4_amb")
+volume_db = -14.0
+
+[node name="TickLoop" type="AudioStreamPlayer" parent="."]
+unique_name_in_owner = true
+stream = ExtResource("5_tick")
+volume_db = -20.0
+
+[node name="Sting" type="AudioStreamPlayer" parent="."]
+unique_name_in_owner = true
+stream = ExtResource("6_sting")
+volume_db = -6.0
+
+[node name="UiSfx" type="AudioStreamPlayer" parent="."]
+unique_name_in_owner = true
+volume_db = -8.0
+max_polyphony = 4

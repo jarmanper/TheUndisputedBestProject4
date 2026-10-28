@@ -2,6 +2,6 @@
 
 [ext_resource type="PackedScene" path="res://assets/models/props/animal_cage.glb" id="1_ftosv"]
 
-[node name="AnimalCage" type="Node3D" unique_id=390028573]
+[node name="AnimalCage" type="Node3D" unique_id=981168839]
 
 [node name="Model" type="Node3D" parent="." unique_id=235170421 instance=ExtResource("1_ftosv")]

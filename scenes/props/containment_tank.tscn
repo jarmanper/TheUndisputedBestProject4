@@ -3,13 +3,13 @@
 [ext_resource type="PackedScene" path="res://assets/models/props/containment_tank.glb" id="1_bhxxm"]
 [ext_resource type="AudioStream" path="res://assets/audio/sfx/tank_bubbles_loop.wav" id="2_vngpv"]
 
-[node name="ContainmentTank" type="Node3D" unique_id=1626991027]
+[node name="ContainmentTank" type="Node3D" unique_id=504192785]
 
 [node name="Model" type="Node3D" parent="." unique_id=1000911828 instance=ExtResource("1_bhxxm")]
 
-[node name="Lights" type="Node3D" parent="." unique_id=77389531]
+[node name="Lights" type="Node3D" parent="." unique_id=2071830296]
 
-[node name="tank_light" type="OmniLight3D" parent="Lights" unique_id=89946953]
+[node name="tank_light" type="OmniLight3D" parent="Lights" unique_id=819148807]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 light_color = Color(0.3, 1, 0.65, 1)
 light_energy = 1.2
@@ -21,7 +21,7 @@ distance_fade_shadow = 18.0
 omni_range = 4.0
 omni_attenuation = 1.2
 
-[node name="Audio_tank_bubbles_loop" type="AudioStreamPlayer3D" parent="." unique_id=712690246]
+[node name="Audio_tank_bubbles_loop" type="AudioStreamPlayer3D" parent="." unique_id=1918744062]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 stream = ExtResource("2_vngpv")
 volume_db = -6.0

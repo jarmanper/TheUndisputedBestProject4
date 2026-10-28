@@ -1,7 +1,12 @@
 [gd_scene format=3]
 
+[ext_resource type="Script" path="res://scripts/game/weapon_viewmodel.gd" id="2_vm"]
 [ext_resource type="PackedScene" path="res://assets/models/props/pistol.glb" id="1_12rx6"]
 
-[node name="Pistol" type="Node3D" unique_id=1397176379]
+[node name="Pistol" type="Node3D" unique_id=1604468803]
+script = ExtResource("2_vm")
 
-[node name="Model" type="Node3D" parent="." unique_id=224446667 instance=ExtResource("1_12rx6")]
+[node name="Pivot" type="Node3D" parent="." unique_id=1604468804]
+
+[node name="Model" type="Node3D" parent="Pivot" unique_id=224446667 instance=ExtResource("1_12rx6")]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, -0.11, -0.03)

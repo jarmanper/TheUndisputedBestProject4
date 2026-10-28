@@ -13,25 +13,25 @@ dof_blur_far_distance = 9.0
 dof_blur_far_transition = 6.0
 dof_blur_amount = 0.06
 
-[node name="TwinReveal" type="Node3D" unique_id=1391811138]
+[node name="TwinReveal" type="Node3D" unique_id=1460817121]
 script = ExtResource("1_xm200")
 twin_path = NodePath("Twin")
 camera_path = NodePath("RevealCamera")
 shots = [[0.0, Vector3(14.7, -4.3, -93.6), Vector3(14.7, -4, -106.8)], [3.0, Vector3(14.9, -4.2, -99), Vector3(14.7, -3.6, -106.8)], [6.5, Vector3(15, -3.4, -104.4), Vector3(14.7, -3.22, -106.65)], [11.0, Vector3(14.78, -3.18, -105.95), Vector3(14.7, -3.22, -106.65)], [16.0, Vector3(14.66, -3.16, -106.08), Vector3(14.7, -3.22, -106.65)]]
 
-[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=71070418]
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=2095424965]
 environment = ExtResource("2_u258j")
 camera_attributes = SubResource("CameraAttributesPractical_ccwci")
 
-[node name="AreaETwinChamber" type="Node3D" parent="." unique_id=1526964045 instance=ExtResource("3_k7csv")]
+[node name="AreaETwinChamber" type="Node3D" parent="." unique_id=2078763720 instance=ExtResource("3_k7csv")]
 
-[node name="Twin" type="Node3D" parent="." unique_id=673248 instance=ExtResource("4_yiq4v")]
+[node name="Twin" type="Node3D" parent="." unique_id=182085352 instance=ExtResource("4_yiq4v")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14.7, -5.1, -106.8)
 script = ExtResource("5_1ni8r")
 animation = "reveal"
 desync = false
 
-[node name="FaceKey" type="SpotLight3D" parent="." unique_id=1891421058]
+[node name="FaceKey" type="SpotLight3D" parent="." unique_id=568495455]
 transform = Transform3D(0.89442736, 0.20686874, -0.39649093, 0, 0.8865813, 0.4625728, 0.44721335, -0.41373777, 0.79298246, 13.5, -1.82, -104.25)
 light_color = Color(1, 0.88, 0.75, 1)
 light_energy = 6.0
@@ -39,27 +39,27 @@ shadow_enabled = true
 spot_range = 6.0
 spot_angle = 14.0
 
-[node name="FaceRim" type="SpotLight3D" parent="." unique_id=1502029740]
+[node name="FaceRim" type="SpotLight3D" parent="." unique_id=1927476368]
 transform = Transform3D(-0.75257623, -0.28027847, 0.59588003, 0, 0.90489805, 0.4256284, -0.65850514, 0.3203178, -0.68100476, 16.1, -2.22, -108.25)
 light_color = Color(0.45, 0.75, 1, 1)
 light_energy = 5.0
 spot_angle = 18.0
 
-[node name="RevealSting" type="AudioStreamPlayer" parent="." unique_id=999875316]
+[node name="RevealSting" type="AudioStreamPlayer" parent="." unique_id=1308314243]
 stream = ExtResource("6_lv76c")
 bus = &"SFX"
 
-[node name="RevealCamera" type="Camera3D" parent="." unique_id=1788900241]
+[node name="RevealCamera" type="Camera3D" parent="." unique_id=1918819936]
 fov = 50.0
 
-[node name="VIEW__reveal_wide" type="Node3D" parent="." unique_id=584754746]
+[node name="VIEW__reveal_wide" type="Node3D" parent="." unique_id=1929555685]
 transform = Transform3D(1, 0, 0, 0, 0.9970545, -0.076696455, 0, 0.076696455, 0.9970545, 14.7, -4.2, -99)
 
-[node name="VIEW__reveal_face" type="Node3D" parent="." unique_id=921707527]
+[node name="VIEW__reveal_face" type="Node3D" parent="." unique_id=1784772410]
 transform = Transform3D(0.99851567, -0.0034538426, 0.054355327, 0, 0.9979873, 0.063414045, -0.054464947, -0.063319914, 0.996506, 14.76, -3.15, -105.55)
 
-[node name="VIEW__reveal_threeq" type="Node3D" parent="." unique_id=1662502520]
+[node name="VIEW__reveal_threeq" type="Node3D" parent="." unique_id=2014689409]
 transform = Transform3D(0.877896, -0.056918286, 0.4754565, 0, 0.9929105, 0.11886422, -0.4788513, -0.104350425, 0.8716722, 15.9, -3.6, -104.6)
 
-[node name="VIEW__reveal_portrait" type="Node3D" parent="." unique_id=1246757724]
+[node name="VIEW__reveal_portrait" type="Node3D" parent="." unique_id=815667715]
 transform = Transform3D(1, 0, 0, 0, 0.9994449, 0.033314884, 0, -0.033314884, 0.9994449, 14.7, -3.17, -106.05)

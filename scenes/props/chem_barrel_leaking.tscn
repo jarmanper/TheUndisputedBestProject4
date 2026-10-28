@@ -3,13 +3,13 @@
 [ext_resource type="PackedScene" path="res://assets/models/props/chem_barrel_leaking.glb" id="1_2x00l"]
 [ext_resource type="AudioStream" path="res://assets/audio/sfx/drip_loop.wav" id="2_nlgif"]
 
-[node name="ChemBarrelLeaking" type="Node3D" unique_id=1281183336]
+[node name="ChemBarrelLeaking" type="Node3D" unique_id=721982648]
 
 [node name="Model" type="Node3D" parent="." unique_id=565849381 instance=ExtResource("1_2x00l")]
 
-[node name="Lights" type="Node3D" parent="." unique_id=1343208119]
+[node name="Lights" type="Node3D" parent="." unique_id=422715599]
 
-[node name="chem_light" type="OmniLight3D" parent="Lights" unique_id=544443738]
+[node name="chem_light" type="OmniLight3D" parent="Lights" unique_id=677212997]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.35, 0.25, 0.5)
 light_color = Color(0.4, 1, 0.3, 1)
 light_energy = 0.5
@@ -21,7 +21,7 @@ distance_fade_shadow = 18.0
 omni_range = 2.5
 omni_attenuation = 1.2
 
-[node name="Audio_drip_loop" type="AudioStreamPlayer3D" parent="." unique_id=1340340644]
+[node name="Audio_drip_loop" type="AudioStreamPlayer3D" parent="." unique_id=1005829930]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 stream = ExtResource("2_nlgif")
 volume_db = -6.0

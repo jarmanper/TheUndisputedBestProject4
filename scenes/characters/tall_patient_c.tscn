@@ -1,0 +1,25 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/visual/creature_visual.gd" id="1_xxk3i"]
+[ext_resource type="PackedScene" path="res://assets/models/characters/tall_patient_c.glb" id="2_vpc8o"]
+[ext_resource type="Script" path="res://scripts/visual/creature_audio.gd" id="3_vhfte"]
+[ext_resource type="AudioStream" path="res://assets/audio/creatures/failed_breath_loop.wav" id="4_16kkm"]
+[ext_resource type="AudioStream" path="res://assets/audio/creatures/failed_groan_2.wav" id="5_3tl8a"]
+[ext_resource type="AudioStream" path="res://assets/audio/creatures/failed_shriek.wav" id="6_1nx2h"]
+[ext_resource type="AudioStream" path="res://assets/audio/voices/failed_dont_look_at_me.wav" id="7_dx7se"]
+[ext_resource type="AudioStream" path="res://assets/audio/voices/failed_help_me.wav" id="8_hevjp"]
+[ext_resource type="AudioStream" path="res://assets/audio/voices/failed_it_hurts.wav" id="9_p48p5"]
+[ext_resource type="AudioStream" path="res://assets/audio/voices/failed_make_it_stop.wav" id="10_ca1m0"]
+[ext_resource type="AudioStream" path="res://assets/audio/voices/failed_mother.wav" id="11_sxadu"]
+[ext_resource type="AudioStream" path="res://assets/audio/voices/failed_where_are_you.wav" id="12_qpoa3"]
+
+[node name="TallPatientC" type="Node3D" unique_id=1624532059]
+script = ExtResource("1_xxk3i")
+
+[node name="Model" type="Node3D" parent="." unique_id=13672867 instance=ExtResource("2_vpc8o")]
+
+[node name="CreatureAudio" type="Node3D" parent="." unique_id=829815937]
+script = ExtResource("3_vhfte")
+loop_sound = ExtResource("4_16kkm")
+noises = Array[AudioStream]([ExtResource("5_3tl8a"), ExtResource("6_1nx2h")])
+lines = Array[AudioStream]([ExtResource("7_dx7se"), ExtResource("8_hevjp"), ExtResource("9_p48p5"), ExtResource("10_ca1m0"), ExtResource("11_sxadu"), ExtResource("12_qpoa3")])
