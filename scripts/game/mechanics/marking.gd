@@ -1,74 +1,61 @@
 extends Node
-## MARKING (Rhaiyn): RMB tags an enemy for `mark_duration` seconds.
-## Marked enemies glow through the dark, get a tracking ring at their feet
-## and take double damage. Max `max_marks` at once (oldest is dropped).
-
+## Rhaiyn's marking state machine ported to full-game2's sibling abilities.
 signal marked_enemy(enemy)
-
-const LOCK_SFX := preload("res://assets/audio/sfx/tracker_lock.wav")
-
-@export var mark_duration := 15.0
-@export var max_marks := 3
-@export var max_range := 40.0
-@export var cooldown := 0.4
-
-var marked: Array = []
-var _cd := 0.0
-var _ping: AudioStreamPlayer
-
+const RANGE := 15.0
+const DURATION := 8.0
+const COOLDOWN := 3.0
+var cooldown_left := 0.0
+var duration_left := 0.0
+var current_target: TimbukEnemy
 @onready var player: TimbukPlayer = get_parent()
 
-
-func _ready() -> void:
-	_ping = AudioStreamPlayer.new()
-	_ping.stream = LOCK_SFX
-	_ping.bus = "SFX"
-	add_child(_ping)
-
-
-func _process(delta: float) -> void:
-	_cd = maxf(0.0, _cd - delta)
-	marked = marked.filter(_still_marked)
-	if player.dead or get_tree().paused:
-		return
-	if Input.is_action_just_pressed("mark") and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED and _cd <= 0.0:
-		_cd = cooldown
+func _physics_process(delta: float) -> void:
+	cooldown_left = maxf(0, cooldown_left - delta)
+	if cooldown_left < 0.000001:
+		cooldown_left = 0
+	if is_instance_valid(current_target):
+		if current_target.is_dead() or not current_target.is_marked():
+			clear_mark()
+		else:
+			duration_left = maxf(0, duration_left - delta)
+			if duration_left < 0.000001:
+				clear_mark()
+	elif current_target != null:
+		clear_mark()
+	if Input.is_action_just_pressed("mark"):
 		try_mark()
 
+func is_ready() -> bool:
+	return cooldown_left <= 0
 
-static func _still_marked(e) -> bool:
-	return is_instance_valid(e) and e.has_method("is_marked") and e.is_marked() \
-		and not (e.has_method("is_dead") and e.is_dead())
-
-
-## Marks the enemy under the crosshair. Returns true on success.
 func try_mark() -> bool:
-	var hit := player.aim(max_range)
-	var e: Node = _enemy_from(hit.get("collider"))
-	if e == null or not e.has_method("mark") or (e.has_method("is_dead") and e.is_dead()):
+	if not is_ready() or player.dead:
 		return false
-	var refresh := marked.has(e)
-	marked.erase(e)
-	while marked.size() >= max_marks:
-		var oldest = marked.pop_front()
-		if is_instance_valid(oldest) and oldest.has_method("unmark"):
-			oldest.unmark()
-	e.mark(mark_duration)
-	marked.append(e)
-	_ping.pitch_scale = 1.15 if refresh else 1.0
-	_ping.play()
-	marked_enemy.emit(e)
+	var target := player.crosshair_target(RANGE)
+	if target == null:
+		return false
+	clear_mark()
+	current_target = target
+	target.died.connect(_on_defeat)
+	target.set_marked(true)
+	duration_left = DURATION
+	cooldown_left = COOLDOWN
+	marked_enemy.emit(target)
 	return true
 
+func clear_mark() -> void:
+	if is_instance_valid(current_target):
+		if current_target.died.is_connected(_on_defeat):
+			current_target.died.disconnect(_on_defeat)
+		current_target.set_marked(false)
+	current_target = null
+	duration_left = 0
 
-## Collider may be the enemy itself or a child (hitbox / mesh body).
-static func _enemy_from(c: Node) -> Node:
-	while c:
-		if c.is_in_group("enemy"):
-			return c
-		c = c.get_parent()
-	return null
+func consume_mark() -> void:
+	clear_mark()
 
+func _on_defeat(_enemy: TimbukEnemy) -> void:
+	clear_mark()
 
-func count() -> int:
-	return marked.size()
+func _exit_tree() -> void:
+	clear_mark()
