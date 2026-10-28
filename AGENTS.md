@@ -32,7 +32,7 @@ Edit only the files you own. If you need a change in someone else's file, ask th
 | Suspend | Jarman | `scripts/abilities/suspend.gd` *(proposed)* |
 | Explosion | Daniel | `scripts/abilities/explosion.gd` *(proposed)* |
 | Graphics, audio, map | Jarman | `assets/`, `source/`, `tools/`, `scripts/visual/`, all generated scenes |
-| Shared core: player, target base class, targeting, HUD, level manager, input map, physics layers | **Unassigned. Claim it before starting.** | `scripts/core/`, `scenes/game/` *(proposed)* |
+| Shared core: player, target base class, targeting, HUD, level manager, input map, physics layers | **Rhaiyn Newby (claimed Oct 28)** | `scripts/core/`, `scenes/game/` |
 | Story text and word budget | **Unassigned** | Label3D text, `source/audio/voice_lines.txt`, section 4.5 here |
 
 **Git:** one branch per person, merged into `main` through a pull request (as `graphics-v2` was). Pull before you start. `project.godot` is shared: change it (input map, layer names, autoloads, main scene) in one small commit and tell the team. Never let two people edit the same `.tscn`.
@@ -177,7 +177,7 @@ Our submitted clarity rating marked every mechanic "Clear" and can't be revised,
 
 ## 7. Technical contract (so we can work at the same time)
 
-**Status: proposed. Nothing in `scripts/core/` exists yet.** Whoever claims the shared core finalizes this and updates the section.
+**Status: shared core claimed by Rhaiyn Newby, Oct 28.** The playable foundation implements Player, Target, HUD, pause and level lifecycle. Only Marking is implemented; Combat/enemy AI, Suspend and Explosion remain with their owners. This is an integration prototype, not the final four-mechanic build required by section 2.3.
 
 ### Folders
 ```
@@ -227,13 +227,22 @@ func is_ready() -> bool
 ```
 Abilities find each other as siblings under `Player/Abilities` (`$"../Suspend"`). Combat calls `suspend.reduce_cooldown(1.0)`. Explosion reads Marking's current target and asks Suspend to end suspensions. The HUD reads `cooldown_left` from all four.
 
+Implemented integration details (Oct 28):
+- `Player/Abilities/Marking` exposes `current_target`, `cooldown_left`, `duration_left`, `is_ready()`, `try_activate()`, `clear_mark()` and `consume_mark()`. Explosion should call `consume_mark()` only after its own validation/snapshot. Marking never writes `suspended`.
+- `Target` emits `mark_changed(active)` for presentation and `defeated(target)` once after clearing effects and disabling collision. Add a centered `CollisionShape3D` child; `center()` uses its global position. Enemy overrides of `_ready()` must call `super()` to register in the `targets` group.
+- The dedicated `scenes/enemies/marking_test_target.tscn` fixture is part of Rhaiyn's prototype work (explicitly requested). It has no AI and does not replace Rickey's future enemy scene/scripts. `MarkFeedback` is an optional child observing Target and using local copies of Jarman's existing materials. The fixture sets creature speech `lines = []`; source audio and the submitted word budget are unchanged.
+- `scenes/game/player.tscn` reserves `Player/Abilities` for sibling nodes named `Combat`, `Suspend`, `Explosion`. Add each owner's Node/script there when ready. HUD automatically discovers these names and reads `cooldown_left` and `COOLDOWN`; missing abilities appear gray.
+- Player traversal speed is a prototype choice of 4 m/s. The upright capsule is 1.8 m high; its bottom defines the 1.4 m upper-body point. No jump action exists. The spring arm collides with layer 1.
+- `level_manager.gd` snapshots required targets at start, records victory immediately, gives same-step loss priority before notifying victory listeners, and reloads the scene 2 active seconds after loss. There is no progression UI or new story text. Esc toggles pause and releases/recaptures the mouse; loss of application focus pauses too.
+- `facility_instance.gd` instances the existing full facility at runtime under `Facility/Graphics`. For Compatibility it caches inert replacements for the four unsupported FogMaterials in memory before loading the scene, removes FogVolumes from the runtime instance, and duplicates the existing Environment for fixed ambient lighting without auto-exposure. No generated scene, asset or import file is edited. The map appears when running, not in the prototype's editor viewport. The map already includes paper/photo story props; no new dialogue or labels were added.
+
 ### Godot gotchas
 - **Timers:** count down with `delta` in `_physics_process` (or use Timer nodes). Both freeze when `get_tree().paused = true`. Never use wall-clock time. The pause menu node needs `PROCESS_MODE_WHEN_PAUSED`.
 - **Navigation:** there's no navmesh yet. The enemy owner adds a `NavigationRegion3D` to each game level and bakes it from layer 1 colliders.
 - **Creatures have no collider or body.** `scenes/characters/*.tscn` roots are plain `Node3D` visuals. Wrap them in an enemy scene.
 - **Models face +Z** (Godot's forward is −Z). Use `look_at(target, Vector3.UP, true)` so creatures face where they walk.
 - **Numbers live in named constants** at the top of the owning script (`const DAMAGE := 20`). The post-build PDF asks for the exact file, value and edit that would double the difficulty.
-- **Main scene** is still `scenes/visual_inspection.tscn` (the flycam). Switch `run/main_scene` to the first game level in one coordinated commit.
+- **Playable scene:** `scenes/game/marking_prototype.tscn`. Open it and press F6. The graphics inspection scene remains available separately; the shared project launch settings are coordinated separately.
 - The flycam's Q/E fly up and down. That only applies to the inspection scene.
 
 ## 8. Art and audio to use
@@ -277,7 +286,7 @@ Full guide: [docs/GRAPHICS.md](docs/GRAPHICS.md). Effects: instance from `scenes
 | One big facility (~10 min run) | Every target in a level is required; the Twin won't necessarily die last | Put the Twin chamber in its own final level |
 
 ## 10. Open decisions
-- [ ] Who builds the shared core (section 7)
+- [x] Shared core: Rhaiyn Newby (section 7)
 - [ ] The Combat weapon
 - [ ] Levels: how many, and which areas each one uses
 - [ ] Progression between areas (section 9, key row)
