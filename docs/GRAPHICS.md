@@ -85,7 +85,7 @@ python3 source/textures/texgen.py                      # PBR textures + VFX spri
 blender -b --factory-startup --python source/blender/props.py
 blender -b --factory-startup --python source/blender/build_facility.py
 blender -b --factory-startup --python source/blender/creatures.py
-blender -b --factory-startup --python source/blender/twin_monster.py
+blender -b --factory-startup --python source/blender/clockwork_brother.py   # the Twin (twin_monster.py is a helper)
 tools/godot.sh script res://tools/build_materials.gd     # .tres materials
 tools/godot.sh import                                    # import GLBs/textures
 tools/godot.sh script res://tools/build_scenes.gd        # props, areas, facility, characters, inspection, reveal

@@ -112,23 +112,13 @@ def clock(L, parts, bones):
     parts.append((ring("bezel", c + n * 0.002, R + 0.006, 0.0075, "brass", rot, 128, 12), "head"))
     parts.append((ring("bezel_outer", c - n * 0.006, R + 0.012, 0.004, "copper", rot, 128, 8), "head"))
     q = facing(n).to_quaternion()
-    for k in range(12):
-        a = k / 12 * 2 * math.pi
-        p = c + q @ Vector((math.cos(a) * (R + 0.012), math.sin(a) * (R + 0.012), 0)) + n * 0.004
-        parts.append((T.cyl("bezel_screw", 0.0028, 0.004, tuple(p), "gold", rot=tuple(rot), seg=8), "head"))
     parts.append((disc("glass", c + n * 0.006, R + 0.001, 0.002, "glass", rot, 64), "head"))
-    for k in range(5):     # cracks in the glass
-        a = RND.uniform(0, 2 * math.pi)
-        r0, r1 = RND.uniform(0.0, 0.02), RND.uniform(0.035, R)
-        p0 = c + q @ Vector((math.cos(a) * r0, math.sin(a) * r0, 0)) + n * 0.0075
-        p1 = c + q @ Vector((math.cos(a + 0.2) * r1, math.sin(a + 0.2) * r1, 0)) + n * 0.0075
-        parts.append((T.tube("glass_crack", [tuple(p0), tuple(p1)], 0.0004, "glass_grime", 3), "head"))
     hub = c + n * 0.001
     bones["clock_hour"] = (hub, hub + n * 0.03)
     bones["clock_minute"] = (hub, hub + n * 0.035)
     up = q @ Vector((0, 1, 0))
     for name, length, w, bone in (("hour_hand", R * 0.55, 0.005, "clock_hour"), ("minute_hand", R * 0.85, 0.0032, "clock_minute")):
-        parts.append((T.box(name, (w, length + 0.01, 0.0015), tuple(hub + up * (length / 2 - 0.005)), "black_cavity", rot=tuple(rot), uv=False), bone))
+        parts.append((T.box(name, (w, length + 0.01, 0.0015), tuple(hub + up * (length / 2 - 0.005)), "light_red", rot=tuple(rot), uv=False), bone))   # his unique accent: glowing red hands
     parts.append((T.cyl("hub_pin", 0.004, 0.006, tuple(hub + n * 0.002), "brass", rot=tuple(rot), seg=12), "head"))
 
 
@@ -140,13 +130,14 @@ def eyes_and_lens(L, parts, bones, lights):
         parts.append((T.sphere("gauge_ball", H.EYE_R * 0.98, tuple(ec), "teal_metal", 24, 16), "INSET:head"))
         # (inside the lids like a real eyeball: tagged INSET for the clip test)
         parts.append((disc("gauge_dial", ec + n * (H.EYE_R * 0.8), H.EYE_R * 0.62, 0.002, "gauge_eye", rot, 40, planar=True), "INSET:head"))
-        parts.append((ring("gauge_rim", ec + n * (H.EYE_R * 0.84), H.EYE_R * 0.64, 0.0012, "brass", rot, 40, 6), "INSET:head"))
+        hot = side == "R"      # twin duality: one gauge eye burns hot amber, its twin cold cyan
+        parts.append((ring("gauge_rim", ec + n * (H.EYE_R * 0.84), H.EYE_R * 0.64, 0.0012, "light_amber" if hot else "light_cyan", rot, 40, 6), "INSET:head"))
         parts.append((disc("gauge_glass", ec + n * (H.EYE_R * 0.9), H.EYE_R * 0.62, 0.0008, "glass", rot, 32), "INSET:head"))
         bname = f"gauge_needle.{side}"
         bones[bname] = (ec + n * H.EYE_R * 0.85, ec + n * (H.EYE_R + 0.02))
         upv = facing(n).to_quaternion() @ Vector((0, 1, 0))
         parts.append((T.box("needle", (0.0008, H.EYE_R * 0.5, 0.0006), tuple(ec + n * H.EYE_R * 0.86 + upv * H.EYE_R * 0.2), "black_cavity", rot=tuple(rot), uv=False), bname))
-        lights.append(("gauge", ec + n * 0.03, {"energy": 0.12, "range": 0.5, "color": [1.0, 0.55, 0.15], "pulse": 0.6}))
+        lights.append(("gauge", ec + n * 0.03, {"energy": 0.2, "range": 0.6, "color": [1.0, 0.55, 0.15] if hot else [0.3, 0.85, 1.0], "pulse": 0.6}))
     # lens eye in the bridge of the nose
     c, r = L.lens_c, L.lens_r
     n = Vector((0, -1, 0.15)).normalized()
@@ -199,10 +190,6 @@ def looms(shape, L, j, parts, bones):
                 lane_pts.append(p + (u * math.cos(ang) + v * math.sin(ang)) * spread)
             lane_pts = clear_path(shape, [tuple(p) for p in lane_pts], 0.004)
             parts.append((T.tube("loom_cable", lane_pts, 0.0017, mats[lane], 6), "SKIN"))
-        # clips binding each loom every few cm
-        for i in range(4, len(centre) - 2, 6):
-            t = (centre[i + 1] - centre[i - 1]).normalized()
-            parts.append((T.torus("loom_clip", 0.0085, 0.0018, tuple(centre[i]), "brass", rot=tuple(facing(t)), seg=16, rseg=5), "SKIN"))
         port = T.cyl("loom_port", 0.009, 0.012, tuple(a), "brass", rot=tuple(facing(out)), seg=14)
         parts.append((port, "INSET:head"))
 
@@ -217,7 +204,6 @@ def spine_harness(shape, j, parts, lights):
             _, n = sdf_grad(shape, np.array(tuple(p), np.float32))
             # thin side (12 mm) along the surface normal, so the plate lies flat on the spine
             parts.append((T.box("vert_plate", (0.045, 0.03, 0.012), tuple(p), "brass", rot=tuple(facing(n)), bevel=0.003), "SKIN"))
-            parts.append((T.cyl("vert_bolt", 0.004, 0.006, tuple(p + n * 0.008), "teal_metal", rot=tuple(facing(n)), seg=8), "SKIN"))
             if prev is not None:
                 parts.append((T.tube("vert_link", [tuple(prev), tuple(p + n * 0.01)], 0.0035, "steel", 6), "SKIN"))
             prev = p + n * 0.01
