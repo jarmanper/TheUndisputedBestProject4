@@ -26,6 +26,11 @@ func _ready() -> void:
 	for path in [STORY_LAYER, DIALOGUE_BOX]:
 		if ResourceLoader.exists(path):
 			add_child(load(path).instantiate())
+	# Fresh run: never start paused, always start with the mouse captured,
+	# and apply the title screen's saved settings (sensitivity, volume, fullscreen).
+	get_tree().paused = false
+	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+	UiSettings.apply(get_tree())
 
 
 func _process(delta: float) -> void:

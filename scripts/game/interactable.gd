@@ -62,8 +62,8 @@ func get_prompt() -> String:
 	if done:
 		return ""
 	if kind == Kind.DOOR:
-		return "E - try door"
-	return "E - " + prompt
+		return "[E] Try door"
+	return "[E] " + prompt.left(1).to_upper() + prompt.substr(1)
 
 
 func interact(player: Node) -> void:

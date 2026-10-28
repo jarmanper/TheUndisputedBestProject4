@@ -47,30 +47,45 @@ func has_flag(flag_name: String) -> bool:
 	return flags.has(flag_name) and bool(flags[flag_name])
 
 
-## Player died: show the death overlay, then return to the title.
+## Player died: the death screen (dialogue box) offers Retry / Title.
+## With no screen listening, fall back to returning to the title.
 func lose() -> void:
 	if _game_over:
 		return
 	_game_over = true
 	player_died.emit()
-	await get_tree().create_timer(DEATH_DELAY, true).timeout
-	go_to_title()
+	if player_died.get_connections().is_empty():
+		await get_tree().create_timer(DEATH_DELAY, true).timeout
+		if _game_over:
+			go_to_title()
 
 
-## Twin defeated: show the ending, then return to the title.
+## Twin defeated: the ending screen offers Play again / Title.
 func win() -> void:
 	if _game_over:
 		return
 	_game_over = true
 	game_won.emit()
-	await get_tree().create_timer(ENDING_DELAY, true).timeout
-	go_to_title()
+	if game_won.get_connections().is_empty():
+		await get_tree().create_timer(ENDING_DELAY, true).timeout
+		if _game_over:
+			go_to_title()
+
+
+func is_game_over() -> bool:
+	return _game_over
 
 
 func start_new_game() -> void:
 	_reset()
 	get_tree().paused = false
+	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 	get_tree().change_scene_to_file(GAME_SCENE)
+
+
+## Restart the level from scratch (death / ending screen).
+func retry() -> void:
+	start_new_game()
 
 
 func go_to_title() -> void:

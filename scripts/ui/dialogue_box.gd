@@ -22,6 +22,9 @@ var _objective_label: Label
 var _overlay: ColorRect
 var _overlay_title: Label
 var _overlay_sub: Label
+var _overlay_buttons: HBoxContainer
+var _retry_btn: Button
+var _title_btn: Button
 
 
 func _ready() -> void:
@@ -74,7 +77,7 @@ func _speaker_color(who: String) -> Color:
 
 
 func _process(delta: float) -> void:
-	if not _active:
+	if not _active or get_tree().paused:
 		return
 	if _text.visible_characters < _full_text.length():
 		_shown += delta * CHARS_PER_SEC
@@ -93,14 +96,10 @@ func _advance() -> void:
 
 
 func _input(event: InputEvent) -> void:
-	if not _active or not event.is_pressed() or event.is_echo():
+	if not _active or get_tree().paused or not event.is_pressed() or event.is_echo():
 		return
-	var advance := false
-	if event is InputEventKey:
-		advance = event.physical_keycode in [KEY_E, KEY_ENTER, KEY_KP_ENTER, KEY_SPACE]
-	elif event is InputEventMouseButton:
-		advance = event.button_index == MOUSE_BUTTON_LEFT
-	if advance:
+	# Mouse clicks are left to the gun so shooting never skips story lines.
+	if event is InputEventKey and event.physical_keycode in [KEY_E, KEY_ENTER, KEY_KP_ENTER, KEY_SPACE]:
 		_advance()
 		get_viewport().set_input_as_handled()
 
@@ -119,11 +118,13 @@ func _on_objective_changed(text: String) -> void:
 # ---------------------------------------------------------------- overlays
 
 func _on_player_died() -> void:
-	_show_overlay(Color(0.25, 0.0, 0.0, 0.0), Color(0.25, 0.0, 0.0, 0.92),
+	_retry_btn.text = "Retry"
+	_show_overlay(Color(0.25, 0.0, 0.0, 0.0), Color(0.12, 0.0, 0.0, 0.94),
 		"YOUR CLOCK STOPPED", "It heard you.", Color(0.95, 0.2, 0.15))
 
 
 func _on_game_won() -> void:
+	_retry_btn.text = "Play again"
 	_show_overlay(Color(0, 0, 0, 0), Color(0, 0, 0, 1),
 		"THE CLOCK IS SILENT",
 		"The Twin is still. For the first time in eleven years, nothing in TIMBUK is ticking.\n\nReyes walked out at dawn. Dr. Hale never answered the radio again.\n\nSomewhere below, a second hand twitched.",
@@ -141,10 +142,35 @@ func _show_overlay(from: Color, to: Color, title: String, sub: String, title_col
 	_overlay_sub.text = sub
 	_overlay_title.modulate.a = 0.0
 	_overlay_sub.modulate.a = 0.0
+	_overlay_buttons.modulate.a = 0.0
+	_overlay_buttons.visible = false
+	_overlay.mouse_filter = Control.MOUSE_FILTER_STOP   # block clicks to the HUD below
 	var tw := create_tween()
 	tw.tween_property(_overlay, "color", to, 1.2)
 	tw.tween_property(_overlay_title, "modulate:a", 1.0, 0.8)
 	tw.tween_property(_overlay_sub, "modulate:a", 1.0, 1.5)
+	tw.tween_callback(_show_end_buttons)
+	tw.tween_property(_overlay_buttons, "modulate:a", 1.0, 0.6)
+
+
+func _show_end_buttons() -> void:
+	# Freeze the world under the end screen and hand the mouse back.
+	get_tree().paused = true
+	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+	_overlay_buttons.visible = true
+	_retry_btn.grab_focus()
+
+
+func _on_retry() -> void:
+	_retry_btn.disabled = true
+	_title_btn.disabled = true
+	GameState.retry()
+
+
+func _on_title() -> void:
+	_retry_btn.disabled = true
+	_title_btn.disabled = true
+	GameState.go_to_title()
 
 
 # ---------------------------------------------------------------- build
@@ -237,3 +263,14 @@ func _build_ui() -> void:
 	_overlay_sub.add_theme_font_size_override("font_size", 22)
 	_overlay_sub.add_theme_color_override("font_color", Color(0.8, 0.78, 0.72))
 	ovb.add_child(_overlay_sub)
+	_overlay_buttons = HBoxContainer.new()
+	_overlay_buttons.alignment = BoxContainer.ALIGNMENT_CENTER
+	_overlay_buttons.add_theme_constant_override("separation", 24)
+	_overlay_buttons.visible = false
+	ovb.add_child(_overlay_buttons)
+	_retry_btn = UiStyle.button("Retry")
+	_retry_btn.pressed.connect(_on_retry)
+	_overlay_buttons.add_child(_retry_btn)
+	_title_btn = UiStyle.button("Return to title")
+	_title_btn.pressed.connect(_on_title)
+	_overlay_buttons.add_child(_title_btn)
