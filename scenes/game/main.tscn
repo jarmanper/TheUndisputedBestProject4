@@ -54,7 +54,7 @@ spot_angle = 26.0
 spot_attenuation = 0.8
 
 [node name="Pistol" parent="Player/Head/Camera3D" instance=ExtResource("pistol")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.2, -0.18, -0.42)
+transform = Transform3D(0.993572, 0, 0.113203, 0, 1, 0, -0.113203, 0, 0.993572, 0.125, -0.085, -0.27)
 
 [node name="Combat" type="Node" parent="Player"]
 script = ExtResource("combat")
