@@ -391,8 +391,17 @@ func make_environment() -> Environment:
 	env.ssao_intensity = 2.2
 	env.ssil_enabled = true
 	env.ssil_intensity = 0.8
-	# SSR off: it smears additive VFX into glossy floors/walls; probes handle reflections
-	env.ssr_enabled = false
+	# SSR back on (was off: "it smears additive VFX into glossy floors/walls").
+	# Re-tested 2026-10-29 against the real explosion_orange / fire_orange VFX in
+	# the research corridor and the lobby: at the brightness those effects
+	# actually use, no smearing is visible on the dado walls or the tile floor,
+	# and the floors gain a real wet-polished reflection. The smearing only
+	# reproduces with an artificially overbright (6x) additive quad, so the short
+	# ray budget below is what keeps it in check. Costs ~0.5-1 ms.
+	# The Low graphics preset turns this off again (scripts/game/ui_settings.gd).
+	env.ssr_enabled = true
+	env.ssr_max_steps = 32
+	env.ssr_fade_in = 0.3
 	env.glow_enabled = true
 	env.glow_intensity = 0.55
 	env.glow_bloom = 0.04

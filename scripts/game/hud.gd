@@ -4,11 +4,27 @@ extends CanvasLayer
 ## vignette and the pause menu (Resume / Settings / Quit to title).
 ## Built in code; reads the player and its mechanic nodes every frame.
 ##
+## Also owns the always-on cinematic grade (film grain + vignette + a touch of
+## chromatic aberration) on its own canvas layer underneath every UI element,
+## so the 3D image reads as filmed while the HUD stays clean.
+##
 ## Public API (group "hud"):
 ##   show_hit_marker(headshot: bool)  - flash the hit marker
 ##   pulse_crosshair(amount := 1.0)   - kick the crosshair outward
 ##   flash_damage()                   - red vignette flash
 ##   toggle_pause() / set_paused(on: bool) / is_paused() -> bool
+## Public API (group "game_grade"):
+##   set_quality(level: int)          - 0 Low / 1 Medium / 2 High
+
+const GRADE_SHADER := "res://assets/shaders/game_grade.gdshader"
+## Per quality level: grain amplitude, vignette strength, edge aberration.
+## Tuned by eye at 1920x1080: aberration above ~0.002 reads as a rainbow on
+## vertical edges instead of as a lens, and grain above ~0.035 reads as noise.
+const GRADE_PRESETS := [
+	{"grain": 0.020, "vignette": 0.22, "aberration": 0.0},
+	{"grain": 0.024, "vignette": 0.26, "aberration": 0.0007},
+	{"grain": 0.025, "vignette": 0.26, "aberration": 0.0008},
+]
 
 @export var player_path: NodePath
 
@@ -32,12 +48,16 @@ var _pause: ColorRect
 var _pause_main: VBoxContainer
 var _settings: UiSettingsPanel
 var _resume_btn: Button
+var _grade: ColorRect
 
 
 func _ready() -> void:
 	add_to_group("hud")
+	add_to_group("game_grade")
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	player = get_node_or_null(player_path) as TimbukPlayer
+
+	_build_grade()
 
 	_root = Control.new()
 	_root.set_anchors_preset(Control.PRESET_FULL_RECT)
@@ -70,6 +90,38 @@ func _ready() -> void:
 	_build_health()
 	_build_ammo()
 	_build_pause()
+
+
+## Full-screen cinematic pass. Its own CanvasLayer at a negative layer index:
+## that draws over the 3D viewport but under the HUD (1), the dialogue box (10)
+## and the pause menu (20), so no UI element ever picks up grain.
+func _build_grade() -> void:
+	if not ResourceLoader.exists(GRADE_SHADER):
+		return
+	var layer := CanvasLayer.new()
+	layer.name = "GradeLayer"
+	layer.layer = -1
+	add_child(layer)
+	var mat := ShaderMaterial.new()
+	mat.shader = load(GRADE_SHADER)
+	_grade = ColorRect.new()
+	_grade.name = "Grade"
+	_grade.material = mat
+	_grade.color = Color.WHITE
+	_grade.set_anchors_preset(Control.PRESET_FULL_RECT)
+	_grade.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	layer.add_child(_grade)
+	set_quality(UiSettings.quality())
+
+
+## Called by UiSettings.apply_quality (group "game_grade"). 0 Low / 1 Med / 2 High.
+func set_quality(level: int) -> void:
+	if _grade == null:
+		return
+	var p: Dictionary = GRADE_PRESETS[clampi(level, 0, GRADE_PRESETS.size() - 1)]
+	var mat := _grade.material as ShaderMaterial
+	for k in p:
+		mat.set_shader_parameter(k, p[k])
 
 
 func _build_health() -> void:
