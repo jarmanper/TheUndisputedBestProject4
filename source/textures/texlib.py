@@ -3,6 +3,7 @@
 Everything here wraps around at the edges, so the textures repeat
 without visible seams. No PIL needed: PNGs are written with zlib.
 """
+import math
 import struct
 import zlib
 
@@ -51,14 +52,23 @@ def _freq(n):
     return fx, fy
 
 
-def fbm(n, beta=2.0, lo=1.0, hi=None, stretch=(1.0, 1.0)):
+def fbm(n, beta=2.0, lo=1.0, hi=None, stretch=(1.0, 1.0), rot=0.0):
     """Seamless fractal noise made by shaping white noise in frequency space.
 
     beta: higher = smoother/blobbier. lo/hi: frequency band (in repeats
     per tile). stretch: (sx, sy) > 1 squashes features along that axis,
-    e.g. stretch=(1, 8) makes long vertical streaks.
+    e.g. stretch=(1, 8) makes long vertical streaks. rot: radians to turn
+    the stretch axis by, so streaks and scratches can run diagonally.
+
+    lo/hi are in repeats per tile, so they describe *world-space* feature
+    size and stay meaningful when the tile resolution changes. A band with
+    a high `lo` (say 200+) is nearly empty at n=512 and full of detail at
+    n=2048: that is how extra resolution buys extra detail here.
     """
     fx, fy = _freq(n)
+    if rot:
+        c, s = math.cos(rot), math.sin(rot)
+        fx, fy = fx * c - fy * s, fx * s + fy * c
     r = np.sqrt((fx * stretch[0]) ** 2 + (fy * stretch[1]) ** 2)
     r[0, 0] = 1.0
     amp = 1.0 / r ** (beta / 2.0)
@@ -91,6 +101,105 @@ def worley(n, count, power=1.0):
         f1 = np.where(closer, d, f1)
     scale = n / np.sqrt(count)
     return (f1 / scale) ** power, (f2 - f1) / scale, cid
+
+
+def worley_grid(n, cells, power=1.0, jitter=1.0):
+    """Seamless cellular noise on a jittered grid. Same outputs as worley()
+    -- (f1, f2 - f1, cell id) -- but O(9 n^2) instead of O(count * n^2).
+
+    `cells` is cells per axis, so it stands in for worley(count=cells**2).
+    Because the cost no longer grows with the point count, feature density
+    can scale with the tile resolution: pass cells = base_cells * n / base_n
+    and the cells keep the same *world* size while the tile gets finer, which
+    is what makes a 2048 map carry real detail instead of magnified blobs.
+    """
+    g = max(2, int(round(cells)))
+    off = (RNG.random((g, g, 2)) - 0.5) * jitter + 0.5
+    step = n / g
+    yy, xx = np.mgrid[0:n, 0:n].astype(np.float32)
+    cx = np.floor(xx / step).astype(np.int32)
+    cy = np.floor(yy / step).astype(np.int32)
+    f1 = np.full((n, n), 1e9, np.float32)
+    f2 = np.full((n, n), 1e9, np.float32)
+    cid = np.zeros((n, n), np.int32)
+    ox_arr = off[:, :, 0]
+    oy_arr = off[:, :, 1]
+    for oy in (-1, 0, 1):
+        for ox in (-1, 0, 1):
+            gx = (cx + ox) % g
+            gy = (cy + oy) % g
+            px = (cx + ox + ox_arr[gy, gx]) * step
+            py = (cy + oy + oy_arr[gy, gx]) * step
+            d = np.sqrt((xx - px) ** 2 + (yy - py) ** 2)
+            closer = d < f1
+            f2 = np.where(closer, f1, np.minimum(f2, d))
+            cid = np.where(closer, gy * g + gx, cid)
+            f1 = np.where(closer, d, f1)
+    return (f1 / step) ** power, (f2 - f1) / step, cid
+
+
+def pores(n, cells, depth=0.25):
+    """Rounded pits/pores mask (1 at a pit centre). `cells` per axis."""
+    f1, _, _ = worley_grid(n, cells)
+    return 1.0 - remap(f1, 0.0, depth)
+
+
+def cell_edges(n, cells, width=0.012):
+    """Crack/flake network: 1 along the boundaries between cells."""
+    _, edge, _ = worley_grid(n, cells)
+    return 1.0 - remap(edge, 0.0, width)
+
+
+def hairlines(n, lo=10.0, aniso=20.0, rot=0.0, width=1.6, density=3, beta=2.2,
+              broken=0.0):
+    """Thin, continuous, seamless scratches.
+
+    Thresholding anisotropic noise (the usual trick) only ever picks out its
+    isolated peaks, so it gives speckle, not scratches. Contours of a smooth
+    field are continuous curves, which is what a scratch actually is, so this
+    draws `density` contour levels of an elongated noise field.
+
+    `lo` sets how many scratches cross the tile (world-space, so it does not
+    change with resolution), `aniso` how strongly they line up, `rot` their
+    direction and `width` their width in texels -- which means a 2048 tile
+    gets genuinely finer hairlines rather than fatter ones.
+    """
+    s = fbm(n, beta, lo=lo, hi=lo * 3.0, stretch=(aniso, 1.0), rot=rot)
+    gx = (np.roll(s, -1, 1) - np.roll(s, 1, 1)) * 0.5
+    gy = (np.roll(s, -1, 0) - np.roll(s, 1, 0)) * 0.5
+    gm = np.sqrt(gx * gx + gy * gy) + 1e-7
+    out = np.zeros((n, n))
+    k = max(1, int(density))
+    for i in range(k):
+        lvl = (i + 0.5) / k
+        d = np.abs(s - lvl) / gm          # distance to the contour, in texels
+        out = np.maximum(out, 1.0 - remap(d, width * 0.5, width * 0.5 + 1.0))
+    if broken > 0:
+        # cut the contours into separate strokes so they read as scratches
+        # rather than as the isolines of a smooth field
+        cut = fbm(n, 1.6, lo=lo * 1.5, stretch=(aniso * 0.35, 1.0), rot=rot)
+        out = out * smooth(remap(cut, 0.5 - 0.35 * (1 - broken), 0.78))
+    return out
+
+
+def detail(n, bands):
+    """Weighted sum of high-frequency fbm bands, renormalised to 0..1.
+
+    bands: [(lo, beta, weight), ...]. Bands with a high `lo` contribute
+    almost nothing at low resolution and a lot at high resolution.
+    """
+    acc = np.zeros((n, n))
+    wsum = 0.0
+    for lo, beta, w in bands:
+        if lo >= n * 0.45:          # above this the band has no room left
+            continue
+        acc += (fbm(n, beta, lo=lo) - 0.5) * w
+        wsum += w
+    if wsum <= 0:
+        return np.full((n, n), 0.5)
+    a = acc / wsum
+    m = max(np.abs(a).max(), 1e-9)
+    return a / (2 * m) + 0.5
 
 
 def blur(img, radius):

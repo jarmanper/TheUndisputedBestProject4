@@ -45,6 +45,52 @@ def grime_layers(n):
     return big, mid, fine
 
 
+# -------------------------------------------------------------------- scale
+# Resolution tiers. A texture's useful size is set by its texel density:
+# texels per metre = n / repeat, where `repeat` (metres per tile) comes from
+# source/materials.json. The hero architecture tiles over 1.5-3 m, so it was
+# the only group starving for pixels; the character/prop sets tile over
+# 0.12-0.6 m and were already denser than the walls. Numbers in HERO/MID are
+# chosen so every surface the player stands next to lands at roughly
+# 680-1400 texels/m (1.5-0.7 mm per texel) and nothing is so dense that
+# mipmapping throws the extra pixels away before they reach the screen.
+HERO = 2048     # 680-1400 texels/m: concrete, panels, floors, doors, rust
+MID = 1024      # ceilings, cabinets, steel, glass, cloth, decals
+PROP = 512      # small props and anything only ever seen from across a room
+
+
+def px(n, base):
+    """Scale a width/radius that was authored in pixels at `base` resolution,
+    so lines, screws and grout keep the same *world* size at any tile size."""
+    return n / float(base)
+
+
+def cells(n, base_cells, base):
+    """Scale a cellular-noise cell count per axis the same way, so pores and
+    flakes keep their world size and simply get more pixels each."""
+    return base_cells * n / float(base)
+
+
+def skin_furrows(n, base_cells, base_n):
+    """The criss-cross furrow network that makes skin read as skin up close.
+
+    Two overlapping cell networks, softened. Raw cell edges give hard-edged
+    facets that look like reptile scales, so this blurs them: on skin the
+    network should be a whisper in the normal map, not a relief carving.
+    """
+    a = cell_edges(n, cells(n, base_cells, base_n), 0.17)
+    b = cell_edges(n, cells(n, base_cells * 0.55, base_n), 0.11)
+    f = smooth(np.clip(a * 0.7 + b * 0.5, 0, 1))
+    return blur(f, 1.3 * px(n, base_n))
+
+
+def micro_detail(n):
+    """Fine surface grain. The 240 and 460 repeats-per-tile bands are all but
+    empty at 512 and full at 2048, so this is detail the extra resolution
+    actually buys rather than a smoother version of the same blur."""
+    return detail(n, [(90, 1.1, 1.0), (240, 0.95, 0.75), (460, 0.85, 0.5)])
+
+
 # ====================================================================
 # Architecture
 # ====================================================================
@@ -52,43 +98,70 @@ def grime_layers(n):
 @tex
 def concrete():
     T.seed(1)
-    n = 1024
+    n = HERO
     big, mid, fine = grime_layers(n)
-    f1, edge, _ = worley(n, 900)
-    pores = remap(f1, 0.0, 0.12)            # tiny dark pits
-    pits = 1.0 - pores
+    mic = micro_detail(n)
+    f1, _, _ = worley_grid(n, cells(n, 30, 1024))
+    pits = 1.0 - remap(f1, 0.0, 0.18)                   # cast air pockets
+    # air pockets cluster, so thin them out with a slow mask instead of
+    # leaving one in every cell (which reads as a regular grid)
+    pits *= 0.25 + 0.75 * smooth(remap(fbm(n, 1.8, lo=6), 0.35, 0.8))
+    bubbles = pores(n, cells(n, 70, 1024), 0.30)        # sub-mm pinholes
+    bubbles *= remap(mic, 0.4, 0.85)
+    bubbles *= 0.3 + 0.7 * smooth(remap(fbm(n, 1.6, lo=12), 0.3, 0.8))
+    sand = remap(cell_edges(n, cells(n, 52, 1024), 0.06), 0.15, 1.0)   # aggregate
     stains = smooth(remap(big, 0.55, 0.85))
     drip = smooth(remap(fbm(n, 2.2, lo=2, stretch=(1, 7)), 0.55, 0.9))
+    trowel = hairlines(n, lo=5, aniso=16, rot=0.3, width=3.0, density=2, broken=0.7)
     base = lerp(srgb("8a8986"), srgb("a3a19c"), mid)
     base = base * (0.92 + 0.16 * fine[:, :, None])
+    base = base * (0.95 + 0.11 * mic[:, :, None])       # cement grain
+    base = lerp(base, srgb("b4b1a9"), sand * 0.16)      # exposed sand grains
     base = lerp(base, srgb("5d5a54"), stains * 0.55)
     base = lerp(base, srgb("4a463f"), drip * 0.45)
     base = base * (1.0 - pits[:, :, None] * 0.35)
-    h = mid * 0.4 + fine * 0.35 - pits * 0.6
-    rough = 0.82 + 0.12 * fine - stains * 0.15 - drip * 0.1
-    write("concrete", base, rough, h, 3.0)
+    base = base * (1.0 - bubbles[:, :, None] * 0.20)
+    h = (mid * 0.4 + fine * 0.35 - pits * 0.6
+         + (mic - 0.5) * 0.55 - bubbles * 0.5
+         + sand * 0.14 - trowel * 0.10)
+    rough = (0.82 + 0.12 * fine - stains * 0.15 - drip * 0.1
+             + (mic - 0.5) * 0.16 + bubbles * 0.1)
+    write("concrete", base, np.clip(rough, 0, 1), h, 3.0)
 
 
 @tex
 def concrete_damaged():
     """Lower-level concrete: cracked, water damaged, darker."""
     T.seed(2)
-    n = 1024
+    n = HERO
     big, mid, fine = grime_layers(n)
-    f1, edge, _ = worley(n, 40)
-    cracks = 1.0 - remap(edge, 0.0, 0.012)
-    cracks *= smooth(remap(fbm(n, 2.0, lo=2), 0.45, 0.65))   # only some edges crack
-    p1, _, _ = worley(n, 1200)
-    pits = 1.0 - remap(p1, 0, 0.13)
+    mic = micro_detail(n)
+    cracks = cell_edges(n, cells(n, 6.3, 1024), 0.012)        # ~40 cells at 1024
+    cracks *= smooth(remap(fbm(n, 2.0, lo=2), 0.45, 0.65))    # only some edges crack
+    # hairline crazing branching off the big cracks: invisible at 512, legible at 2048
+    hair = cell_edges(n, cells(n, 26, 1024), 0.004)
+    hair *= smooth(remap(fbm(n, 1.8, lo=5), 0.45, 0.8)) * 0.65
+    cracks = np.clip(cracks + hair * (1 - cracks), 0, 1)
+    pits = pores(n, cells(n, 35, 1024), 0.16)
+    pits *= 0.3 + 0.7 * smooth(remap(fbm(n, 1.8, lo=6), 0.3, 0.8))
+    spall = pores(n, cells(n, 10, 1024), 0.55)                # shallow blown-out faces
+    spall *= smooth(remap(fbm(n, 2.0, lo=3), 0.6, 0.85))
+    grit = pores(n, cells(n, 78, 1024), 0.32) * remap(mic, 0.4, 0.85)
     wet = smooth(remap(big, 0.5, 0.8))
     moss = smooth(remap(fbm(n, 2.4, lo=2), 0.7, 0.95)) * wet
+    seep = hairlines(n, lo=4, aniso=0.07, width=4.0, density=2, broken=0.6) * wet
     base = lerp(srgb("6c6a65"), srgb("85827b"), mid)
     base = base * (0.9 + 0.2 * fine[:, :, None])
+    base = base * (0.94 + 0.13 * mic[:, :, None])
+    base = lerp(base, srgb("7d7a71"), spall * 0.45)           # fresh broken concrete
     base = lerp(base, srgb("3b3833"), wet * 0.6)
+    base = lerp(base, srgb("2f2c27"), seep * 0.35)
     base = lerp(base, srgb("3e4a33"), moss * 0.5)
     base = base * (1 - cracks[:, :, None] * 0.75) * (1 - pits[:, :, None] * 0.35)
-    h = mid * 0.5 + fine * 0.3 - cracks * 1.2 - pits * 0.5
-    rough = 0.85 + 0.1 * fine - wet * 0.55
+    base = base * (1 - grit[:, :, None] * 0.16)
+    h = (mid * 0.5 + fine * 0.3 - cracks * 1.2 - pits * 0.5
+         - spall * 0.55 - grit * 0.45 + (mic - 0.5) * 0.5)
+    rough = 0.85 + 0.1 * fine - wet * 0.55 + (mic - 0.5) * 0.14 + spall * 0.1
     write("concrete_damaged", base, np.clip(rough, 0.18, 1), h, 3.5)
 
 
@@ -96,25 +169,41 @@ def concrete_damaged():
 def lab_floor():
     """Worn vinyl lab tiles, 4x4 per texture (0.6 m tiles at 2.4 m repeat)."""
     T.seed(3)
-    n = 1024
+    n = HERO
+    S = px(n, 1024)
     big, mid, fine = grime_layers(n)
-    cells = 4
-    grout = grid_lines(n, cells, 5, 2.0)
+    mic = micro_detail(n)
+    tiles = 4
+    grout = grid_lines(n, tiles, 5 * S, 2.0 * S)
     yy, xx = np.mgrid[0:n, 0:n]
-    tid = (yy * cells // n) * cells + (xx * cells // n)
-    tint = RNG.random(cells * cells)[tid]
+    tid = (yy * tiles // n) * tiles + (xx * tiles // n)
+    tint = RNG.random(tiles * tiles)[tid]
     speck = remap(fbm(n, 0.6, lo=60), 0.62, 0.8)          # terrazzo-like chips
+    chips = pores(n, cells(n, 46, 1024), 0.26)            # fine vinyl flecks
+    chips *= remap(fbm(n, 0.9, lo=40), 0.4, 0.85)
     scuff = smooth(remap(fbm(n, 2.0, lo=6, stretch=(6, 1)), 0.7, 0.95))
+    # directional micro-scratches from trolleys and boots: the thing that makes
+    # a worn vinyl floor read as a real surface instead of a blurry grey plane
+    sc1 = hairlines(n, lo=10, aniso=26, rot=0.0, width=1.5, density=4, broken=0.8)
+    sc2 = hairlines(n, lo=22, aniso=18, rot=0.6, width=1.2, density=3, broken=0.9)
+    sc3 = hairlines(n, lo=16, aniso=30, rot=-0.35, width=1.0, density=4, broken=0.9)
+    scratch = np.clip(sc1 * 0.8 + sc2 * 0.7 + sc3 * 0.9, 0, 1)
+    swirl = hairlines(n, lo=34, aniso=5, rot=0.9, width=1.2, density=4, broken=0.85)
     dirt = smooth(remap(big, 0.45, 0.85))
     wet = smooth(remap(fbm(n, 3.0, lo=1), 0.72, 0.9))
     base = lerp(srgb("9ea39d"), srgb("b6b9b0"), tint * 0.6 + mid * 0.4)
     base = lerp(base, srgb("6d706a"), speck * 0.5)
+    base = lerp(base, srgb("5f625c"), chips * 0.6)
     base = lerp(base, srgb("4b4a44"), dirt * 0.55)
     base = lerp(base, srgb("3c3934"), scuff * 0.35)
+    base = lerp(base, srgb("c6c8c1"), scratch * 0.35)     # bright buffed scratches
     base = lerp(base, srgb("2b2924"), grout * 0.9)
     base = base * (1 - wet[:, :, None] * 0.25)
-    h = 1.0 - grout * 0.9 - scuff * 0.08 + fine * 0.05
-    rough = 0.55 + 0.25 * dirt + 0.15 * grout - wet * 0.45 + scuff * 0.1
+    base = base * (0.97 + 0.07 * mic[:, :, None])
+    h = (1.0 - grout * 0.9 - scuff * 0.08 + fine * 0.05
+         - scratch * 0.12 - chips * 0.1 + (mic - 0.5) * 0.18)
+    rough = (0.55 + 0.25 * dirt + 0.15 * grout - wet * 0.45 + scuff * 0.1
+             + scratch * 0.3 + swirl * 0.12 + (mic - 0.5) * 0.1)
     write("lab_floor", base, np.clip(rough, 0.08, 1), h, 3.0)
 
 
@@ -122,48 +211,84 @@ def lab_floor():
 def wall_panel():
     """Pale institutional wall panels: 2 x 2 panels per 2.4 m, screws, grime."""
     T.seed(4)
-    n = 1024
+    n = HERO
+    S = px(n, 1024)
     big, mid, fine = grime_layers(n)
-    seams = grid_lines(n, 2, 4, 1.5)
-    # screws at panel corners (inset)
+    mic = micro_detail(n)
+    seams = grid_lines(n, 2, 4 * S, 1.5 * S)
+    # screws at panel corners (inset), now with a slotted head and a rust halo
     screws = np.zeros((n, n))
+    slots = np.zeros((n, n))
+    halo = np.zeros((n, n))
     for cx in (0.04, 0.46, 0.54, 0.96):
         for cy in (0.04, 0.46, 0.54, 0.96):
-            screws = np.maximum(screws, disc(n, cx, cy, 0.006))
+            screws = np.maximum(screws, disc(n, cx, cy, 0.006, 1.0 * S))
+            halo = np.maximum(halo, disc(n, cx, cy, 0.011, 4.0 * S))
+            slots = np.maximum(slots, draw_segments(
+                n, [(cx - 0.0045, cy, cx + 0.0045, cy)], 2.2 * S, 1.0 * S))
+    slots *= screws
+    halo = np.clip(halo - screws, 0, 1)
     streak = smooth(remap(fbm(n, 2.0, lo=3, stretch=(1, 10)), 0.5, 0.9))
+    # fine dribbles inside the broad streaks, plus orange-peel paint texture
+    fine_streak = hairlines(n, lo=6, aniso=0.08, width=2.5, density=3, broken=0.55)
+    peel = pores(n, cells(n, 60, 1024), 0.45) * remap(mic, 0.3, 0.9)
+    peel *= 0.35 + 0.65 * smooth(remap(fbm(n, 1.6, lo=9), 0.3, 0.85))
+    peel = blur(peel, 0.9 * px(n, 1024))
     splotch = smooth(remap(big, 0.6, 0.9))
     chip = remap(fbm(n, 1.6, lo=10), 0.82, 0.86) * splotch
+    chip_edge = remap(fbm(n, 1.6, lo=10), 0.80, 0.83) * splotch * (1 - chip)
+    scuff = hairlines(n, lo=18, aniso=14, rot=0.25, width=1.2, density=3, broken=0.9)
     base = lerp(srgb("b9beb6"), srgb("c9cdc4"), mid)
     base = base * (0.96 + 0.08 * fine[:, :, None])
+    base = base * (0.97 + 0.06 * mic[:, :, None])
+    base = base * (1 - peel[:, :, None] * 0.05)
     base = lerp(base, srgb("7e7a6c"), streak * 0.45)
+    base = lerp(base, srgb("6f6a5a"), fine_streak * streak * 0.4)
     base = lerp(base, srgb("6b655a"), splotch * 0.35)
     base = lerp(base, srgb("8a8f8c"), chip)
+    base = lerp(base, srgb("9b7a4e"), chip_edge * 0.5)       # rust creeping out
+    base = lerp(base, srgb("d2d5cd"), scuff * 0.25)
     base = lerp(base, srgb("3a3a38"), seams * 0.85)
     base = lerp(base, srgb("6e6e6a"), screws)
-    h = 1 - seams * 0.8 + screws * 0.5 - chip * 0.2 + fine * 0.03
-    rough = 0.6 + streak * 0.2 + splotch * 0.15 + chip * 0.2
+    base = lerp(base, srgb("2e2c28"), slots * 0.8)
+    base = lerp(base, srgb("8a6b45"), halo * 0.35)
+    h = (1 - seams * 0.8 + screws * 0.5 - slots * 0.6 - chip * 0.2 + fine * 0.03
+         + (mic - 0.5) * 0.22 - peel * 0.16 - scuff * 0.06)
+    rough = (0.6 + streak * 0.2 + splotch * 0.15 + chip * 0.2
+             + peel * 0.1 + scuff * 0.12 + (mic - 0.5) * 0.1)
     metal = screws * 0.9 + chip * 0.6
-    write("wall_panel", base, rough, h, 3.0, metal=metal)
+    write("wall_panel", base, np.clip(rough, 0, 1), h, 3.0, metal=metal)
 
 
 @tex
 def ceiling_tile():
     """Acoustic drop-ceiling tiles with water stains (2x2 per 1.2 m)."""
     T.seed(5)
-    n = 512
+    n = MID
+    S = px(n, 512)
     big, mid, fine = grime_layers(n)
-    grid = grid_lines(n, 2, 5, 1.0)
-    holes = remap(fbm(n, 0.3, lo=80), 0.7, 0.75)
+    mic = micro_detail(n)
+    grid = grid_lines(n, 2, 5 * S, 1.0 * S)
+    # real punched perforations instead of a noise threshold, plus the
+    # fibrous mineral-board surface between them
+    holes = pores(n, cells(n, 52, 512), 0.30)
+    holes *= 0.5 + 0.5 * remap(fbm(n, 1.0, lo=26), 0.3, 0.8)
+    fibre = np.maximum(
+        hairlines(n, lo=24, aniso=5, rot=0.7, width=1.2, density=5, broken=0.85),
+        hairlines(n, lo=28, aniso=5, rot=-0.6, width=1.1, density=5, broken=0.85))
     stain_mask = fbm(n, 2.4, lo=1)
     stain = smooth(remap(stain_mask, 0.6, 0.75))
     stain_ring = ring_like = np.clip(1 - np.abs(stain_mask - 0.66) * 40, 0, 1)
     base = lerp(srgb("c8c5b8"), srgb("d6d3c7"), mid)
+    base = base * (0.96 + 0.08 * mic[:, :, None])
+    base = lerp(base, srgb("b8b3a2"), fibre * 0.3)
     base = lerp(base, srgb("a08b5c"), stain * 0.55)
     base = lerp(base, srgb("6f5a35"), ring_like * 0.5)
-    base = base * (1 - holes[:, :, None] * 0.25)
+    base = base * (1 - holes[:, :, None] * 0.45)
     base = lerp(base, srgb("8c8f8e"), grid)
-    h = 1 - holes * 0.4 + grid * 0.5 + fine * 0.1
-    rough = 0.92 - grid * 0.5
+    h = (1 - holes * 0.9 + grid * 0.5 + fine * 0.1
+         + fibre * 0.12 + (mic - 0.5) * 0.3)
+    rough = np.clip(0.92 - grid * 0.5 + fibre * 0.05 + (mic - 0.5) * 0.08, 0, 1)
     metal = grid * 0.8
     write("ceiling_tile", base, rough, h, 2.5, metal=metal)
 
@@ -172,24 +297,43 @@ def ceiling_tile():
 def painted_metal():
     """Dark teal industrial paint, chipped to reveal rust and bare steel."""
     T.seed(6)
-    n = 1024
+    n = HERO
     big, mid, fine = grime_layers(n)
+    mic = micro_detail(n)
     wear = fbm(n, 1.8, lo=4) * 0.6 + big * 0.4
     chip = smooth(remap(wear, 0.62, 0.66))                  # paint gone
     rust = smooth(remap(wear, 0.66, 0.78))                  # rust inside chips
     edge_halo = smooth(remap(wear, 0.56, 0.62)) * (1 - chip)
+    # tiny flakes lifting at the edge of every chip, and pinhead blisters:
+    # at 512 these were a single soft gradient, at 2048 they are readable
+    flakes = cell_edges(n, cells(n, 70, 1024), 0.03)
+    flakes *= smooth(remap(wear, 0.58, 0.66)) * (1 - chip)
+    blisters = pores(n, cells(n, 95, 1024), 0.30) * smooth(remap(wear, 0.52, 0.66))
     drip = smooth(remap(fbm(n, 2.0, lo=3, stretch=(1, 9)), 0.6, 0.9))
+    rundown = hairlines(n, lo=7, aniso=0.07, width=2.0, density=3, broken=0.6) * drip
+    scuff = hairlines(n, lo=20, aniso=16, rot=-0.2, width=1.1, density=4, broken=0.9)
+    orange_peel = pores(n, cells(n, 55, 1024), 0.5) * remap(mic, 0.3, 0.9)
+    orange_peel *= 0.35 + 0.65 * smooth(remap(fbm(n, 1.6, lo=9), 0.3, 0.85))
+    orange_peel = blur(orange_peel, 0.9 * px(n, 1024))
     paint = lerp(srgb("2f4a4c"), srgb("3c5a5a"), mid)
     paint = paint * (0.9 + 0.15 * fine[:, :, None])
+    paint = paint * (0.96 + 0.08 * mic[:, :, None])
+    paint = paint * (1 - orange_peel[:, :, None] * 0.06)
     paint = lerp(paint, srgb("1d2a2a"), edge_halo * 0.4)
     paint = lerp(paint, srgb("5a3a22"), drip * 0.5)
+    paint = lerp(paint, srgb("3a2614"), rundown * 0.55)
     steel = lerp(srgb("6f6d68"), srgb("8f8b84"), fine)
+    steel = lerp(steel, srgb("b2aea6"), scuff * 0.4)
     rustc = lerp(srgb("6a3518"), srgb("9b5427"), fine)
+    rustc = lerp(rustc, srgb("46230f"), blisters * 0.5)
     base = lerp(paint, steel, chip)
     base = lerp(base, rustc, rust)
-    h = 1 - chip * 0.4 - rust * 0.25 * fine + mid * 0.05
+    base = lerp(base, srgb("20302f"), flakes * 0.5)
+    h = (1 - chip * 0.4 - rust * 0.25 * fine + mid * 0.05
+         - flakes * 0.45 + blisters * 0.35 + (mic - 0.5) * 0.3
+         - orange_peel * 0.14 - scuff * 0.08 * chip)
     rough = lerp(0.45 + fine * 0.1, 0.35, chip) * (1 - rust) + rust * 0.92
-    rough = rough + drip * 0.2
+    rough = rough + drip * 0.2 + orange_peel * 0.1 + (mic - 0.5) * 0.1
     metal = chip * (1 - rust)
     write("painted_metal", base, np.clip(rough, 0, 1), h, 4.0, metal=metal)
 
@@ -198,49 +342,89 @@ def painted_metal():
 def painted_white_metal():
     """Off-white enamel for lab cabinets and machines."""
     T.seed(7)
-    n = 512
+    n = MID
     big, mid, fine = grime_layers(n)
+    mic = micro_detail(n)
     wear = fbm(n, 1.8, lo=4) * 0.7 + big * 0.3
     chip = smooth(remap(wear, 0.72, 0.75))
+    chip_lip = smooth(remap(wear, 0.70, 0.72)) * (1 - chip)   # raised paint edge
     grime = smooth(remap(big, 0.5, 0.9))
+    # sprayed enamel is never flat: orange peel, dust nibs and wipe marks
+    peel = pores(n, cells(n, 48, 512), 0.5) * remap(mic, 0.3, 0.9)
+    peel *= 0.35 + 0.65 * smooth(remap(fbm(n, 1.6, lo=9), 0.3, 0.85))
+    peel = blur(peel, 0.9 * px(n, 512))
+    nibs = pores(n, cells(n, 110, 512), 0.22)
+    wipe = hairlines(n, lo=16, aniso=12, rot=0.15, width=1.2, density=4, broken=0.9)
     base = lerp(srgb("cfd0c8"), srgb("dcdcd2"), mid)
+    base = base * (0.97 + 0.06 * mic[:, :, None])
+    base = base * (1 - peel[:, :, None] * 0.04)
     base = lerp(base, srgb("8b8577"), grime * 0.45)
+    base = lerp(base, srgb("e6e6de"), chip_lip * 0.5)
+    base = lerp(base, srgb("c2c4bd"), wipe * 0.3)
     base = lerp(base, srgb("5d5f60"), chip)
-    h = 1 - chip * 0.3 + fine * 0.02
-    rough = 0.35 + grime * 0.35 + chip * 0.1
+    h = (1 - chip * 0.3 + fine * 0.02 + chip_lip * 0.2
+         - peel * 0.16 + nibs * 0.25 + (mic - 0.5) * 0.22 - wipe * 0.05)
+    rough = np.clip(0.35 + grime * 0.35 + chip * 0.1 + peel * 0.1
+                    + wipe * 0.12 + (mic - 0.5) * 0.08, 0, 1)
     write("painted_white_metal", base, rough, h, 3.0, metal=chip)
 
 
 @tex
 def rust():
     T.seed(8)
-    n = 1024
+    n = HERO
     big, mid, fine = grime_layers(n)
-    f1, edge, _ = worley(n, 500)
+    mic = micro_detail(n)
+    f1, edge, _ = worley_grid(n, cells(n, 22, 1024))      # ~500 cells at 1024
     flakes = remap(edge, 0, 0.05)
-    pits = 1 - remap(f1, 0, 0.2)
+    pits = 1 - remap(f1, 0, 0.26)
+    # rust is scale-free: layering a second and third, finer scab network is
+    # the whole point of the extra resolution
+    f2b, edge2, _ = worley_grid(n, cells(n, 58, 1024))
+    scab = remap(edge2, 0, 0.05)
+    deep = (1 - remap(f2b, 0, 0.3)) * smooth(remap(fbm(n, 1.8, lo=5), 0.4, 0.8))
+    grit = pores(n, cells(n, 130, 1024), 0.35) * remap(mic, 0.35, 0.9)
+    bleed = hairlines(n, lo=5, aniso=0.07, width=3.0, density=3, broken=0.5)
     base = lerp(srgb("4a2412"), srgb("8e4a20"), mid)
     base = lerp(base, srgb("b06a33"), smooth(remap(fine, 0.6, 0.9)) * 0.6)
+    base = lerp(base, srgb("c07c3e"), scab * 0.35)        # bright flake faces
     base = lerp(base, srgb("2a160c"), pits * 0.5)
+    base = lerp(base, srgb("1d0f07"), deep * 0.55)        # pitted-through craters
+    base = lerp(base, srgb("8d4a22"), bleed * 0.35)
     base = base * (0.85 + 0.25 * flakes[:, :, None])
-    h = mid * 0.5 + flakes * 0.3 - pits * 0.5 + fine * 0.3
-    rough = 0.85 + fine * 0.1
+    base = base * (0.93 + 0.14 * mic[:, :, None])
+    base = base * (1 - grit[:, :, None] * 0.18)
+    h = (mid * 0.5 + flakes * 0.3 - pits * 0.5 + fine * 0.3
+         + scab * 0.35 - deep * 0.8 - grit * 0.5 + (mic - 0.5) * 0.6)
+    rough = 0.85 + fine * 0.1 + (mic - 0.5) * 0.12 - scab * 0.08
     metal = smooth(remap(big, 0.75, 0.9)) * 0.4
-    write("rust", base, rough, h, 6.0, metal=metal)
+    write("rust", base, np.clip(rough, 0, 1), h, 6.0, metal=metal)
 
 
 @tex
 def brushed_steel():
     T.seed(9)
-    n = 512
+    n = MID
     big, mid, fine = grime_layers(n)
+    mic = micro_detail(n)
     brush = fbm(n, 1.0, lo=4, stretch=(40, 1))
-    scratch = remap(fbm(n, 0.5, lo=40, stretch=(30, 1)), 0.8, 0.9)
+    # the brush grain itself, as actual continuous lines rather than a
+    # thresholded noise speckle -- this is what makes steel read as steel
+    grain = hairlines(n, lo=50, aniso=70, width=1.0, density=7, broken=0.35)
+    grain = np.maximum(grain * 0.8,
+                       hairlines(n, lo=110, aniso=80, width=1.0, density=8, broken=0.5))
+    scratch = hairlines(n, lo=9, aniso=24, rot=0.12, width=1.4, density=3, broken=0.9)
+    dings = pores(n, cells(n, 36, 512), 0.2) * smooth(remap(fbm(n, 2.0, lo=4), 0.6, 0.9))
     smudge = smooth(remap(big, 0.55, 0.85))
     base = lerp(srgb("8e9194"), srgb("b4b7ba"), brush)
+    base = lerp(base, srgb("c3c6c8"), grain * 0.3)
+    base = lerp(base, srgb("6e7174"), dings * 0.4)
     base = lerp(base, srgb("5e5c58"), smudge * 0.4)
-    h = brush * 0.2 - scratch * 0.2
-    rough = 0.28 + brush * 0.1 + smudge * 0.3 + scratch * 0.15
+    base = lerp(base, srgb("cfd2d4"), scratch * 0.35)
+    h = (brush * 0.2 - scratch * 0.25 + (grain - 0.5) * 0.3
+         - dings * 0.5 + (mic - 0.5) * 0.12)
+    rough = np.clip(0.28 + brush * 0.1 + smudge * 0.3 + scratch * 0.2
+                    + grain * 0.12 + dings * 0.15, 0, 1)
     write("brushed_steel", base, rough, h, 2.0, metal=np.ones((n, n)) * 0.95)
 
 
@@ -248,18 +432,27 @@ def brushed_steel():
 def brass_aged():
     """Antique brass: polished highs, dark tarnish and green patina in low areas."""
     T.seed(10)
-    n = 512
+    n = MID
     big, mid, fine = grime_layers(n)
+    mic = micro_detail(n)
     tarnish = smooth(remap(fbm(n, 2.2, lo=2), 0.35, 0.75))
     patina = smooth(remap(fbm(n, 1.8, lo=5), 0.72, 0.85)) * tarnish
-    scratch = remap(fbm(n, 0.6, lo=30, stretch=(20, 1)), 0.83, 0.9)
+    # lathe/polish marks and handling scratches as real lines
+    turning = hairlines(n, lo=70, aniso=55, width=1.0, density=7, broken=0.45)
+    scratch = hairlines(n, lo=11, aniso=20, rot=0.3, width=1.3, density=3, broken=0.9)
+    pit = pores(n, cells(n, 70, 512), 0.25) * tarnish
     base = lerp(srgb("8a6a34"), srgb("a8854a"), mid)
+    base = base * (0.97 + 0.06 * mic[:, :, None])
     base = lerp(base, srgb("3a2c17"), tarnish * 0.8)
+    base = lerp(base, srgb("2c2010"), pit * 0.5)
     base = lerp(base, srgb("4f7a64"), patina)
+    base = lerp(base, srgb("b79355"), turning * 0.2)
     base = lerp(base, srgb("c9a96a"), scratch * 0.45)
-    rough = 0.3 + tarnish * 0.35 + patina * 0.3
+    rough = np.clip(0.3 + tarnish * 0.35 + patina * 0.3 + pit * 0.2
+                    - turning * 0.06 + scratch * 0.08, 0, 1)
     metal = 1 - patina * 0.9
-    h = fine * 0.2 + patina * 0.3 - scratch * 0.1
+    h = (fine * 0.2 + patina * 0.3 - scratch * 0.15 - pit * 0.4
+         + (turning - 0.5) * 0.12 + (mic - 0.5) * 0.12)
     write("brass_aged", base, rough, h, 3.0, metal=metal)
 
 
@@ -294,29 +487,57 @@ def tarnished_gold():
 def teal_metal_dark():
     """Dark teal mechanical housing for the monster."""
     T.seed(13)
-    n = 512
+    n = MID
     big, mid, fine = grime_layers(n)
+    mic = micro_detail(n)
     wear = smooth(remap(fbm(n, 1.6, lo=6), 0.7, 0.78))
     corr = smooth(remap(big, 0.65, 0.9))
+    # machined housing: tool marks, cast grain and corrosion pitting, so the
+    # Twin's plating holds up in the reveal push-in
+    tool = hairlines(n, lo=46, aniso=50, rot=0.08, width=1.0, density=6, broken=0.5)
+    nick = hairlines(n, lo=13, aniso=18, rot=-0.4, width=1.2, density=3, broken=0.9)
+    pit = pores(n, cells(n, 85, 512), 0.26) * (0.3 + 0.7 * corr)
+    cast = pores(n, cells(n, 40, 512), 0.5) * remap(mic, 0.3, 0.9)
     base = lerp(srgb("13312f"), srgb("1f4642"), mid)
+    base = base * (0.95 + 0.1 * mic[:, :, None])
+    base = lerp(base, srgb("0c201e"), pit * 0.55)
+    base = lerp(base, srgb("2a5551"), tool * 0.18)
     base = lerp(base, srgb("7f8a84"), wear * 0.6)
+    base = lerp(base, srgb("98a19b"), nick * 0.35)
     base = lerp(base, srgb("4a3a22"), corr * 0.5)
-    rough = 0.4 + corr * 0.4 + fine * 0.1 - wear * 0.1
+    rough = np.clip(0.4 + corr * 0.4 + fine * 0.1 - wear * 0.1
+                    + pit * 0.2 + cast * 0.08, 0, 1)
     metal = 0.85 - corr * 0.4
-    write("teal_metal_dark", base, rough, fine * 0.2 + corr * 0.2, 3.0, metal=metal + 0 * mid)
+    h = (fine * 0.2 + corr * 0.2 - pit * 0.55 - nick * 0.2
+         + (tool - 0.5) * 0.14 - cast * 0.2 + (mic - 0.5) * 0.2)
+    write("teal_metal_dark", base, rough, h, 3.0, metal=metal + 0 * mid)
 
 
 @tex
 def glass_grime():
     """Roughness/albedo breakup for dirty, scratched glass."""
     T.seed(14)
-    n = 512
+    n = MID
     big, mid, fine = grime_layers(n)
+    mic = micro_detail(n)
     smear = smooth(remap(fbm(n, 2.0, lo=2, stretch=(3, 1)), 0.5, 0.85))
-    scratch = remap(fbm(n, 0.5, lo=40, stretch=(25, 1)), 0.86, 0.92)
+    # real hairline scratches, dust specks and dried water spots. Glass is
+    # flat, so every bit of its read-at-arm's-length detail is in these.
+    scratch = hairlines(n, lo=8, aniso=16, rot=0.25, width=1.2, density=3, broken=0.9)
+    scratch = np.maximum(scratch,
+                         hairlines(n, lo=15, aniso=20, rot=-0.8, width=1.0,
+                                   density=3, broken=0.95) * 0.8)
+    dust = pores(n, cells(n, 120, 512), 0.14)
+    spots = pores(n, cells(n, 26, 512), 0.45)
+    spots *= smooth(remap(fbm(n, 1.8, lo=4), 0.5, 0.85))
+    spot_ring = np.clip(spots * 4 - 2.4, 0, 1)
     base = lerp(srgb("cfdcd8"), srgb("8f8a7a"), smear * 0.6)
-    rough = 0.03 + smear * 0.35 + scratch * 0.3 + fine * 0.03
-    write("glass_grime", base, rough, scratch * -0.2, 1.0)
+    base = lerp(base, srgb("c9c6b8"), spots * 0.3 + dust * 0.4)
+    base = lerp(base, srgb("e8e4d6"), scratch * 0.5)
+    rough = np.clip(0.03 + smear * 0.35 + scratch * 0.45 + fine * 0.03
+                    + spots * 0.25 + spot_ring * 0.2 + dust * 0.3, 0, 1)
+    h = -scratch * 0.3 + spots * 0.12 + dust * 0.1 + (mic - 0.5) * 0.05
+    write("glass_grime", base, rough, h, 1.0)
 
 
 # ====================================================================
@@ -328,18 +549,30 @@ def skin_pale():
     T.seed(20)
     n = 1024
     big, mid, fine = grime_layers(n)
-    pores_f, _, _ = worley(n, 3000)
+    pores_f, _, _ = worley_grid(n, cells(n, 55, 1024))
     pores = 1 - remap(pores_f, 0, 0.25)
-    veins_e = worley(n, 30)[1]
+    veins_e = worley_grid(n, cells(n, 5.5, 1024))[1]
     veins = (1 - remap(veins_e, 0, 0.01)) * smooth(remap(fbm(n, 2, lo=2), 0.5, 0.75))
     blotch = smooth(remap(fbm(n, 2.4, lo=3), 0.5, 0.85))
+    # the criss-cross furrow network that makes skin read as skin up close
+    furrow = skin_furrows(n, 150, 1024)
+    micro_pore = T.pores(n, cells(n, 135, 1024), 0.2) * (1 - furrow)
+    micro_pore = blur(micro_pore, 0.8)
+    vellus = hairlines(n, lo=90, aniso=7, rot=0.6, width=1.0, density=6, broken=0.93)
     base = lerp(srgb("cdb7a6"), srgb("dcc8b8"), mid)
     base = lerp(base, srgb("b9908a"), blotch * 0.35)          # reddish mottling
     base = lerp(base, srgb("7d8aa0"), veins * 0.35)           # blue-grey veins
     base = base * (1 - pores[:, :, None] * 0.06)
-    h = -pores * 0.4 + fine * 0.15 + veins * 0.15
-    rough = 0.52 + fine * 0.1 + pores * 0.1 - blotch * 0.08
-    write("skin_pale", base, rough, h, 2.0)
+    base = base * (1 - furrow[:, :, None] * 0.08)
+    base = base * (1 - micro_pore[:, :, None] * 0.04)
+    base = lerp(base, srgb("c3ab9c"), vellus * 0.12)
+    # the network belongs in the albedo and roughness; in the normal map it
+    # is a whisper, or the face turns into lizard scales
+    h = (-pores * 0.3 + fine * 0.15 + veins * 0.15
+         - furrow * 0.1 - micro_pore * 0.08 + vellus * 0.05)
+    rough = (0.52 + fine * 0.1 + pores * 0.1 - blotch * 0.08
+             + furrow * 0.1 + micro_pore * 0.06)
+    write("skin_pale", base, np.clip(rough, 0, 1), h, 2.0)
 
 
 @tex
@@ -349,16 +582,28 @@ def skin_diseased():
     n = 1024
     big, mid, fine = grime_layers(n)
     burn = smooth(remap(fbm(n, 2.2, lo=2) * 0.7 + fine * 0.3, 0.55, 0.7))
-    blister_f, _, _ = worley(n, 400)
+    blister_f, _, _ = worley_grid(n, cells(n, 20, 1024))
     blister = (1 - remap(blister_f, 0, 0.35)) * burn
     sick = smooth(remap(fbm(n, 2.0, lo=2), 0.4, 0.7))
+    # sloughing scabbed plates, a finer blister tier and the healthy skin's
+    # furrow network still visible between the burns
+    furrow = skin_furrows(n, 120, 1024) * (1 - burn)
+    scab = cell_edges(n, cells(n, 34, 1024), 0.05) * burn
+    mini_blister = pores(n, cells(n, 70, 1024), 0.26) * smooth(remap(burn, 0.1, 0.7))
+    weep = hairlines(n, lo=9, aniso=0.1, width=2.5, density=3, broken=0.6) * burn
     base = lerp(srgb("8f8a6c"), srgb("7a8460"), sick)            # sallow yellow-green
+    base = base * (1 - furrow[:, :, None] * 0.09)
     base = lerp(base, srgb("4a1a14"), burn * 0.85)                # raw chemical burns
+    base = lerp(base, srgb("2a0e0a"), scab * 0.55)
     base = lerp(base, srgb("c9b070"), blister * 0.55)
+    base = lerp(base, srgb("b09a58"), mini_blister * 0.4)
+    base = lerp(base, srgb("6d4a1e"), weep * 0.4)
     base = lerp(base, srgb("3c4a2a"), smooth(remap(fine, 0.7, 0.95)) * 0.3)
     base = base * (0.9 + fine[:, :, None] * 0.15)
-    h = fine * 0.2 + blister * 0.6 - burn * 0.2
-    rough = 0.6 - blister * 0.35 + burn * 0.15
+    h = (fine * 0.2 + blister * 0.6 - burn * 0.2 - furrow * 0.14
+         - scab * 0.5 + mini_blister * 0.35 - weep * 0.2)
+    rough = (0.6 - blister * 0.35 + burn * 0.15 + furrow * 0.08
+             + scab * 0.2 - mini_blister * 0.2 - weep * 0.25)
     write("skin_diseased", base, np.clip(rough, 0.1, 1), h, 4.0)
 
 
@@ -366,30 +611,51 @@ def skin_diseased():
 def fabric_worn():
     """Faded institutional fabric with a visible weave and dried stains."""
     T.seed(22)
-    n = 512
+    n = MID
     big, mid, fine = grime_layers(n)
+    # At 512 a 96-thread weave got 5 texels per thread and turned into moire
+    # mush; at 1024 it gets 10 and the threads actually resolve, which is the
+    # single biggest reason to double this one.
     x = np.arange(n) * 2 * math.pi * 96 / n
     weave = (np.sin(x)[None, :] * 0.5 + 0.5) * (np.sin(x)[:, None] * 0.5 + 0.5)
+    warp = (np.sin(x)[:, None] * 0.5 + 0.5)
+    weft = (np.sin(x)[None, :] * 0.5 + 0.5)
+    over = (np.sin(x * 0.5)[:, None] * np.sin(x * 0.5)[None, :]) > 0   # over/under
+    weave = np.where(over, warp, weft) * 0.65 + weave * 0.35
+    # twist inside each thread, loose fibres and pilling
+    twist = hairlines(n, lo=190, aniso=9, rot=0.7, width=1.0, density=8, broken=0.5)
+    lint = hairlines(n, lo=24, aniso=6, rot=-0.4, width=1.0, density=4, broken=0.95)
+    pills = pores(n, cells(n, 34, 512), 0.3) * smooth(remap(fbm(n, 1.8, lo=5), 0.6, 0.9))
     stain = smooth(remap(fbm(n, 2.4, lo=2), 0.65, 0.8))
     stain_edge = np.clip(1 - np.abs(fbm(n, 2.4, lo=2) - 0.65) * 50, 0, 1) * 0
     blood = smooth(remap(fbm(n, 2.2, lo=3), 0.78, 0.86))
     base = lerp(srgb("a9ada5"), srgb("c3c5bc"), mid)
-    base = base * (0.9 + 0.12 * weave[:, :, None])
+    base = base * (0.88 + 0.18 * weave[:, :, None])
+    base = base * (0.96 + 0.07 * twist[:, :, None])
+    base = lerp(base, srgb("d2d4cd"), np.clip(lint + pills * 0.6, 0, 1) * 0.35)
     base = lerp(base, srgb("7c7058"), stain * 0.5)
     base = lerp(base, srgb("4a1d17"), blood * 0.8)
-    h = weave * 0.6 + fine * 0.2
-    rough = 0.9 - blood * 0.25
+    h = weave * 0.6 + fine * 0.2 + twist * 0.14 + pills * 0.3 + lint * 0.12
+    rough = np.clip(0.9 - blood * 0.25 + lint * 0.08, 0, 1)
     write("fabric_worn", base, rough, h + stain_edge, 2.0)
 
 
 @tex
 def rubber_black():
     T.seed(23)
-    n = 256
+    n = PROP                                   # was 256: nothing stays at 256
     big, mid, fine = grime_layers(n)
+    mic = micro_detail(n)
+    # moulded rubber grain and the dust that clings to it
+    grain = pores(n, cells(n, 90, 256), 0.35) * remap(mic, 0.3, 0.9)
+    scuff = hairlines(n, lo=20, aniso=12, rot=0.4, width=1.2, density=4, broken=0.9)
     base = lerp(srgb("1b1b1c"), srgb("2a2a2a"), mid)
+    base = base * (0.9 + 0.2 * mic[:, :, None])
+    base = lerp(base, srgb("3a3a3b"), scuff * 0.35)
     base = lerp(base, srgb("4a4740"), smooth(remap(big, 0.6, 0.9)) * 0.5)
-    write("rubber_black", base, 0.75 + fine * 0.15, fine * 0.2, 1.5)
+    rough = np.clip(0.75 + fine * 0.15 + grain * 0.12 - scuff * 0.1, 0, 1)
+    h = fine * 0.2 - grain * 0.35 + (mic - 0.5) * 0.3 - scuff * 0.08
+    write("rubber_black", base, rough, h, 1.5)
 
 
 @tex
@@ -399,43 +665,69 @@ def plastic_dirty():
     big, mid, fine = grime_layers(n)
     grime = smooth(remap(big, 0.5, 0.85))
     yell = smooth(remap(fbm(n, 2.6, lo=1), 0.3, 0.8))
-    scratch = remap(fbm(n, 0.5, lo=40, stretch=(20, 1)), 0.85, 0.9)
+    # stays at 512 (0.6 m repeat already gives 850 texels/m on small props),
+    # but the old "scratch" layer was thresholded noise, i.e. speckle
+    scratch = hairlines(n, lo=10, aniso=18, rot=0.2, width=1.2, density=3, broken=0.9)
+    mould = hairlines(n, lo=42, aniso=30, width=1.0, density=5, broken=0.6)
     base = lerp(srgb("d8d2c2"), srgb("cdbf98"), yell * 0.7)
     base = lerp(base, srgb("6d6658"), grime * 0.5)
+    base = lerp(base, srgb("d2ccbd"), mould * 0.2)
     base = lerp(base, srgb("f0ece0"), scratch * 0.4)
-    rough = 0.4 + grime * 0.3 + scratch * 0.2
-    write("plastic_dirty", base, rough, fine * 0.05 - scratch * 0.1, 1.5)
+    rough = np.clip(0.4 + grime * 0.3 + scratch * 0.25 + mould * 0.06, 0, 1)
+    write("plastic_dirty", base, rough,
+          fine * 0.05 - scratch * 0.18 + (mould - 0.5) * 0.06, 1.5)
 
 
 @tex
 def hazard_stripes():
     T.seed(25)
-    n = 512
+    n = MID
     big, mid, fine = grime_layers(n)
+    mic = micro_detail(n)
     yy, xx = np.mgrid[0:n, 0:n] / n
     s = np.sin((xx + yy) * 2 * math.pi * 4)
     stripe = smooth(remap(s, -0.05, 0.05))
+    edge = np.clip(1 - np.abs(s) * 14, 0, 1)                 # masked paint edge
     wear = smooth(remap(fbm(n, 1.8, lo=4) * 0.6 + big * 0.4, 0.6, 0.66))
+    # painted floor stripes live under boots and trolleys
+    tread = hairlines(n, lo=12, aniso=14, rot=-0.785, width=1.4, density=4, broken=0.88)
+    grit = pores(n, cells(n, 75, 512), 0.3) * remap(mic, 0.3, 0.9)
     base = lerp(srgb("161513"), srgb("d4a215"), stripe)
+    base = base * (0.95 + 0.1 * mic[:, :, None])
+    base = lerp(base, srgb("8a7a52"), edge * 0.25)           # bleed under the tape
     base = lerp(base, srgb("6a6660"), wear)
+    base = lerp(base, srgb("7d7a72"), tread * 0.4 * wear)
     base = lerp(base, srgb("3d3426"), smooth(remap(big, 0.6, 0.9)) * 0.5)
-    rough = 0.55 + wear * 0.2 + fine * 0.1
-    write("hazard_stripes", base, rough, -wear * 0.2, 2.0, metal=wear)
+    rough = np.clip(0.55 + wear * 0.2 + fine * 0.1 + tread * 0.15
+                    + grit * 0.1 + (mic - 0.5) * 0.1, 0, 1)
+    h = -wear * 0.2 + edge * 0.15 - tread * 0.12 - grit * 0.3 + (mic - 0.5) * 0.22
+    write("hazard_stripes", base, rough, h, 2.0, metal=wear)
 
 
 @tex
 def chemical_residue():
     """Glowing green residue puddles (used with emission in the shader)."""
     T.seed(26)
-    n = 512
-    big, mid, fine = grime_layers(n)
+    n = MID                     # tiles over 1.5 m, so it was the thinnest
+    big, mid, fine = grime_layers(n)   # texel density of the whole set at 512
+    mic = micro_detail(n)
     puddle = smooth(remap(big * 0.7 + fine * 0.3, 0.55, 0.62))
     crust = np.clip(1 - np.abs(big * 0.7 + fine * 0.3 - 0.56) * 25, 0, 1)
+    # dried salt crystals in the crust and bubbles trapped in the wet film
+    crystal = cell_edges(n, cells(n, 70, 512), 0.05) * crust
+    bubbles = pores(n, cells(n, 55, 512), 0.3) * puddle
+    specks = pores(n, cells(n, 130, 512), 0.18) * remap(mic, 0.35, 0.9)
     base = lerp(srgb("2c2f22"), srgb("5f8f2a"), puddle)
+    base = lerp(base, srgb("8fc04a"), bubbles * 0.35)
     base = lerp(base, srgb("c8c49a"), crust * 0.6)
-    rough = 0.8 - puddle * 0.75
+    base = lerp(base, srgb("e4e0c0"), crystal * 0.45)
+    base = base * (1 - specks[:, :, None] * 0.12)
+    rough = np.clip(0.8 - puddle * 0.75 + crust * 0.1 + crystal * 0.25
+                    + specks * 0.15, 0, 1)
     emit = color([0.35, 1.0, 0.25], n) * (puddle * (0.5 + 0.5 * mid))[:, :, None]
-    write("chemical_residue", base, rough, puddle * 0.3 + crust * 0.2, 2.0, emit=emit)
+    h = (puddle * 0.3 + crust * 0.2 + crystal * 0.3
+         + bubbles * 0.2 + (mic - 0.5) * 0.15)
+    write("chemical_residue", base, rough, h, 2.0, emit=emit)
 
 
 # ====================================================================
@@ -443,7 +735,7 @@ def chemical_residue():
 # ====================================================================
 
 def _crazing(n, count, strength):
-    _, edge, _ = worley(n, count)
+    _, edge, _ = worley_grid(n, math.sqrt(count))
     return (1 - remap(edge, 0, 0.012)) * strength
 
 
@@ -547,8 +839,10 @@ def eye_iris():
 def warning_sign():
     """Yellow warning triangle sign, square decal."""
     T.seed(33)
-    n = 512
+    n = MID                                  # story signage: read up close
+    S = px(n, 512)
     big, mid, fine = grime_layers(n)
+    mic = micro_detail(n)
     yy, xx = np.mgrid[0:n, 0:n] / n
     def tri(scale):
         cx, cy, s = 0.5, 0.56, scale
@@ -557,33 +851,43 @@ def warning_sign():
         inside = (yy > y0) & (yy < y1)
         half = (yy - y0) / (y1 - y0) * s * 0.58
         return (inside & (np.abs(xx - cx) < half)).astype(float)
-    outer = blur(tri(0.9), 1.0)
-    inner = blur(tri(0.74), 1.0)
-    mark = draw_segments(n, [(0.5, 0.36, 0.5, 0.6)], 26) + disc(n, 0.5, 0.7, 0.03)
+    outer = blur(tri(0.9), 1.0 * S)
+    inner = blur(tri(0.74), 1.0 * S)
+    mark = draw_segments(n, [(0.5, 0.36, 0.5, 0.6)], 26 * S, 1.0 * S) + disc(n, 0.5, 0.7, 0.03, 1.0 * S)
     base = color(srgb("e4e1d8"), n)
     base = lerp(base, srgb("151413"), outer)
     base = lerp(base, srgb("e3b31a"), inner)
     base = lerp(base, srgb("151413"), np.clip(mark, 0, 1) * inner)
     wear = smooth(remap(fbm(n, 1.8, lo=4) * 0.6 + big * 0.4, 0.66, 0.7))
+    # printed-vinyl tooth, scuffs and the flecks of dirt stuck to it
+    tooth = pores(n, cells(n, 95, 512), 0.3) * remap(mic, 0.3, 0.9)
+    scuff = hairlines(n, lo=17, aniso=13, rot=0.3, width=1.2, density=4, broken=0.9)
+    base = base * (0.97 + 0.06 * mic[:, :, None])
+    base = lerp(base, srgb("c8c6bd"), scuff * 0.3)
     base = lerp(base, srgb("8a8a86"), wear)
     base = lerp(base, srgb("4d4334"), smooth(remap(big, 0.55, 0.9)) * 0.45)
-    write("warning_sign", base, 0.45 + wear * 0.3, -wear * 0.3, 2.0, metal=wear)
+    rough = np.clip(0.45 + wear * 0.3 + scuff * 0.15 + tooth * 0.12, 0, 1)
+    h = -wear * 0.3 - tooth * 0.25 - scuff * 0.1 + (mic - 0.5) * 0.18
+    write("warning_sign", base, rough, h, 2.0, metal=wear)
 
 
 @tex
 def monitor_screen():
     """CRT-style monitor glow: scanlines, noise and a dim data readout."""
     T.seed(34)
-    n = 512
+    n = MID
     big, mid, fine = grime_layers(n)
     yy, xx = np.mgrid[0:n, 0:n] / n
-    scan = 0.75 + 0.25 * np.sin(yy * n * math.pi * 0.5)
+    # 128 scanlines across the screen whatever the tile size (it used to be
+    # tied to n, which pinned every line to 4 texels and aliased on screen)
+    scan = 0.75 + 0.25 * np.sin(yy * 2 * math.pi * 128)
+    shadow_mask = 0.88 + 0.12 * np.sin(xx * 2 * math.pi * 170)   # aperture grille
     row = np.floor(yy * 24)
     line_len = 0.15 + (row * 37 % 11) / 14          # pseudo-random length per text row
     rows = (row % 2 == 0) & (xx > 0.08) & (xx < 0.08 + line_len)
     blocks = rows * (np.sin(xx * 120) > -0.3) * (yy > 0.12) * (yy < 0.88)
     vign = 1 - smooth(remap(np.sqrt((xx - 0.5) ** 2 + (yy - 0.5) ** 2), 0.3, 0.72))
-    g = (0.15 + blocks * 0.6 + fine * 0.15) * scan * vign
+    g = (0.15 + blocks * 0.6 + fine * 0.15) * scan * shadow_mask * vign
     emit = np.stack([g * 0.35, g * 0.95, g * 0.6], -1)
     write("monitor_screen", emit * 0.6 + 0.02, np.full((n, n), 0.08), None,
           normal=np.ones((n, n, 3)) * np.array([0.5, 0.5, 1.0]), emit=np.clip(emit, 0, 1))
@@ -609,13 +913,14 @@ def _radial(n):
 @tex
 def vfx_sprites():
     T.seed(50)
-    n = 256
+    n = PROP          # was 256; explosion sprites fill the screen up close
     r, ang = _radial(n)
     # soft smoke puff (4 variants in a 2x2 atlas)
     atlas = np.zeros((n * 2, n * 2, 4))
     for k in range(4):
         T.seed(60 + k)
-        nz = fbm(n, 2.2, lo=2) * 0.6 + fbm(n, 1.4, lo=6) * 0.4
+        nz = (fbm(n, 2.2, lo=2) * 0.5 + fbm(n, 1.4, lo=6) * 0.3
+              + fbm(n, 1.1, lo=22) * 0.2)              # extra curl at 512
         edge = 1 - smooth(remap(r, 0.7, 0.98))          # alpha reaches 0 before the quad edge
         a = smooth(remap(1 - r + (nz - 0.5) * 0.9, 0.25, 0.75)) * edge
         shade = 0.55 + 0.45 * nz
@@ -625,7 +930,7 @@ def vfx_sprites():
     vfx("smoke_atlas", atlas)
     # fire / flame puff (white-hot core; colour comes from the particle gradient)
     T.seed(70)
-    nz = fbm(n, 1.8, lo=3, stretch=(1, 0.5))
+    nz = fbm(n, 1.8, lo=3, stretch=(1, 0.5)) * 0.75 + fbm(n, 1.2, lo=18) * 0.25
     yy, xx = np.mgrid[0:n, 0:n] / n
     edge = 1 - smooth(remap(r, 0.65, 0.98))
     flame = smooth(remap(1 - r + (nz - 0.5) * 1.0, 0.3, 0.8)) * edge
@@ -652,12 +957,13 @@ def vfx_sprites():
     vfx("scorch", np.stack([soot, soot * 0.95, soot * 0.9, sc * 0.95], -1))
     # bullet hole decal
     hole = 1 - remap(r, 0.08, 0.12)
-    crack = (1 - remap(worley(n, 12)[1], 0, 0.02)) * smooth(remap(0.6 - r, 0, 0.4))
+    crack = (1 - remap(worley_grid(n, 3.5)[1], 0, 0.02)) * smooth(remap(0.6 - r, 0, 0.4))
     a = np.clip(hole + crack * 0.8 + smooth(remap(0.35 - r, 0, 0.3)) * 0.5, 0, 1)
     c = 0.05 + 0.25 * (1 - hole) * (1 - crack)
     vfx("bullet_hole", np.stack([c, c * 0.95, c * 0.9, a], -1))
     # roman numeral ring for the suspend effect (white glyphs on transparent)
-    nn = 512
+    nn = MID              # line art: the one place raw resolution is the fix
+    SS = px(nn, 512)      # keep every stroke the same width on screen
     ink = np.zeros((nn, nn))
     numerals = ["XII", "I", "II", "III", "IIII", "V", "VI", "VII", "VIII", "IX", "X", "XI"]
     segs = []
@@ -668,19 +974,20 @@ def vfx_sprites():
         cx, cy = 0.5 + math.sin(a_) * 0.4, 0.5 - math.cos(a_) * 0.4
         for x0, y0, x1, y1 in ss:
             segs.append((x0 + cx - w / 2, y0 + cy - h / 2, x1 + cx - w / 2, y1 + cy - h / 2))
-    ink = np.maximum(draw_segments(nn, segs, 6), ring(nn, 0.5, 0.5, 0.47, 3))
+    ink = np.maximum(draw_segments(nn, segs, 6 * SS, 1.0 * SS),
+                     ring(nn, 0.5, 0.5, 0.47, 3 * SS, 1.0 * SS))
     tick = []
     for i in range(60):
         a_ = i / 60 * 2 * math.pi
         tick.append((0.5 + math.sin(a_) * 0.45, 0.5 - math.cos(a_) * 0.45, 0.5 + math.sin(a_) * 0.47, 0.5 - math.cos(a_) * 0.47))
-    ink = np.maximum(ink, draw_segments(nn, tick, 2))
+    ink = np.maximum(ink, draw_segments(nn, tick, 2 * SS, 1.0 * SS))
     vfx("clock_ring", np.stack([np.ones((nn, nn))] * 3 + [np.clip(ink, 0, 1)], -1))
     # tracker reticle: segmented ring + chevrons
     rr, aa = _radial(nn)
     seg_ring = np.exp(-((rr - 0.8) ** 2) / 0.0006) * (np.cos(aa * 6) > -0.3)
     inner = np.exp(-((rr - 0.55) ** 2) / 0.0003)
     chev = draw_segments(nn, [(0.5, 0.02, 0.44, 0.1), (0.5, 0.02, 0.56, 0.1), (0.5, 0.98, 0.44, 0.9), (0.5, 0.98, 0.56, 0.9),
-                              (0.02, 0.5, 0.1, 0.44), (0.02, 0.5, 0.1, 0.56), (0.98, 0.5, 0.9, 0.44), (0.98, 0.5, 0.9, 0.56)], 5)
+                              (0.02, 0.5, 0.1, 0.44), (0.02, 0.5, 0.1, 0.56), (0.98, 0.5, 0.9, 0.44), (0.98, 0.5, 0.9, 0.56)], 5 * SS, 1.0 * SS)
     vfx("reticle", np.stack([np.ones((nn, nn))] * 3 + [np.clip(seg_ring + inner * 0.7 + chev, 0, 1)], -1))
 
 
@@ -725,7 +1032,7 @@ def twin_face():
     base = lerp(base, srgb("8a7344"), smooth(remap(big, 0.55, 0.9)) * 0.5)
     base = base * (0.92 + 0.12 * fine[:, :, None])
     # crazing everywhere + a few long cracks
-    _, edge, _ = worley(n, 1400)
+    _, edge, _ = worley_grid(n, cells(n, 37.4, 2048))
     craze = (1 - remap(edge, 0, 0.012)) * (0.45 + 0.55 * smooth(remap(fbm(n, 2, lo=2), 0.3, 0.7)))
     segs = []
     rnd = random.Random(5)
@@ -807,8 +1114,19 @@ def twin_face():
     base = lerp(base, srgb("1d1e22"), ink)
     base = lerp(base, srgb("4a3418"), craze * 0.4)
     base = lerp(base, srgb("2a1b10"), cracks * 0.85)
-    h = -craze * 0.5 - cracks * 1.2 - ink * 0.1 + fine * 0.1
-    rough = 0.42 + craze * 0.25 + cracks * 0.3 - lips * 0.1 + smooth(remap(big, 0.6, 0.9)) * 0.15
+    # fine crazing tier, bisque grain and glaze pinholes. The face is a
+    # unique 2048 map over a 0.34 m head, so this detail lands on screen.
+    hair_craze = cell_edges(n, cells(n, 100, 2048), 0.006)
+    hair_craze *= 0.4 + 0.6 * smooth(remap(fbm(n, 1.8, lo=6), 0.35, 0.8))
+    bisque = pores(n, cells(n, 150, 2048), 0.26) * remap(micro_detail(n), 0.35, 0.9)
+    pinhole = pores(n, cells(n, 70, 2048), 0.2) * smooth(remap(fbm(n, 1.6, lo=8), 0.5, 0.9))
+    base = lerp(base, srgb("6b5430"), hair_craze * 0.3)
+    base = base * (1 - pinhole[:, :, None] * 0.18)
+    h = (-craze * 0.5 - cracks * 1.2 - ink * 0.1 + fine * 0.1
+         - hair_craze * 0.4 - bisque * 0.22 - pinhole * 0.5)
+    rough = (0.42 + craze * 0.25 + cracks * 0.3 - lips * 0.1
+             + smooth(remap(big, 0.6, 0.9)) * 0.15
+             + hair_craze * 0.12 + bisque * 0.08 + pinhole * 0.15)
     write("twin_face", base, np.clip(rough, 0, 1), h, 2.5)
 
 
@@ -845,17 +1163,31 @@ def fabric_bloody():
     T.seed(90)
     n = 1024
     big, mid, fine = grime_layers(n)
-    x = np.arange(n) * 2 * math.pi * 160 / n
-    weave = (np.sin(x)[None, :] * 0.5 + 0.5) * (np.sin(x)[:, None] * 0.5 + 0.5)
+    # 160 threads across a 0.4 m tile got 6 texels each and read as mush;
+    # dropping to 108 gives them 9.5 and an over/under pattern that actually
+    # resolves, which beats spending 4x the memory on the same blur.
+    x = np.arange(n) * 2 * math.pi * 108 / n
+    warp = (np.sin(x)[:, None] * 0.5 + 0.5)
+    weft = (np.sin(x)[None, :] * 0.5 + 0.5)
+    over = (np.sin(x * 0.5)[:, None] * np.sin(x * 0.5)[None, :]) > 0
+    weave = np.where(over, warp, weft) * 0.7 + (warp * weft) * 0.3
+    twist = hairlines(n, lo=200, aniso=9, rot=-0.6, width=1.0, density=8, broken=0.5)
+    lint = hairlines(n, lo=22, aniso=6, rot=0.5, width=1.0, density=4, broken=0.95)
     soak = smooth(remap(fbm(n, 2.2, lo=2) * 0.7 + fine * 0.3, 0.52, 0.66))
     drip = smooth(remap(fbm(n, 2.0, lo=3, stretch=(1, 9)), 0.66, 0.8))
     edge = np.clip(1 - np.abs(fbm(n, 2.2, lo=2) * 0.7 + fine * 0.3 - 0.52) * 30, 0, 1)
-    base = lerp(srgb("b9bcb2"), srgb("cfd0c6"), mid) * (0.9 + 0.12 * weave[:, :, None])
+    # blood wicks along individual threads at the edge of a stain
+    wick = hairlines(n, lo=60, aniso=11, rot=0.0, width=1.2, density=6, broken=0.8)
+    base = lerp(srgb("b9bcb2"), srgb("cfd0c6"), mid) * (0.86 + 0.2 * weave[:, :, None])
+    base = base * (0.96 + 0.07 * twist[:, :, None])
+    base = lerp(base, srgb("dcdcd4"), lint * 0.35)
     base = lerp(base, srgb("7c705a"), smooth(remap(big, 0.5, 0.85)) * 0.5)
     base = lerp(base, srgb("5a1410"), np.clip(soak + drip, 0, 1) * 0.85)
+    base = lerp(base, srgb("701c14"), wick * edge * 0.7)
     base = lerp(base, srgb("2e0806"), edge * 0.6)
-    rough = 0.9 - soak * 0.35
-    write("fabric_bloody", base, rough, weave * 0.5 + fine * 0.2, 2.0)
+    rough = np.clip(0.9 - soak * 0.35 + lint * 0.06, 0, 1)
+    h = weave * 0.55 + fine * 0.2 + twist * 0.14 + lint * 0.12
+    write("fabric_bloody", base, rough, h, 2.0)
 
 
 @tex
@@ -864,18 +1196,32 @@ def porcelain_tile():
     T.seed(91)
     n = 1024
     big, mid, fine = grime_layers(n)
+    mic = micro_detail(n)
     grout = grid_lines(n, 6, 5, 1.5)
     yy, xx = np.mgrid[0:n, 0:n]
     tid = (yy * 6 // n) * 6 + (xx * 6 // n)
     tint = RNG.random(36)[tid]
     broken = (RNG.random(36)[tid] < 0.08)
     stain = smooth(remap(fbm(n, 2.0, lo=2, stretch=(1, 6)), 0.6, 0.85))
+    # this tile was already dense enough in texels and still looked flat: its
+    # height map was only the grout grid. Glaze crazing, sanded grout grain
+    # and cleaning scratches are what it was missing.
+    craze = _crazing(n, 900, 1.0) * smooth(remap(fbm(n, 2.0, lo=3), 0.4, 0.8))
+    sand = pores(n, cells(n, 110, 1024), 0.3) * grout
+    swirl = hairlines(n, lo=20, aniso=5, rot=0.5, width=1.1, density=5, broken=0.92)
+    glaze = pores(n, cells(n, 48, 1024), 0.55) * remap(mic, 0.35, 0.9)
     base = lerp(srgb("d8d9d2"), srgb("e8e8e2"), tint * 0.5 + mid * 0.5)
+    base = base * (0.98 + 0.04 * mic[:, :, None])
+    base = lerp(base, srgb("b5ac99"), craze * 0.35)
     base = lerp(base, srgb("8a6a40"), stain * 0.55)
     base = lerp(base, srgb("4c4a42"), grout * 0.85)
+    base = lerp(base, srgb("6e6a5f"), sand * 0.35)
+    base = lerp(base, srgb("eef0ea"), swirl * 0.3 * (1 - grout))
     base = lerp(base, srgb("6a6660"), broken[:, :, None] * 0.7)
-    h = 1 - grout * 0.8 - broken * 0.3
-    rough = 0.15 + grout * 0.6 + stain * 0.3 + broken * 0.5
+    h = (1 - grout * 0.8 - broken * 0.3 - craze * 0.3
+         - sand * 0.35 - swirl * 0.1 - glaze * 0.18 + (mic - 0.5) * 0.15)
+    rough = np.clip(0.15 + grout * 0.6 + stain * 0.3 + broken * 0.5
+                    + craze * 0.2 + swirl * 0.18 + glaze * 0.08, 0, 1)
     write("porcelain_tile", base, rough, h, 2.5)
 
 
@@ -885,20 +1231,28 @@ def skin_corpse():
     T.seed(92)
     n = 1024
     big, mid, fine = grime_layers(n)
-    pores_f, _, _ = worley(n, 3000)
+    pores_f, _, _ = worley_grid(n, cells(n, 55, 1024))
     pores = 1 - remap(pores_f, 0, 0.25)
-    veins_e = worley(n, 40)[1]
+    veins_e = worley_grid(n, cells(n, 6.3, 1024))[1]
     veins = (1 - remap(veins_e, 0, 0.008)) * smooth(remap(fbm(n, 2, lo=2), 0.4, 0.7))
     bruise = smooth(remap(fbm(n, 2.4, lo=2), 0.55, 0.85))
-    sores_f, _, _ = worley(n, 90)
+    sores_f, _, _ = worley_grid(n, cells(n, 9.5, 1024))
     sores = (1 - remap(sores_f, 0, 0.18)) * smooth(remap(fbm(n, 1.5, lo=4), 0.65, 0.8))
+    # same close-up skin network as the living skins, plus drying/shrivelling
+    furrow = skin_furrows(n, 150, 1024)
+    shrivel = hairlines(n, lo=26, aniso=7, rot=0.4, width=1.8, density=4, broken=0.8)
+    flake = cell_edges(n, cells(n, 42, 1024), 0.05) * smooth(remap(big, 0.5, 0.85))
     base = lerp(srgb("a8a49c"), srgb("bdb6aa"), mid)
     base = lerp(base, srgb("5d4a62"), bruise * 0.6)
     base = lerp(base, srgb("2c3340"), veins * 0.6)
+    base = lerp(base, srgb("c9c2b4"), flake * 0.45)        # lifting dry skin
     base = lerp(base, srgb("6a1e18"), sores * 0.9)
     base = base * (1 - pores[:, :, None] * 0.06)
-    h = -pores * 0.4 + fine * 0.15 + veins * 0.2 - sores * 0.5
-    rough = 0.55 + fine * 0.1 - sores * 0.35
+    base = base * (1 - furrow[:, :, None] * 0.09)
+    base = lerp(base, srgb("8d8176"), shrivel * 0.22)
+    h = (-pores * 0.35 + fine * 0.15 + veins * 0.2 - sores * 0.5
+         - furrow * 0.14 - shrivel * 0.3 + flake * 0.3)
+    rough = 0.55 + fine * 0.1 - sores * 0.35 + furrow * 0.1 + flake * 0.15
     write("skin_corpse", base, np.clip(rough, 0.1, 1), h, 2.5)
 
 
@@ -910,26 +1264,42 @@ def _skin(n, seed, base_lo, base_hi, red, sallow=0.0, stubble=0.0):
     T.seed(seed)
     big, mid, fine = grime_layers(n)
     micro = fbm(n, 0.9, lo=120)
-    pores_f, _, _ = worley(n, 9000)
+    pores_f, _, _ = worley_grid(n, cells(n, 95, 2048))
     pores = (1 - remap(pores_f, 0, 0.22)) * 0.8
     blotch = smooth(remap(fbm(n, 2.6, lo=2), 0.45, 0.85))
     capill = smooth(remap(fbm(n, 1.6, lo=10), 0.72, 0.9)) * 0.5
-    veins_e = worley(n, 26)[1]
+    veins_e = worley_grid(n, cells(n, 5.1, 2048))[1]
     veins = (1 - remap(veins_e, 0, 0.006)) * smooth(remap(fbm(n, 2, lo=2), 0.55, 0.8)) * 0.35
-    freck_f, _, _ = worley(n, 600)
-    freck = (1 - remap(freck_f, 0, 0.12)) * (RNG.random((n, n)) < 0.0) + 0
+    # Real skin up close is a criss-cross network of shallow furrows with the
+    # pores sitting in its cells, plus a finer second pore tier and vellus
+    # hair. At 0.16 m of repeat one texel is well under a tenth of a
+    # millimetre, so all of this resolves -- it is the detail that was
+    # missing, not the pixels.
+    furrow = skin_furrows(n, 230, 2048)
+    micro_pore = T.pores(n, cells(n, 210, 2048), 0.2) * (1 - furrow)
+    micro_pore = blur(micro_pore, 0.8)
+    vellus = hairlines(n, lo=120, aniso=7, rot=0.6, width=1.0, density=6, broken=0.93)
+    crease = hairlines(n, lo=18, aniso=9, rot=-0.5, width=2.0, density=3, broken=0.8)
     base = lerp(srgb(base_lo), srgb(base_hi), mid * 0.7 + micro * 0.3)
     base = lerp(base, srgb(red), blotch * 0.25 + capill * 0.2)
     base = lerp(base, srgb("8f9a7e"), sallow * smooth(remap(big, 0.3, 0.8)) * 0.35)
     base = lerp(base, srgb("6f7e96"), veins)
+    base = base * (1 - furrow[:, :, None] * 0.07)
+    base = base * (1 - micro_pore[:, :, None] * 0.04)
+    base = lerp(base, srgb("b08476"), crease * 0.18)
     if stubble:
         st = (RNG.random((n, n)) < stubble * 0.06).astype(float)
-        st = blur(st, 0.6)
+        st = blur(st, 0.6 * px(n, 2048))
         base = lerp(base, srgb("3a3028"), np.clip(st * 3, 0, 1) * 0.6)
+        base = lerp(base, srgb("4a3d32"), vellus * 0.35)
+    else:
+        base = lerp(base, srgb("c0a492"), vellus * 0.1)
     base = base * (1 - pores[:, :, None] * 0.05)
-    h = -pores * 0.35 + micro * 0.25 + fine * 0.1 + veins * 0.1
-    rough = 0.48 + micro * 0.12 + pores * 0.1 - blotch * 0.05
-    return base, rough, h
+    h = (-pores * 0.3 + micro * 0.25 + fine * 0.1 + veins * 0.1
+         - furrow * 0.1 - micro_pore * 0.08 - crease * 0.3 + vellus * 0.05)
+    rough = (0.48 + micro * 0.12 + pores * 0.1 - blotch * 0.05
+             + furrow * 0.1 + micro_pore * 0.06)
+    return base, np.clip(rough, 0, 1), h
 
 
 @tex
@@ -961,7 +1331,7 @@ def _eye(name, iris_lo, iris_hi, seed):
     big, mid, fine = grime_layers(n)
     ri, rp = 0.255, 0.085
     sclera = lerp(srgb("e9e2d8"), srgb("d8cfc2"), mid)
-    vein_e = worley(n, 60)[1]
+    vein_e = worley_grid(n, 7.7)[1]
     vein = (1 - remap(vein_e, 0, 0.008)) * smooth(remap(r, 0.3, 0.48))
     sclera = lerp(sclera, srgb("b0473f"), vein * 0.7)
     sclera = lerp(sclera, srgb("c8a890"), smooth(remap(r, 0.35, 0.5)) * 0.4)
@@ -995,18 +1365,28 @@ def porcelain_crack():
     T.seed(320)
     n = 1024
     big, mid, fine = grime_layers(n)
-    _, edge, _ = worley(n, 700)
+    _, edge, _ = worley_grid(n, cells(n, 26.5, 1024))
     craze = 1 - remap(edge, 0, 0.012)
-    _, edge2, _ = worley(n, 30)
+    _, edge2, _ = worley_grid(n, cells(n, 5.5, 1024))
     crack = (1 - remap(edge2, 0, 0.004)) * smooth(remap(fbm(n, 2, lo=2), 0.4, 0.65))
     base = lerp(srgb("c8ad78"), srgb("e0cfa4"), mid * 0.7 + fine * 0.3)
     base = lerp(base, srgb("8a7348"), smooth(remap(big, 0.55, 0.9)) * 0.45)
     base = lerp(base, srgb("5e4a2a"), craze * 0.35)
     base = lerp(base, srgb("21170e"), crack * 0.9)
     paint = smooth(remap(fbm(n, 1.4, lo=8, stretch=(4, 1)), 0.8, 0.86)) * smooth(remap(big, 0.3, 0.6))
+    # a third, hairline crazing tier and chipped glaze along the big cracks:
+    # the Twin gets a camera push-in, so this plating is looked at hard
+    hair = cell_edges(n, cells(n, 70, 1024), 0.006)
+    hair *= smooth(remap(fbm(n, 1.8, lo=6), 0.4, 0.8)) * 0.7
+    chip = pores(n, cells(n, 55, 1024), 0.2) * smooth(remap(crack, 0.02, 0.5))
+    bisque = pores(n, cells(n, 100, 1024), 0.28) * remap(micro_detail(n), 0.35, 0.9)
     base = lerp(base, srgb("2b3a44"), paint * 0.6)
-    h = -craze * 0.4 - crack * 1.2 + fine * 0.05
-    rough = 0.3 + craze * 0.2 + crack * 0.4 + smooth(remap(big, 0.6, 0.9)) * 0.2
+    base = lerp(base, srgb("6a5634"), hair * 0.4)
+    base = lerp(base, srgb("ab8f5e"), chip * 0.55)        # exposed bisque
+    h = (-craze * 0.4 - crack * 1.2 + fine * 0.05
+         - hair * 0.45 - chip * 0.6 - bisque * 0.25)
+    rough = (0.3 + craze * 0.2 + crack * 0.4 + smooth(remap(big, 0.6, 0.9)) * 0.2
+             + hair * 0.15 + chip * 0.45 + bisque * 0.08)
     write("porcelain_crack", base, np.clip(rough, 0, 1), h, 2.5)
 
 
