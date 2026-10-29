@@ -1,31 +1,40 @@
 shader_type canvas_item;
-// Title screen post overlay: vignette, film grain, faint scanlines, red edge tint.
+// Title screen film treatment, drawn over the 3D backdrop but *under* the menu
+// text, so the mechanism gets lens character while the type stays crisp.
+// Cheap: one screen sample per channel, no loops.
 
-uniform float vignette_strength = 1.15;
-uniform float grain_amount = 0.045;
-uniform float scanline_amount = 0.015;
-uniform vec4 tint : source_color = vec4(0.35, 0.02, 0.02, 1.0);
-
-float hash(vec2 p) {
-	vec3 p3 = fract(vec3(p.xyx) * 0.1031);
-	p3 += dot(p3, p3.yzx + 33.33);
-	return fract((p3.x + p3.y) * p3.z);
-}
+uniform sampler2D screen_tex : hint_screen_texture, filter_linear;
+uniform float vignette_strength : hint_range(0.0, 2.0) = 1.0;
+uniform float aberration : hint_range(0.0, 4.0) = 0.65;
+uniform float halation : hint_range(0.0, 1.0) = 0.12;
+uniform float lift : hint_range(0.0, 0.1) = 0.014;
+uniform vec4 shadow_tint : source_color = vec4(0.46, 0.56, 0.76, 1.0);
 
 void fragment() {
-	vec2 uv = UV;
+	vec2 uv = SCREEN_UV;
 	vec2 c = uv - 0.5;
-	c.x *= 1.25;
-	float d = length(c);
-	float vig = smoothstep(0.25, 0.85, d) * vignette_strength;
-	float t = floor(TIME * 24.0);
-	float g = hash(FRAGCOORD.xy + vec2(t * 37.0, t * 11.0)) - 0.5;
-	float scan = sin(FRAGCOORD.y * 1.6 + TIME * 3.0) * 0.5 + 0.5;
-	float dark = clamp(vig, 0.0, 1.0);
-	vec3 col = mix(vec3(0.0), tint.rgb * 0.4, smoothstep(0.5, 1.0, d) * 0.5);
-	float a = dark * 0.92 + scan * scanline_amount;
-	// Grain: add light/dark speckle by blending toward white or black.
-	col += vec3(max(g, 0.0)) * grain_amount * 4.0;
-	a = clamp(a + abs(g) * grain_amount, 0.0, 1.0);
-	COLOR = vec4(col, a);
+	float d2 = dot(c, c);
+
+	// Lateral chromatic aberration: zero in the centre, grows towards the edges.
+	vec2 off = c * d2 * aberration * 0.012;
+	vec3 col;
+	col.r = texture(screen_tex, uv + off).r;
+	col.g = texture(screen_tex, uv).g;
+	col.b = texture(screen_tex, uv - off).b;
+
+	// Halation: warm bleed around the hot brass speculars.
+	float luma = dot(col, vec3(0.299, 0.587, 0.114));
+	col += vec3(1.0, 0.74, 0.48) * smoothstep(0.78, 1.7, luma) * halation;
+
+	// Cold shadows, warm highlights -- the split that makes brass read as brass.
+	col = mix(col * mix(shadow_tint.rgb * 1.5, vec3(1.0), smoothstep(0.0, 0.28, luma)), col, 0.70);
+
+	vec2 vc = c;
+	vc.x *= 1.12;
+	col *= 1.0 - smoothstep(0.28, 0.92, length(vc)) * vignette_strength;
+
+	// Film blacks are never zero.
+	col += vec3(lift * 0.9, lift, lift * 1.25) * (1.0 - col);
+
+	COLOR = vec4(col, 1.0);
 }
