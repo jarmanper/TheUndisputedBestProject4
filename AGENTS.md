@@ -7,7 +7,7 @@ Shared context for every person and coding agent working in this repo. Read it a
 - **Assignment:** Project 4, "Someone Else's Mechanics, Your Story." Theme: **Found** (the player finds the story in places, objects, sounds and what's left behind).
 - **Team 4:** Daniel Animashaun, Rickey Johnson, Rhaiyn Newby, Jarman Perry.
 - **We build Team 3's four mechanics** (Combat, Marking, Suspend, Explosion) exactly as written, and we write the story.
-- **Engine:** Godot 4.7, GDScript, Forward+, Jolt Physics. 1 world unit = 1 meter.
+- **Engine:** Godot 4.7, GDScript, Compatibility (required for web export), Jolt Physics. 1 world unit = 1 meter.
 - **Game due:** Wednesday, November 4, 2026 (final playtest).
 - **Grading:** Team 3 reports whether each mechanic was built exactly as written. Another team judges the story.
 
@@ -25,14 +25,18 @@ Shared context for every person and coding agent working in this repo. Read it a
 
 Edit only the files you own. If you need a change in someone else's file, ask them (or leave a note in your PR).
 
+**October 28 integration authorization:** Rhaiyn explicitly authorized the `playtest-integration` branch to repair all integrated gameplay, UI, story and shared settings from `full-game2` against this document. Original mechanic owners remain unchanged. These cross-owner repairs are documented in the integration PR; generated graphics scenes remain untouched relative to `full-game2`.
+
+The later `full-game2` UI commit `a6610c9` is merged into the integration branch. Its reusable UI helpers are retained, while its ammo/interact HUD, unbudgeted dialogue and manual retry loop are superseded by the assignment-compliant HUD and automatic restart. No history is rewritten.
+
 | Area | Owner | Files |
 | --- | --- | --- |
-| Combat + enemy behavior (Team 3 defines enemies inside Combat) | Rickey | `scripts/abilities/combat.gd`, `scripts/enemies/`, `scenes/enemies/` *(proposed)* |
-| Marking | Rhaiyn | `scripts/abilities/marking.gd` *(proposed)* |
-| Suspend | Jarman | `scripts/abilities/suspend.gd` *(proposed)* |
-| Explosion | Daniel | `scripts/abilities/explosion.gd` *(proposed)* |
+| Combat + enemy behavior (Team 3 defines enemies inside Combat) | Rickey | `scripts/game/mechanics/combat.gd`, `scripts/game/enemy.gd`, `scripts/game/twin_boss.gd` |
+| Marking | Rhaiyn | `scripts/game/mechanics/marking.gd` |
+| Suspend | Jarman | `scripts/game/mechanics/suspend.gd` |
+| Explosion | Daniel | `scripts/game/mechanics/explosion.gd` |
 | Graphics, audio, map | Jarman | `assets/`, `source/`, `tools/`, `scripts/visual/`, all generated scenes |
-| Shared core: player, target base class, targeting, HUD, level manager, input map, physics layers | **Unassigned. Claim it before starting.** | `scripts/core/`, `scenes/game/` *(proposed)* |
+| Shared core: player, target base class, targeting, HUD, level manager, input map, physics layers | **Rhaiyn Newby** | Integrated architecture: `scripts/game/`, `scenes/game/` |
 | Story text and word budget | **Unassigned** | Label3D text, `source/audio/voice_lines.txt`, section 4.5 here |
 
 **Git:** one branch per person, merged into `main` through a pull request (as `graphics-v2` was). Pull before you start. `project.godot` is shared: change it (input map, layer names, autoloads, main scene) in one small commit and tell the team. Never let two people edit the same `.tscn`.
@@ -82,7 +86,7 @@ Counts are per word as displayed or spoken. The submitted doc says 120; the real
 | Twin: "They made me. They kept me here. You got to live your life out." Player: "What did you do to them?" Twin: "It's TIME you see for yourself" | Final encounter | Twin chamber | 26 |
 | **Planned total** | | | **117** |
 
-**Over budget as built:** `source/audio/voice_lines.txt` has 19 creature lines totaling **48 words**, which aren't in the plan above. Shipping them in place of the 5 planned monster words gives 117 − 5 + 48 = **160 words, over the cap.** Trim the voice lines before shipping or change the plan. Only one more 25-word document fits under 150.
+**October 28 playtest budget (implemented): 48 of 150 words.** The original plan above remains the submitted checkpoint reference. This build displays only its 23-word newspaper in the entrance and its 25-word Experiment 024 report in the research corridor. Both are non-interactive environmental displays. HUD, pause, win and loss feedback use shapes/colors without words. All creature speech arrays are emptied before entering the scene; breathing/groans remain. The lengthy `full-game2` dialogue layer, objectives, prompts and ending dialogue were removed. Eight original baked sign areas are covered with blank visual panels because their lettering is merged into map detail meshes. Title/controls text is exempt. No new story words were added. The source voice recordings remain available to their owner but are not played; enabling them requires a new budget audit.
 
 ## 5. Team 3's mechanics (exact; do not change)
 
@@ -177,7 +181,15 @@ Our submitted clarity rating marked every mechanic "Clear" and can't be revised,
 
 ## 7. Technical contract (so we can work at the same time)
 
-**Status: proposed. Nothing in `scripts/core/` exists yet.** Whoever claims the shared core finalizes this and updates the section.
+**Status: integrated October 28 by Rhaiyn's authorization.** Preserve `full-game2`'s architecture rather than merging the separate prototype wholesale. `TimbukPlayer` is in `scripts/game/player.gd`; `TimbukEnemy` in `scripts/game/enemy.gd` supplies the common target API, navigation and exact enemy attacks. `scripts/game/mechanics/{combat,marking,suspend,explosion}.gd` are sibling Nodes directly under Player. Their owning teammates remain responsible for future changes. `main.gd` handles the level's required-target snapshot, instant victory/loss state, same-step loss precedence and 2-active-second restart. Win notification/progression is deferred until same-step damage resolves.
+
+The integrated APIs are `upper_body_point()`, `crosshair_target(range_m)`, `visible_point(point)`, player `damage(amount)`, enemy `center()`, `is_dead()`, `apply_damage(amount, resolve_defeat=true)`, `finish_defeat()`, `is_marked()` and `is_suspended()`. Marking exposes `current_target`, `duration_left`, `cooldown_left`, `try_mark()`, `clear_mark()` and `consume_mark()`. Suspend exposes `current_target`, `duration_left`, `activate()`, `reduce_cooldown(seconds)` and `end_suspension(target=null)`. Combat snapshots marks before damage; Explosion snapshots affected suspension before consumption/damage. Effect timers belong to their mechanic, not enemy AI.
+
+**Rhaiyn's Marking completion, October 29:** the integrated `marking.gd` is the authoritative Marking implementation. Its public activation rejects paused gameplay. It disconnects both defeat and tree-exit handlers when clearing/replacing a mark, and clears its target reference before a target leaves the level or is freed. These are lifecycle safeguards, not new gameplay actions or range-loss rules. `tests/marking_complete.gd` covers the full mechanic and its three interactions; `tests/marking_final_game.gd` drives physical Q/Left Mouse/E/R through the real title/main/final-chamber scenes, including a restart with a live mark and Marking the Twin. Completion evidence and file ownership are in `docs/MARKING_COMPLETION.md`. No story text or speech changed; the implemented word budget remains 48.
+
+Playtest route: level 1 instances existing areas A/B/C, with 12 required patients present at start. Necessary doors are already open. Blank metal walls seal unused side routes and lower stairs; no keys, generator action or interact input. Clearing every patient automatically loads `final_chamber.tscn`, which instances existing area E with the Twin already present. The Twin uses the same 100 HP/AI numbers as every patient. Clearing it wins. No optional targets or reinforcements. Navmeshes in `scenes/game/nav_main.tres` and `nav_final.tres` were baked from layer-1 colliders after the runtime content changes. Their authored paths are tested; they should be rebaked after layout changes using the integration test's `--save-nav` option.
+
+Compatibility adaptation happens only in runtime instances: inert cache substitutions prevent unsupported FogMaterial construction, FogVolumes are removed, and the original Environment is duplicated for fixed lighting without auto-exposure/SSIL/volumetric fog. Original generated scenes are not edited. Original title screen/settings and character visuals remain. Player is third-person with mouse camera, WASD, a fixed upright capsule and no other movement action; upper-body point is exactly 1.4 m above its collider bottom. HUD is wordless. The standalone `rhaiyn-marking-playable` implementation was reviewed and its Marking behavior ported, not wholesale merged.
 
 ### Folders
 ```
@@ -229,11 +241,11 @@ Abilities find each other as siblings under `Player/Abilities` (`$"../Suspend"`)
 
 ### Godot gotchas
 - **Timers:** count down with `delta` in `_physics_process` (or use Timer nodes). Both freeze when `get_tree().paused = true`. Never use wall-clock time. The pause menu node needs `PROCESS_MODE_WHEN_PAUSED`.
-- **Navigation:** there's no navmesh yet. The enemy owner adds a `NavigationRegion3D` to each game level and bakes it from layer 1 colliders.
+- **Navigation:** `main.gd` supplies a NavigationRegion3D and loads the baked `nav_main.tres` / `nav_final.tres` made from layer-1 colliders. Map cell size/height are 0.2 / 0.1 m. Enemy body is a 2.2 m upright capsule; navigation radius is 0.4 m. Re-run the integration suite with `--save-nav` after removing stale nav files if content geometry changes.
 - **Creatures have no collider or body.** `scenes/characters/*.tscn` roots are plain `Node3D` visuals. Wrap them in an enemy scene.
 - **Models face +Z** (Godot's forward is −Z). Use `look_at(target, Vector3.UP, true)` so creatures face where they walk.
 - **Numbers live in named constants** at the top of the owning script (`const DAMAGE := 20`). The post-build PDF asks for the exact file, value and edit that would double the difficulty.
-- **Main scene** is still `scenes/visual_inspection.tscn` (the flycam). Switch `run/main_scene` to the first game level in one coordinated commit.
+- **Main scene:** `scenes/ui/title_screen.tscn` launches `scenes/game/main.tscn`. F5 runs the title; open main or final_chamber and use F6 to test a level directly.
 - The flycam's Q/E fly up and down. That only applies to the inspection scene.
 
 ## 8. Art and audio to use
@@ -277,14 +289,14 @@ Full guide: [docs/GRAPHICS.md](docs/GRAPHICS.md). Effects: instance from `scenes
 | One big facility (~10 min run) | Every target in a level is required; the Twin won't necessarily die last | Put the Twin chamber in its own final level |
 
 ## 10. Open decisions
-- [ ] Who builds the shared core (section 7)
+- [x] Shared core: Rhaiyn; integrated architecture documented in section 7
 - [ ] The Combat weapon
-- [ ] Levels: how many, and which areas each one uses
-- [ ] Progression between areas (section 9, key row)
+- [x] October 28 levels: A/B/C with 12 patients, then separate E with the Twin
+- [x] October 28 progression: clear required targets to load next level; no keys/interact
 - [ ] What the twin did to the parents (killed or ate)
 - [ ] What the player finds after the Twin dies (the Reconciliation beat needs a found moment)
 - [ ] Locations for the beats and found moments (needed for the story revision)
-- [ ] Trim the voice lines to fit 150 words
+- [x] October 28 speech disabled; implemented environmental text totals 48 words
 
 ## 11. Deadlines
 - **Story revision:** sections 1–4 and 6 can be revised once. One member emails it before **4:00 pm, Wednesday November 4, 2026**. The clarity rating is final.

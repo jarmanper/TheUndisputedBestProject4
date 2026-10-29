@@ -13,13 +13,11 @@ const BASE_SENSITIVITY := 0.0022  # player.gd default mouse_sensitivity
 
 const CONTROLS := [
 	["WASD", "Move"],
-	["Shift", "Sprint"],
 	["Mouse", "Look"],
-	["E", "Interact"],
-	["Left mouse", "Fire  (Combat)"],
-	["Right mouse", "Mark target  (Marking)"],
-	["Q", "Suspend  (Suspend)"],
-	["F", "Throw charge  (Explosion)"],
+	["Left mouse", "Combat"],
+	["Q", "Mark target"],
+	["E", "Suspend target"],
+	["R", "Explode marked target"],
 	["Esc", "Pause"],
 ]
 

@@ -371,7 +371,7 @@ size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.48, 0.44, 0.4, 1)
 theme_override_fonts/font = SubResource("Font_serif")
 theme_override_font_sizes/font_size = 16
-text = "It hunts by sound. Walk softly."
+text = "Find what was left behind."
 
 [node name="Hint" type="Label" parent="Margin/VBox/FooterRow"]
 layout_mode = 2

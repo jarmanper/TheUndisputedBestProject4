@@ -1,73 +1,18 @@
 [gd_scene format=3]
 
 [ext_resource type="Script" path="res://scripts/game/main.gd" id="main"]
-[ext_resource type="PackedScene" path="res://scenes/environments/timbuk_facility.tscn" id="facility"]
-[ext_resource type="Script" path="res://scripts/game/player.gd" id="player"]
-[ext_resource type="Script" path="res://scripts/game/mechanics/combat.gd" id="combat"]
-[ext_resource type="Script" path="res://scripts/game/mechanics/marking.gd" id="marking"]
-[ext_resource type="Script" path="res://scripts/game/mechanics/suspend.gd" id="suspend"]
-[ext_resource type="Script" path="res://scripts/game/mechanics/explosion.gd" id="explosion"]
+[ext_resource type="PackedScene" path="res://scenes/game/player.tscn" id="player"]
 [ext_resource type="Script" path="res://scripts/game/hud.gd" id="hud"]
 [ext_resource type="Script" path="res://scripts/game/enemy.gd" id="enemy"]
-[ext_resource type="Script" path="res://scripts/game/twin_boss.gd" id="boss"]
-[ext_resource type="Script" path="res://scripts/game/interactable.gd" id="inter"]
-[ext_resource type="PackedScene" path="res://scenes/props/pistol.tscn" id="pistol"]
-[ext_resource type="PackedScene" path="res://scenes/props/keycard.tscn" id="keycard"]
-[ext_resource type="PackedScene" path="res://scenes/characters/tall_patient_a.tscn" id="pa"]
-[ext_resource type="PackedScene" path="res://scenes/characters/tall_patient_b.tscn" id="pb"]
-[ext_resource type="PackedScene" path="res://scenes/characters/tall_patient_c.tscn" id="pc"]
-[ext_resource type="PackedScene" path="res://scenes/characters/twin_monster.tscn" id="twin"]
-[ext_resource type="Material" path="res://assets/materials/painted_metal.tres" id="metal"]
-
-[sub_resource type="CapsuleShape3D" id="cap"]
-radius = 0.35
-height = 1.75
+[ext_resource type="PackedScene" path="res://scenes/characters/tall_patient_a.tscn" id="a"]
+[ext_resource type="PackedScene" path="res://scenes/characters/tall_patient_b.tscn" id="b"]
+[ext_resource type="PackedScene" path="res://scenes/characters/tall_patient_c.tscn" id="c"]
 
 [node name="Main" type="Node3D"]
 script = ExtResource("main")
 
-[node name="TimbukFacility" parent="." instance=ExtResource("facility")]
-
-[node name="Player" type="CharacterBody3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 3)
-script = ExtResource("player")
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Player"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.875, 0)
-shape = SubResource("cap")
-
-[node name="Head" type="Node3D" parent="Player"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6, 0)
-
-[node name="Camera3D" type="Camera3D" parent="Player/Head"]
-current = true
-fov = 75.0
-near = 0.03
-
-[node name="Flashlight" type="SpotLight3D" parent="Player/Head/Camera3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.15, -0.1, 0)
-light_color = Color(1, 0.95, 0.85, 1)
-light_energy = 3.0
-shadow_enabled = true
-spot_range = 24.0
-spot_angle = 26.0
-spot_attenuation = 0.8
-
-[node name="Pistol" parent="Player/Head/Camera3D" instance=ExtResource("pistol")]
-transform = Transform3D(0.993572, 0, 0.113203, 0, 1, 0, -0.113203, 0, 0.993572, 0.125, -0.085, -0.27)
-
-[node name="Combat" type="Node" parent="Player"]
-script = ExtResource("combat")
-muzzle_path = NodePath("../Head/Camera3D/Pistol")
-
-[node name="Marking" type="Node" parent="Player"]
-script = ExtResource("marking")
-
-[node name="Suspend" type="Node" parent="Player"]
-script = ExtResource("suspend")
-
-[node name="Explosion" type="Node" parent="Player"]
-script = ExtResource("explosion")
+[node name="Player" parent="." instance=ExtResource("player")]
+position = Vector3(0, 0.05, 3)
 
 [node name="HUD" type="CanvasLayer" parent="."]
 script = ExtResource("hud")
@@ -75,90 +20,62 @@ player_path = NodePath("../Player")
 
 [node name="Enemies" type="Node3D" parent="."]
 
-[node name="PatientCorridor" type="CharacterBody3D" parent="Enemies"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, 0.1, -18)
+[node name="Patient1" type="CharacterBody3D" parent="Enemies"]
+position = Vector3(0.55, 0, 0.8)
 script = ExtResource("enemy")
-model_scene = ExtResource("pa")
+model_scene = ExtResource("a")
 
-[node name="PatientWestWing" type="CharacterBody3D" parent="Enemies"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15, 0.1, -13.3)
+[node name="Patient2" type="CharacterBody3D" parent="Enemies"]
+position = Vector3(-12, 0, 1.5)
 script = ExtResource("enemy")
-model_scene = ExtResource("pb")
+model_scene = ExtResource("b")
 
-[node name="PatientEastWing" type="CharacterBody3D" parent="Enemies"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15, 0.1, -21.3)
+[node name="Patient3" type="CharacterBody3D" parent="Enemies"]
+position = Vector3(12, 0, -1.5)
 script = ExtResource("enemy")
-model_scene = ExtResource("pc")
+model_scene = ExtResource("c")
 
-[node name="PatientContainment" type="CharacterBody3D" parent="Enemies"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 0.1, -36)
+[node name="Patient4" type="CharacterBody3D" parent="Enemies"]
+position = Vector3(0, 0, -10)
 script = ExtResource("enemy")
-model_scene = ExtResource("pa")
+model_scene = ExtResource("a")
 
-[node name="PatientCellBlock" type="CharacterBody3D" parent="Enemies"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 35.5, 0.1, -40)
+[node name="Patient5" type="CharacterBody3D" parent="Enemies"]
+position = Vector3(0, 0, -14)
 script = ExtResource("enemy")
-model_scene = ExtResource("pb")
+model_scene = ExtResource("b")
 
-[node name="PatientLowerCorridor" type="CharacterBody3D" parent="Enemies"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, -5.9, -72)
+[node name="Patient6" type="CharacterBody3D" parent="Enemies"]
+position = Vector3(0, 0, -18)
 script = ExtResource("enemy")
-model_scene = ExtResource("pc")
+model_scene = ExtResource("c")
 
-[node name="PatientGenerator" type="CharacterBody3D" parent="Enemies"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -22, -5.9, -68)
+[node name="Patient7" type="CharacterBody3D" parent="Enemies"]
+position = Vector3(0, 0, -22)
 script = ExtResource("enemy")
-model_scene = ExtResource("pa")
+model_scene = ExtResource("a")
 
-[node name="PatientChamberApproach" type="CharacterBody3D" parent="Enemies"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14.7, -5.9, -84)
+[node name="Patient8" type="CharacterBody3D" parent="Enemies"]
+position = Vector3(-3, 0, -23.7)
 script = ExtResource("enemy")
-model_scene = ExtResource("pb")
+model_scene = ExtResource("b")
 
-[node name="TwinBoss" type="CharacterBody3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14.7, -5.9, -105.3)
-script = ExtResource("boss")
-model_scene = ExtResource("twin")
+[node name="Patient9" type="CharacterBody3D" parent="Enemies"]
+position = Vector3(0, 0, -27)
+script = ExtResource("enemy")
+model_scene = ExtResource("c")
 
-[node name="Interactables" type="Node3D" parent="."]
+[node name="Patient10" type="CharacterBody3D" parent="Enemies"]
+position = Vector3(-5, 0, -34)
+script = ExtResource("enemy")
+model_scene = ExtResource("a")
 
-[node name="Keycard" type="StaticBody3D" parent="Interactables"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -11.6, 0.8, 1.2)
-script = ExtResource("inter")
-prompt = "take keycard"
-grants_flag = "has_keycard"
-used_text = "Security keycard. Level 3 clearance."
-model_scene = ExtResource("keycard")
-model_offset = Vector3(0, -0.04, 0)
-box_size = Vector3(0.5, 0.3, 0.5)
+[node name="Patient11" type="CharacterBody3D" parent="Enemies"]
+position = Vector3(5, 0, -39)
+script = ExtResource("enemy")
+model_scene = ExtResource("b")
 
-[node name="Generator" type="StaticBody3D" parent="Interactables"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -27, -5, -66)
-script = ExtResource("inter")
-kind = 1
-prompt = "restore power"
-required_flag = "has_keycard"
-grants_flag = "power_restored"
-locked_text = "The panel is locked. It needs a keycard."
-used_text = "The generator coughs to life. Somewhere below, a door unlocks."
-box_size = Vector3(3.2, 2.2, 2.6)
-
-[node name="TwinChamberDoor" type="StaticBody3D" parent="Interactables"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14.7, -4.35, -92.15)
-script = ExtResource("inter")
-kind = 2
-required_flag = "power_restored"
-locked_text = "Sealed. There is no power to the lock."
-box_size = Vector3(2.4, 3.3, 0.35)
-show_box = true
-box_material = ExtResource("metal")
-
-[node name="TwinChamberWestDoor" type="StaticBody3D" parent="Interactables"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.55, -4.6, -105.2)
-script = ExtResource("inter")
-kind = 2
-required_flag = "power_restored"
-locked_text = "Sealed. There is no power to the lock."
-box_size = Vector3(0.4, 2.9, 1.9)
-show_box = true
-box_material = ExtResource("metal")
+[node name="Patient12" type="CharacterBody3D" parent="Enemies"]
+position = Vector3(-5, 0, -46)
+script = ExtResource("enemy")
+model_scene = ExtResource("c")

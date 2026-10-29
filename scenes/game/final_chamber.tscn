@@ -1,0 +1,23 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/game/main.gd" id="main"]
+[ext_resource type="PackedScene" path="res://scenes/game/player.tscn" id="player"]
+[ext_resource type="Script" path="res://scripts/game/hud.gd" id="hud"]
+[ext_resource type="Script" path="res://scripts/game/twin_boss.gd" id="enemy"]
+[ext_resource type="PackedScene" path="res://scenes/characters/twin_monster.tscn" id="twin"]
+
+[node name="FinalChamber" type="Node3D"]
+script = ExtResource("main")
+final_chamber = true
+
+[node name="Player" parent="." instance=ExtResource("player")]
+position = Vector3(14.7, -5.95, -96)
+
+[node name="HUD" type="CanvasLayer" parent="."]
+script = ExtResource("hud")
+player_path = NodePath("../Player")
+
+[node name="Twin" type="CharacterBody3D" parent="."]
+position = Vector3(20, -6, -96)
+script = ExtResource("enemy")
+model_scene = ExtResource("twin")
