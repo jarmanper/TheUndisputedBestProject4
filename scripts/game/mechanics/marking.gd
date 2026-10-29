@@ -1,5 +1,5 @@
 extends Node
-## Rhaiyn's marking state machine ported to full-game2's sibling abilities.
+## MARKING — Rhaiyn Newby. Integrated sibling ability; never owns suspension.
 signal marked_enemy(enemy)
 const RANGE := 15.0
 const DURATION := 8.0
@@ -29,7 +29,7 @@ func is_ready() -> bool:
 	return cooldown_left <= 0
 
 func try_mark() -> bool:
-	if not is_ready() or player.dead:
+	if not is_ready() or player.dead or get_tree().paused:
 		return false
 	var target := player.crosshair_target(RANGE)
 	if target == null:
@@ -37,6 +37,7 @@ func try_mark() -> bool:
 	clear_mark()
 	current_target = target
 	target.died.connect(_on_defeat)
+	target.tree_exiting.connect(_on_target_exiting)
 	target.set_marked(true)
 	duration_left = DURATION
 	cooldown_left = COOLDOWN
@@ -44,17 +45,25 @@ func try_mark() -> bool:
 	return true
 
 func clear_mark() -> void:
-	if is_instance_valid(current_target):
-		if current_target.died.is_connected(_on_defeat):
-			current_target.died.disconnect(_on_defeat)
-		current_target.set_marked(false)
+	# Drop our reference before notifying the target, including teardown. A
+	# target exiting the level must not leave a stale reference for Explosion.
+	var previous := current_target
 	current_target = null
 	duration_left = 0
+	if is_instance_valid(previous):
+		if previous.died.is_connected(_on_defeat):
+			previous.died.disconnect(_on_defeat)
+		if previous.tree_exiting.is_connected(_on_target_exiting):
+			previous.tree_exiting.disconnect(_on_target_exiting)
+		previous.set_marked(false)
 
 func consume_mark() -> void:
 	clear_mark()
 
 func _on_defeat(_enemy: TimbukEnemy) -> void:
+	clear_mark()
+
+func _on_target_exiting() -> void:
 	clear_mark()
 
 func _exit_tree() -> void:

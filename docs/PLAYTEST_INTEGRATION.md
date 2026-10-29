@@ -61,11 +61,11 @@ Attempted:
 godot --headless --path . --export-release Web docs/index.html
 ```
 
-**Export blocked:** the installed Godot 4.7.2 editor has neither expected template:
+**Initial local export blocked:** the installed Godot 4.7.2 editor had neither expected template:
 
 ```text
 C:/Users/rhyne/AppData/Roaming/Godot/export_templates/4.7.2.stable/web_nothreads_debug.zip
 C:/Users/rhyne/AppData/Roaming/Godot/export_templates/4.7.2.stable/web_nothreads_release.zip
 ```
 
-Godot reports “Cannot export project with preset Web due to configuration errors” and “No export template found at the expected path.” No index.html, WASM, JS or PCK export is claimed, and no browser test was performed. Install matching 4.7.2 export templates, rerun the export, then test the generated build over HTTP. Desktop Compatibility validation does not prove web performance or browser compatibility. This missing-template blocker is why the integration PR is left for review rather than automatically merged.
+Godot reported “Cannot export project with preset Web due to configuration errors” and “No export template found at the expected path.” No index.html, WASM, JS or PCK export is claimed by that initial local attempt, and no browser test was performed. Install matching 4.7.2 export templates, rerun the export, then test the generated build over HTTP. Desktop Compatibility validation does not prove web performance or browser compatibility. The initial integration delivery was left for review with this local blocker. The later main deployment workflow is now retained. Rhaiyn's October 29 focused Marking completion, regression tests and actual-game visual verification are recorded in [MARKING_COMPLETION.md](MARKING_COMPLETION.md); PR #3 records repository delivery status.
