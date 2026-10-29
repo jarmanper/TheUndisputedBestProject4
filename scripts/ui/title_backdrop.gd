@@ -456,13 +456,10 @@ func _aabb(node: Node, xf: Transform3D) -> AABB:
 # --- the title ----------------------------------------------------------------
 
 func _build_title() -> void:
-	var font := SystemFont.new()
-	font.font_names = PackedStringArray([
-		"Cormorant Garamond", "Playfair Display", "Bodoni MT", "Didot",
-		"Baskerville Old Face", "Georgia", "Times New Roman",
-		"Liberation Serif", "DejaVu Serif", "serif",
-	])
-	font.font_weight = 700
+	# Bundled, not SystemFont: the web export has no system fonts to fall back on.
+	var font := FontVariation.new()
+	font.base_font = load("res://assets/fonts/CormorantGaramond.ttf")
+	font.variation_opentype = {"wght": 700}
 
 	var face := StandardMaterial3D.new()
 	face.albedo_color = Color(0.86, 0.84, 0.78)

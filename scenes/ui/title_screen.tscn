@@ -6,15 +6,19 @@
 [ext_resource type="Shader" path="res://scripts/ui/title_grain.gdshader" id="7_grain"]
 [ext_resource type="AudioStream" path="res://assets/audio/ambience/amb_chamber.wav" id="4_amb"]
 [ext_resource type="AudioStream" path="res://assets/audio/sfx/clock_tick_loop.wav" id="5_tick"]
+[ext_resource type="FontFile" path="res://assets/fonts/CormorantGaramond.ttf" id="9_serif"]
+[ext_resource type="FontFile" path="res://assets/fonts/Oswald.ttf" id="10_sans"]
 [ext_resource type="AudioStream" path="res://assets/audio/sfx/reveal_sting.wav" id="6_sting"]
 [ext_resource type="AudioStream" path="res://assets/audio/sfx/machine_hum_loop.wav" id="8_hum"]
 
-[sub_resource type="SystemFont" id="Font_serif"]
-font_names = PackedStringArray("Cormorant Garamond", "Playfair Display", "Baskerville Old Face", "Georgia", "Times New Roman", "Liberation Serif", "DejaVu Serif", "serif")
-font_weight = 500
+[sub_resource type="FontVariation" id="Font_serif"]
+base_font = ExtResource("9_serif")
+variation_opentype = {
+"wght": 500
+}
 
-[sub_resource type="SystemFont" id="Font_sans"]
-font_names = PackedStringArray("Oswald", "Bebas Neue", "Arial Narrow", "Liberation Sans Narrow", "DejaVu Sans Condensed", "Helvetica", "sans-serif")
+[sub_resource type="FontVariation" id="Font_sans"]
+base_font = ExtResource("10_sans")
 
 [sub_resource type="StyleBoxEmpty" id="Style_btn"]
 content_margin_left = 20.0
