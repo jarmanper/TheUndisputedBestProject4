@@ -3,6 +3,21 @@ extends Node3D
 ## loop plus, every few seconds, either a non-verbal sound or a spoken line.
 ## Teammates can call say("help_me") or vocalize() from their own code.
 
+## Word budget (AGENTS.md rule 4 / section 4.5). tools/build_scenes.gd fills
+## `lines` by globbing every res://assets/audio/voices/<prefix>_*.wav, so the
+## generated character scenes reference more spoken lines than the 150-word cap
+## allows. The budget is enforced here instead: any line whose file name is not
+## listed below is dropped when the creature loads. Keep this list in sync with
+## source/audio/voice_lines.txt (the surplus .wav files stay on disk so the
+## generated scenes keep valid resource paths -- they are simply never played).
+const BUDGETED_LINES := [
+	"failed_help_me",    # "help me"   2 words
+	"failed_it_hurts",   # "it hurts"  2 words
+	"failed_mother",     # "mother"    1 word
+	"twin_brother",      # "brother"   1 word
+	"twin_tick_tock",    # "tick tock" 2 words
+]                        # total: 8 words
+
 @export var loop_sound: AudioStream
 @export var noises: Array[AudioStream] = []
 @export var lines: Array[AudioStream] = []
@@ -18,6 +33,7 @@ var _timer := 0.0
 
 
 func _ready() -> void:
+	lines = _within_budget(lines)
 	_loop = AudioStreamPlayer3D.new()
 	_loop.stream = loop_sound
 	_loop.bus = "Voices"
@@ -43,6 +59,22 @@ func _process(delta: float) -> void:
 	if _timer <= 0.0:
 		vocalize()
 		_timer = randf_range(min_gap, max_gap)
+
+
+## Drop any spoken line that is not in BUDGETED_LINES. A creature left with no
+## lines at all (the augmented patient) simply falls back to its noises, which
+## vocalize() already handles.
+func _within_budget(src: Array[AudioStream]) -> Array[AudioStream]:
+	var out: Array[AudioStream] = []
+	for s in src:
+		if s == null:
+			continue
+		var file := s.resource_path.get_file().get_basename()
+		for allowed in BUDGETED_LINES:
+			if file == allowed or s.resource_path.contains(allowed):
+				out.append(s)
+				break
+	return out
 
 
 func vocalize() -> void:

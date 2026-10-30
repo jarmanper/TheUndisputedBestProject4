@@ -2,6 +2,12 @@ extends CanvasLayer
 ## Story UI: typewriter dialogue at the bottom, objective at the top-left,
 ## and full-screen death / ending overlays. Built in code so the scene is
 ## self-contained: drop res://scenes/ui/dialogue_box.tscn into any level.
+##
+## WORD BUDGET (AGENTS.md rule 4 / section 4.5): the death and ending overlay
+## strings below are story text and count against the 150-word cap. The
+## "OBJECTIVE" header, the "[E] continue" hint and the overlay buttons are
+## interface chrome and are budgeted separately (see section 4.5). Update that
+## table in the same commit as any change here.
 
 const CHARS_PER_SEC := 45.0
 const AUTO_ADVANCE_BASE := 2.5      # seconds a finished line stays up...
@@ -125,9 +131,10 @@ func _on_player_died() -> void:
 
 func _on_game_won() -> void:
 	_retry_btn.text = "Play again"
+	# Word budget (AGENTS.md 4.5): title 4 words + subtitle 5 words.
 	_show_overlay(Color(0, 0, 0, 0), Color(0, 0, 0, 1),
 		"THE CLOCK IS SILENT",
-		"The Twin is still. For the first time in eleven years, nothing in TIMBUK is ticking.\n\nReyes walked out at dawn. Dr. Hale never answered the radio again.\n\nSomewhere below, a second hand twitched.",
+		"Nothing in TIMBUK is ticking.",
 		Color(0.9, 0.85, 0.7))
 
 
