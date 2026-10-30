@@ -10,6 +10,10 @@ signal game_won
 
 const TITLE_SCENE := "res://scenes/ui/title_screen.tscn"
 const GAME_SCENE := "res://scenes/game/main.tscn"
+## New Game goes through the loading screen, which warms the asset library a
+## slice at a time instead of blocking on one 20-30 s change_scene_to_file().
+## On the single-threaded Web export that blocking call froze the tab.
+const LOADING_SCENE := "res://scenes/web/loading_screen.tscn"
 const DEATH_DELAY := 3.0
 const ENDING_DELAY := 12.0
 
@@ -79,8 +83,14 @@ func is_game_over() -> bool:
 func start_new_game() -> void:
 	_reset()
 	get_tree().paused = false
-	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
-	get_tree().change_scene_to_file(GAME_SCENE)
+	# The loading screen keeps the cursor visible; main.tscn captures it in _ready.
+	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+	if ResourceLoader.exists(LOADING_SCENE):
+		print("newgame: switching to loading screen")
+		get_tree().change_scene_to_file(LOADING_SCENE)
+	else:
+		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+		get_tree().change_scene_to_file(GAME_SCENE)
 
 
 ## Restart the level from scratch (death / ending screen).
