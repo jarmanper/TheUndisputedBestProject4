@@ -2,7 +2,9 @@
 
 Each @prop function builds one prop at the origin (floor at z=0, front facing
 -Y) and returns its objects. `build_all()` exports each to
-assets/models/props/<name>.glb with a simple collision box.
+assets/models/props/<name>.glb with collision fitted to its parts
+(tlib.part_colliders): a box per solid part, nothing on decals and rubble the
+player walks over, so a prop never blocks anywhere you cannot see it blocking.
 
 Run:  blender -b --factory-startup --python source/blender/props.py [-- name ...]
 """
@@ -21,9 +23,18 @@ from tlib import box, cyl, sphere, torus, tube, bezier_points, collider, empty  
 PROPS = {}
 
 
-def prop(collide=True):
+def prop(collide=True, skip=(), max_boxes=20, waste=1.5):
+    """Register a prop builder.
+
+    collide    True  -> one collision box per visible part (see tlib.part_colliders)
+               "box" -> a single box over the whole prop (only for solid blocks)
+               False -> no collision at all (decals, rubble the player walks over)
+    skip       part-name substrings that should not collide on this prop
+    max_boxes  cap on collision boxes for this prop
+    waste      how loose a merge of two boxes may be before it is rejected
+    """
     def deco(fn):
-        PROPS[fn.__name__] = (fn, collide)
+        PROPS[fn.__name__] = (fn, collide, dict(skip=skip, max_boxes=max_boxes, waste=waste))
         return fn
     return deco
 
@@ -540,7 +551,7 @@ def wall_clock():
     return o
 
 
-@prop()
+@prop(collide=False)   # low rubble the player walks over
 def debris_pile():
     rnd = random.Random(21)
     o = []
@@ -561,7 +572,7 @@ def papers_scattered():
     return scatter_papers(14, (1.2, 0.9), 0.002, seed=5)
 
 
-@prop()
+@prop(collide=False)   # tiles lying flat on the floor
 def ceiling_tile_fallen():
     rnd = random.Random(8)
     o = []
@@ -740,7 +751,7 @@ def blood_trail():
     return o
 
 
-@prop()
+@prop(max_boxes=60, waste=1.25)   # radially symmetric centrepiece: keep it tight
 def failed_containment_device():
     """Centerpiece: a 3 m pressure chamber burst open from the inside."""
     o = []
@@ -1189,21 +1200,25 @@ def wall_bloodsmear():
 def build_all(names=None):
     names = names or list(PROPS)
     for name in names:
-        fn, collide = PROPS[name]
+        fn, collide, opt = PROPS[name]
         T.reset()
         objs = fn()
         meshes = [o for o in objs if o.type == "MESH"]
         empties = [o for o in objs if o.type == "EMPTY"]
+        # collision is fitted to the separate parts, before they are joined
+        cols = T.part_colliders(name, meshes, **opt) if collide is True else []
         body = T.join(meshes, name)
         T.shade_smooth(body, 35)
         out = [body] + empties
-        if collide:
+        if collide == "box":
             bb = [body.matrix_world @ Vector(c) for c in body.bound_box]
             lo = Vector((min(v.x for v in bb), min(v.y for v in bb), max(0.0, min(v.z for v in bb))))
             hi = Vector((max(v.x for v in bb), max(v.y for v in bb), max(v.z for v in bb)))
             size = hi - lo
             if size.z > 0.05:
                 out.append(collider(name + "_col", tuple(max(s, 0.02) for s in size), tuple((lo + hi) / 2)))
+        out += cols
+        print(f"PROPCOL {name} {len(cols)}")
         T.export_glb(f"assets/models/props/{name}.glb", out)
         T.save_blend(f"source/blender/props/{name}.blend")
 

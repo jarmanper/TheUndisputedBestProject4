@@ -461,9 +461,20 @@ def add_glass(r, cx, cy, thin_x, length, z0, z1):
             loc = (cx + d, cy + t, floor_z + 0.006) if thin_x else (cx + t, cy + d, floor_z + 0.006)
             put(r.area, box("shard", (rnd.uniform(0.04, 0.2), rnd.uniform(0.04, 0.15), 0.008), loc, "glass",
                             rot=(0, 0, rnd.uniform(0, 6))), structural=False)
-    # invisible collision so you can't walk through window frames
-    size = (0.3, length, z1 - z0) if thin_x else (length, 0.3, z1 - z0)
-    EXTRA[r.area].append(collider(r.name, size, (cx, cy, (z0 + z1) / 2)))
+    # An intact pane is solid. A smashed one is an open hole: collide only with
+    # the frame bars that are still visibly there, so leaning into the opening
+    # does not feel like an invisible wall. Nobody gets through either way --
+    # every window sill is at least 0.9 m above the floor on both sides and the
+    # player cannot jump, and the sill and header are structural (trimesh) walls.
+    if r.glass == "intact":
+        size = (0.3, length, z1 - z0) if thin_x else (length, 0.3, z1 - z0)
+        EXTRA[r.area].append(collider(r.name, size, (cx, cy, (z0 + z1) / 2)))
+        return
+    for k in range(n_mull + 1):
+        t = -length / 2 + k * length / n_mull
+        loc = (cx, cy + t, (z0 + z1) / 2) if thin_x else (cx + t, cy, (z0 + z1) / 2)
+        size = (0.3, 0.12, z1 - z0) if thin_x else (0.12, 0.3, z1 - z0)
+        EXTRA[r.area].append(collider(f"{r.name}_mull{k}", size, loc))
 
 
 REGIONS_BY_NAME = {}

@@ -20,7 +20,7 @@
 [ext_resource type="Material" path="res://assets/materials/painted_metal.tres" id="metal"]
 
 [sub_resource type="CapsuleShape3D" id="cap"]
-radius = 0.35
+radius = 0.3
 height = 1.75
 
 [node name="Main" type="Node3D"]
