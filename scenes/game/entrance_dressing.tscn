@@ -1,0 +1,87 @@
+[gd_scene load_steps=4 format=3]
+
+; Wordless story dressing for the opening area (Area A entrance).
+;
+; PREMISE-NEUTRAL as it stands. Everything here is true of both the submitted
+; story doc and the dialogue actually shipped in scenes/game/story_layer.tscn:
+; two identical children belonged to this building, and clocks matter here.
+; It says nothing about who the player is or whose children they were, so it
+; does not contradict Hale / Reyes / Tomas / Teo.
+;
+; Composes existing props from scenes/props/ only. Adds no text, no mechanics,
+; no interactables, no pickups, no gameplay numbers.
+;
+; Instanced at the origin alongside TimbukFacility, which places
+; AreaAEntrance at the origin too, so these are world coordinates.
+
+[ext_resource type="PackedScene" path="res://scenes/props/locker_row.tscn" id="locker"]
+[ext_resource type="PackedScene" path="res://scenes/props/teddy_bear.tscn" id="teddy"]
+[ext_resource type="PackedScene" path="res://scenes/props/grandfather_clock.tscn" id="clock"]
+
+[node name="EntranceDressing" type="Node3D"]
+
+; --- Staff lockers -------------------------------------------------------
+; Two flush locker rows on the lobby back wall, west of the security gate.
+; Ordinary staff furniture: it reads as "people worked here", and its built-in
+; bench is what the two bears sit on. Flush against the wall, clear of the
+; route to the gate, so it blocks nothing and changes no navigation.
+[node name="StaffLockers" type="Node3D" parent="."]
+
+[node name="LockerLeft" parent="StaffLockers" instance=ExtResource("locker")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 0, -5.5)
+
+[node name="LockerRight" parent="StaffLockers" instance=ExtResource("locker")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.4, 0, -5.5)
+
+; --- The two children ----------------------------------------------------
+; Two identical bears sitting side by side on the bench. Identical, not
+; merely two: the pairing is the whole message. A research facility lobby is
+; the wrong place for them, which is what makes a player stop and look.
+; True of either story version, since both have twin boys who lived here.
+[node name="BearLeft" parent="StaffLockers" instance=ExtResource("teddy")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.44, 0.47, -4.9)
+
+[node name="BearRight" parent="StaffLockers" instance=ExtResource("teddy")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.1, 0.47, -4.9)
+
+; --- The clock motif -----------------------------------------------------
+; A domestic heirloom clock standing in a corporate lobby: an anomaly, a tall
+; silhouette that carries the group from across the room, and an audible pull
+; (the prop autoplays clock_tick_loop). Plants the motif that pays off at the
+; clock workshop and the Twin.
+[node name="GrandfatherClock" parent="." instance=ExtResource("clock")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.7, 0, -5.5)
+
+; --- Staging -------------------------------------------------------------
+; The lobby is lit cool blue-white throughout. This group is the only warm
+; pool of light in the room, so the eye goes to it from the spawn point
+; without anything having to tell the player to look.
+[node name="Lights" type="Node3D" parent="."]
+
+[node name="bench_key" type="SpotLight3D" parent="Lights"]
+transform = Transform3D(1, 0, 0, 0, 0.42261827, 0.9063078, 0, -0.9063078, 0.42261827, -5.2, 3.1, -3.9)
+light_color = Color(1, 0.8, 0.55, 1)
+light_energy = 7.0
+light_volumetric_fog_energy = 2.5
+shadow_enabled = true
+shadow_blur = 1.5
+spot_range = 7.0
+spot_attenuation = 0.9
+spot_angle = 38.0
+spot_angle_attenuation = 1.2
+
+[node name="bench_fill" type="OmniLight3D" parent="Lights"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.1, 1.55, -4.5)
+light_color = Color(1, 0.86, 0.68, 1)
+light_energy = 2.4
+light_volumetric_fog_energy = 1.5
+omni_range = 3.4
+omni_attenuation = 1.4
+
+[node name="clock_face" type="OmniLight3D" parent="Lights"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.7, 2.1, -4.9)
+light_color = Color(1, 0.82, 0.58, 1)
+light_energy = 0.35
+light_volumetric_fog_energy = 1.0
+omni_range = 2.2
+omni_attenuation = 1.5

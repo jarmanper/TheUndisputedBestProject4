@@ -1,0 +1,32 @@
+[gd_scene load_steps=3 format=3]
+
+; Capture harness for the opening-area dressing pass (new file).
+; VIEW__ markers sit at player eye height (1.6 m) on the real walking route.
+; Run: tools/godot.sh --resolution 1280x720 --script res://tools/capture.gd -- res://tools/entrance_views.tscn
+
+[ext_resource type="PackedScene" path="res://scenes/environments/area_a_entrance.tscn" id="area"]
+[ext_resource type="PackedScene" path="res://scenes/game/entrance_dressing.tscn" id="dress"]
+
+[node name="EntranceViews" type="Node3D"]
+
+[node name="AreaAEntrance" parent="." instance=ExtResource("area")]
+
+[node name="EntranceDressing" parent="." instance=ExtResource("dress")]
+
+[node name="VIEW__01_spawn" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6, 3)
+
+[node name="VIEW__02_walk_mid" type="Node3D" parent="."]
+transform = Transform3D(0.9848, 0, -0.1736, 0, 1, 0, 0.1736, 0, 0.9848, -0.6, 1.6, 0.8)
+
+[node name="VIEW__03_desk_pass" type="Node3D" parent="."]
+transform = Transform3D(0.766, 0, -0.6428, 0, 1, 0, 0.6428, 0, 0.766, -2.4, 1.6, -2.4)
+
+[node name="VIEW__04_coat_left" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.8, 1.6, -3.4)
+
+[node name="VIEW__05_bench" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.9397, 0.342, 0, -0.342, 0.9397, -5.2, 1.6, -3.0)
+
+[node name="VIEW__06_gate_look_back" type="Node3D" parent="."]
+transform = Transform3D(-0.1736, 0, -0.9848, 0, 1, 0, 0.9848, 0, -0.1736, 0, 1.6, -4.2)

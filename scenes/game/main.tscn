@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" path="res://scripts/game/main.gd" id="main"]
 [ext_resource type="PackedScene" path="res://scenes/environments/timbuk_facility.tscn" id="facility"]
+[ext_resource type="PackedScene" path="res://scenes/game/entrance_dressing.tscn" id="dress"]
 [ext_resource type="Script" path="res://scripts/game/player.gd" id="player"]
 [ext_resource type="Script" path="res://scripts/game/mechanics/combat.gd" id="combat"]
 [ext_resource type="Script" path="res://scripts/game/mechanics/marking.gd" id="marking"]
@@ -27,6 +28,8 @@ height = 1.75
 script = ExtResource("main")
 
 [node name="TimbukFacility" parent="." instance=ExtResource("facility")]
+
+[node name="EntranceDressing" parent="." instance=ExtResource("dress")]
 
 [node name="Player" type="CharacterBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 3)
