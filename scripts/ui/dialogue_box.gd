@@ -76,8 +76,8 @@ func _next_line() -> void:
 
 func _speaker_color(who: String) -> Color:
 	match who.to_lower():
-		"reyes": return Color(0.85, 0.85, 0.8)
-		"dr. hale", "hale": return Color(0.55, 0.8, 0.75)
+		"me": return Color(0.85, 0.85, 0.8)             # the player
+		"mom", "dad": return Color(0.9, 0.7, 0.35)      # the parents' recordings
 		"the twin", "twin", "???": return Color(0.9, 0.2, 0.15)
 		_: return Color(0.9, 0.7, 0.35)   # recordings, logs, notes
 
@@ -126,15 +126,15 @@ func _on_objective_changed(text: String) -> void:
 func _on_player_died() -> void:
 	_retry_btn.text = "Retry"
 	_show_overlay(Color(0.25, 0.0, 0.0, 0.0), Color(0.12, 0.0, 0.0, 0.94),
-		"YOUR CLOCK STOPPED", "It heard you.", Color(0.95, 0.2, 0.15))
+		"YOUR CLOCK STOPPED", "He heard you.", Color(0.95, 0.2, 0.15))
 
 
 func _on_game_won() -> void:
 	_retry_btn.text = "Play again"
-	# Word budget (AGENTS.md 4.5): title 4 words + subtitle 5 words.
+	# Word budget (AGENTS.md 4.5): title 4 words + subtitle 4 words.
 	_show_overlay(Color(0, 0, 0, 0), Color(0, 0, 0, 1),
-		"THE CLOCK IS SILENT",
-		"Nothing in TIMBUK is ticking.",
+		"THE CLOCK IS QUIET",
+		"Mom. Dad. My brother.",
 		Color(0.9, 0.85, 0.7))
 
 

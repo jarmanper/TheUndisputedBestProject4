@@ -71,18 +71,29 @@ The clock motif (the Twin's clock-face skull, clock workshop, grandfather clocks
 
 ### 4.5 Word budget (150 max)
 
-**This table is the build, audited Oct 29 2026, not a plan.** The old table listed
-a newspaper, an "Experiment 024" report, a "Security Log 17", four warning signs
-and a Twin exchange that **were never built**: none of those strings appears
-anywhere under `scenes/`, `scripts/`, `source/`, `assets/` or `tools/`. The game
-that exists tells a different story (Reyes the contractor, a voice on the radio
-claiming to be Dr. Hale, the twins Tomas and Teo). The 117 / 160 figures in the old
-table were therefore both wrong. The real as-built count before this trim was
-**656 words, 4.4x over the cap**: 501 words of trigger dialogue + 32 words of
-objectives + 6 words of speaker nameplates in `scenes/game/story_layer.tscn`, 31
-in `scenes/game/main.tscn`, 44 on the death and ending screens, and 42 spoken
-(the 48 recorded words minus the 6 `chemical_*` words, which no creature in the
-build loads).
+**This table is the build, re-audited Oct 29 2026 after the story rewrite, not a
+plan.**
+
+History, because it explains the numbers. An older table listed a newspaper, an
+"Experiment 024" report, a "Security Log 17", four warning signs and a Twin
+exchange that **were never built**, so its 117 / 160 figures were both wrong.
+The real as-built count was **656 words, 4.4x over the cap**: 501 words of
+trigger dialogue + 32 of objectives + 6 of speaker nameplates in
+`scenes/game/story_layer.tscn`, 31 in `scenes/game/main.tscn`, 44 on the death
+and ending screens, and 42 spoken (the 48 recorded words minus the 6
+`chemical_*` words, which no creature in the build loads). The first pass trimmed
+that to 134. Worse than the count, the trimmed game still told a *different
+story* from the one submitted in section 4: Reyes the contractor, a voice on the
+radio claiming to be Dr. Hale, the twins Tomas and Teo, no missing parents.
+Both playtesters read it as a generic zombie-outbreak escape
+(`docs/PLAYTEST.md`).
+
+**The Oct 29 rewrite** replaced every line so the game tells the submitted
+story. The player is looking for the parents who vanished here and the goal is to
+go *deeper*; the radio is gone and the guiding voice is **Mom**, a chain of
+recordings she left for her child, which also serves the "Found" theme; the
+Twin's chamber carries the twist and the ending screen the reconciliation.
+Section 4 is deliberately unchanged — it is the record of what was emailed.
 
 **Counting rule.** One word per whitespace-separated token that contains a letter
 or digit. Hyphenated compounds, numbers and "TIMBUK" are one word each. Bare
@@ -93,35 +104,43 @@ counted once. Speaker nameplates are counted once per distinct speaker.
 
 | Text | Type | File:line | Words |
 | --- | --- | --- | --- |
-| Hale: "Reyes? The blackout sealed everything. Restart the generator." | Trigger dialogue | `scenes/game/story_layer.tscn:45` | 8 |
-| "Find the keycard" | Objective | `story_layer.tscn:46` | 3 |
+| Mom: "If you're hearing this, we never left Timbuk." | Trigger dialogue (premise) | `scenes/game/story_layer.tscn:45` | 8 |
+| Me: "Mom? Twelve years. I'm coming down." | Trigger dialogue (premise) | `story_layer.tscn:45` | 6 |
+| "Find Mom's keycard" | Objective | `story_layer.tscn:46` | 3 |
 | "Restore power" | Objective | `story_layer.tscn:58` | 2 |
-| Recording: "One heartbeat, two bodies. Teo died, so I built him a clockwork heart." | Trigger dialogue (the twist) | `story_layer.tscn:82` | 13 |
-| Reyes: "Hale. What did you build?" | Trigger dialogue | `story_layer.tscn:82` | 5 |
+| Mom: "Subject Two's heart is a clock. He asks for his brother." | Trigger dialogue (development) | `story_layer.tscn:82` | 11 |
+| Me: "What brother?" | Trigger dialogue | `story_layer.tscn:82` | 2 |
 | ???: "Tick... tock... where are you, brother?" | Trigger dialogue | `story_layer.tscn:95` | 6 |
-| Hale: "Hear ticking? Don't run." | Trigger dialogue | `story_layer.tscn:120` | 4 |
-| Hale: "It winds down in the chamber." | Trigger dialogue | `story_layer.tscn:145` | 6 |
+| Mom: "Containment failed. Your father went down to him." | Trigger dialogue (development) | `story_layer.tscn:120` | 8 |
+| Mom: "We kept him in the chamber below. Forgive us." | Trigger dialogue (development) | `story_layer.tscn:145` | 9 |
 | "Open the chamber" | Objective | `story_layer.tscn:146` | 3 |
-| Recording: "You don't sleep anymore, Teo." | Trigger dialogue | `story_layer.tscn:158` | 5 |
-| Hale: "It's both my boys now. Stop the clockwork." | Final encounter | `story_layer.tscn:171` | 8 |
-| Twin: "Doctor... you wound us too tight." | Final encounter | `story_layer.tscn:171` | 6 |
-| Reyes: "Hale? It's your voice." | Final encounter | `story_layer.tscn:171` | 4 |
-| "Stop the Twin" | Objective | `story_layer.tscn:172` | 3 |
-| Nameplates: HALE, RECORDING, REYES, TWIN, ??? | Speaker labels (the `"Speaker:"` prefixes, drawn by `dialogue_box.gd:67`) | `story_layer.tscn` | 4 |
-| "Security keycard. Level 3 clearance." | Pickup text | `scenes/game/main.tscn:130` | 5 |
-| "The panel is locked. It needs a keycard." | Locked text | `scenes/game/main.tscn:142` | 8 |
-| "The generator coughs to life. Somewhere below, a door unlocks." | Switch text | `scenes/game/main.tscn:143` | 10 |
-| "Sealed. There is no power to the lock." | Locked text (both doors, counted once) | `scenes/game/main.tscn:151`, `:161` | 8 |
-| "YOUR CLOCK STOPPED" / "It heard you." | Death screen | `scripts/ui/dialogue_box.gd:129` | 6 |
-| "THE CLOCK IS SILENT" / "Nothing in TIMBUK is ticking." | Ending screen | `scripts/ui/dialogue_box.gd:136-137` | 9 |
-| "help me", "it hurts", "mother" | Creature speech (failed patients) | `source/audio/voice_lines.txt:16-18` | 5 |
-| "brother", "tick tock" | Creature speech (the Twin) | `source/audio/voice_lines.txt:19-20` | 3 |
-| **Total as built** | | | **134** |
+| Me: "They raised him in here." | Trigger dialogue | `story_layer.tscn:158` | 5 |
+| Twin: "They made me. They kept me. You they let live." | Final encounter (the twist) | `story_layer.tscn:171` | 10 |
+| Me: "Where are our parents?" | Final encounter | `story_layer.tscn:171` | 4 |
+| Twin: "Here. With me. It's time you saw." | Final encounter | `story_layer.tscn:171` | 7 |
+| "Stop your brother" | Objective | `story_layer.tscn:172` | 3 |
+| Nameplates: MOM, ME, TWIN, ??? | Speaker labels (the `"Speaker:"` prefixes, drawn by `dialogue_box.gd:67`) | `story_layer.tscn` | 3 |
+| "Mom's keycard." | Pickup text | `scenes/game/main.tscn:130` | 2 |
+| "Locked. Needs a keycard." | Locked text | `scenes/game/main.tscn:142` | 4 |
+| "Power. A door opens below." | Switch text | `scenes/game/main.tscn:143` | 5 |
+| "Sealed. No power." | Locked text (both doors, counted once) | `scenes/game/main.tscn:151`, `:161` | 3 |
+| "YOUR CLOCK STOPPED" / "He heard you." | Death screen | `scripts/ui/dialogue_box.gd:129` | 6 |
+| "THE CLOCK IS QUIET" / "Mom. Dad. My brother." | Ending screen (reconciliation) | `scripts/ui/dialogue_box.gd:136-137` | 8 |
+| "where are you", "mother" | Creature speech (failed patients) | `source/audio/voice_lines.txt:19-20` | 4 |
+| "brother", "tick tock", "you left me here" | Creature speech (the Twin) | `source/audio/voice_lines.txt:21-23` | 7 |
+| **Total as built** | | | **129** |
 
-**134 / 150. 16 words of headroom.** Verified by parsing the files above, not by
+**129 / 150. 21 words of headroom.** Verified by parsing the files above, not by
 re-reading this table. The three triggers with no `lines` (`research`,
 `cell_block`, `lower_stairs`) are deliberately wordless — those rooms carry their
 story in props and sound.
+
+**Nameplates are three words.** `???` is bare punctuation (zero words by the rule
+above) and the Twin keeps it until the chamber. Every plate has an explicit case
+in `_speaker_color` (`dialogue_box.gd:77`): `me` pale, `mom`/`dad` amber (the
+colour the old table gave recordings), `twin`/`???` red. Every `"Speaker: text"`
+line was checked against `story_trigger.gd`'s `0 < idx < 24` window; the colon
+sits at index 2, 3 or 4 in all eleven of them.
 
 **What does not count, and why.** Rule 4 exempts the title and controls screens,
 which puts menus outside the cap, and section 6 specifies a wordless HUD. So the
@@ -134,7 +153,7 @@ panel (`scripts/game/ui_settings_panel.gd`); interact prompts (`[E] Take keycard
 `OBJECTIVE` header, the `[E] continue` hint and the end-screen buttons
 (`Retry`, `Play again`, `Return to title` — `scripts/ui/dialogue_box.gd`); and the
 title screen (exempt by rule 4). **If a grader counts chrome too, the total is
-187 and we fail.** Getting under 150 on the strict reading needs cuts in `hud.gd`
+182 and we fail.** Getting under 150 on the strict reading needs cuts in `hud.gd`
 and `ui_settings_panel.gd`, which section 6 already says should have no words.
 
 **Not words, by our reading:** the only text baked into a texture is the Roman
@@ -144,20 +163,35 @@ numeral ring on clock faces, the Twin's head and the suspend effect
 physically cannot spell anything else. Nothing else in `source/textures/` or
 `source/blender/` renders text; the `warning_sign` texture is a wordless triangle.
 
-**First cut if we need more room:** the four interactable strings in
-`scenes/game/main.tscn` are 31 words — 23% of the cap spent on door and pickup
-flavour. Shortening them to roughly `"Keycard."` / `"Locked. Needs a keycard."` /
-`"Power's back."` / `"No power."` (about 8 words) would put the game at ~111.
+**The first cut has been taken.** The four interactable strings in
+`scenes/game/main.tscn` were 31 words — 23% of the cap on door and pickup
+flavour. They are now 14, and the keycard's text does story work for free
+(`"Mom's keycard."` tells the player in the first room that a parent worked
+here). **Next cut if we need more room:** the three development recordings
+(`clock_workshop`, `containment`, `generator`, 28 words together) are the only
+place with slack; the intro (14) and the chamber (21) are the premise and the
+twist and should be cut last.
 
 **Spoken lines are enforced in code.** `tools/build_scenes.gd` fills each
 creature's `lines` by globbing every `assets/audio/voices/<prefix>_*.wav`, so the
 generated character scenes still reference all 19 recorded lines (48 words).
 `BUDGETED_LINES` in `scripts/visual/creature_audio.gd` drops everything not in the
 5-line list above at load time; the surplus `.wav` files stay on disk so those
-generated scenes keep valid resource paths. The cut lines are kept, commented out,
-at the bottom of `source/audio/voice_lines.txt`. Adding a line needs an entry in
-*both* places and a matching cut here. The augmented patient now has no spoken
-lines at all and falls back to its servo/glitch noises.
+generated scenes keep valid resource paths. The 14 cut lines (37 words) are kept,
+commented out, at the bottom of `source/audio/voice_lines.txt`. Adding a line
+needs an entry in *both* places, a matching cut here, and a `.wav` that already
+exists — nothing is re-recorded.
+
+The shipped 5 were re-picked for the submitted story on Oct 29: the failed
+patients say **"mother"** and **"where are you"** (they call for the woman who
+made them, and the whole game is a search), and the Twin says **"brother"**,
+**"tick tock"** and **"you left me here"** — the accusation at the heart of the
+twist, in his own voice, before he ever speaks a line of dialogue. `"help me"`
+and `"it hurts"` were cut: they are the generic-outbreak flavour that both
+playtesters read the game as. Verified at runtime — `tall_patient_a` and `_c`
+load exactly `failed_mother` + `failed_where_are_you`, `twin_monster` loads
+exactly the three `twin_*`, and `tall_patient_b` (the augmented patient) still
+has no spoken lines at all and falls back to its servo/glitch noises.
 
 ## 5. Team 3's mechanics (exact; do not change)
 
@@ -322,7 +356,7 @@ Full guide: [docs/GRAPHICS.md](docs/GRAPHICS.md). Effects: instance from `scenes
 | Suspend | `suspend_field` (animate material `strength` 0–1), `suspended_particles`, `scripts/visual/afterimage_spawner.gd`, `fx_temporal_distortion.tres` | Don't move or disable the collider |
 | Explosion | `explosion_{orange,green,blue,purple}`; the `Shockwave` ring grows to exactly 4 m radius in 0.45 s; `scorch_mark` | `fire_*` loops forever. Team 3 forbids lingering areas, so fire is cosmetic only, short, and never does damage |
 | Enemies | `failed_humanoid`, `augmented_subject`, `chemical_subject`, `twin_monster` in `scenes/characters/`. Call `play_visual("walk")`. Failed: `idle walk react twitch`. Twin: `idle head_tilt eye_scan clock_spin twitch wire_vibrate walk_slow posture_shift reveal` | Animations are in place (no root motion). The Twin has the same 100 HP and numbers as every other target |
-| Creature voices | `CreatureAudio` node on each character: `say("help_me")`, `vocalize()`. Set `lines` to only budgeted lines | Random lines use words from the budget (section 4.5) |
+| Creature voices | `CreatureAudio` node on each character: `say("failed_mother")`, `vocalize()` | Budget filtering is automatic: `BUDGETED_LINES` in `creature_audio.gd` drops any line not in section 4.5 at load. Adding a line needs an entry there *and* a matching cut in 4.5 |
 | Twin reveal | `scenes/cinematics/twin_reveal.tscn`, `scripts/visual/reveal_sequence.gd` (set `auto_loop = false` in game) | It speaks "you found me" (3 words). The Twin must already exist at level start |
 | Readable text | Paper and newspaper props are blank. Add `Label3D` in your own scene | Every word counts |
 | Story props | `failed_containment_device`, `photo_frame`, `teddy_bear`, `papers_scattered`, `containment_tank(_broken)`, `cell_bars`, `clock_workbench`, `grandfather_clock`, `wall_clock`, `old_key`, `keycard`, `pistol` | Keys and weapons are set dressing only (rule 2) |
@@ -360,8 +394,9 @@ Full guide: [docs/GRAPHICS.md](docs/GRAPHICS.md). Effects: instance from `scenes
 - [ ] What the player finds after the Twin dies (the Reconciliation beat needs a found moment)
 - [ ] Locations for the beats and found moments (needed for the story revision)
 - [x] Trim the voice lines to fit 150 words — done Oct 29 2026, and the whole game
-  re-audited: 656 → **134 / 150**. See section 4.5 for the table, the counting
-  rule, the chrome ruling and the next cut if we need more room.
+  re-audited: 656 → 134, then **129 / 150** after the story text was rewritten to
+  match the submitted story. See section 4.5 for the table, the counting rule,
+  the chrome ruling and the next cut if we need more room.
 
 ## 11. Deadlines
 - **Story revision:** sections 1–4 and 6 can be revised once. One member emails it before **4:00 pm, Wednesday November 4, 2026**. The clarity rating is final.

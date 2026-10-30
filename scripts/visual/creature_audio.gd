@@ -1,7 +1,7 @@
 extends Node3D
 ## Creature sound (visual/audio only, no AI): a constant breathing/mechanical
 ## loop plus, every few seconds, either a non-verbal sound or a spoken line.
-## Teammates can call say("help_me") or vocalize() from their own code.
+## Teammates can call say("mother") or vocalize() from their own code.
 
 ## Word budget (AGENTS.md rule 4 / section 4.5). tools/build_scenes.gd fills
 ## `lines` by globbing every res://assets/audio/voices/<prefix>_*.wav, so the
@@ -11,12 +11,12 @@ extends Node3D
 ## source/audio/voice_lines.txt (the surplus .wav files stay on disk so the
 ## generated scenes keep valid resource paths -- they are simply never played).
 const BUDGETED_LINES := [
-	"failed_help_me",    # "help me"   2 words
-	"failed_it_hurts",   # "it hurts"  2 words
-	"failed_mother",     # "mother"    1 word
-	"twin_brother",      # "brother"   1 word
-	"twin_tick_tock",    # "tick tock" 2 words
-]                        # total: 8 words
+	"failed_where_are_you",   # "where are you"    3 words
+	"failed_mother",          # "mother"           1 word
+	"twin_brother",           # "brother"          1 word
+	"twin_tick_tock",         # "tick tock"        2 words
+	"twin_you_left_me_here",  # "you left me here" 4 words
+]                             # total: 11 words
 
 @export var loop_sound: AudioStream
 @export var noises: Array[AudioStream] = []
