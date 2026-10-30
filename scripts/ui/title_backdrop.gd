@@ -13,6 +13,7 @@ extends Node3D
 
 const TITLE_TEXT := "TIMBUK"
 const TitleClockwork := preload("res://scripts/ui/title_clockwork.gd")
+const TitleGlyphMesh := preload("res://scripts/ui/title_glyph_mesh.gd")
 const TWIN := preload("res://assets/models/characters/twin_monster.glb")
 const DUST_TEX := preload("res://assets/textures/vfx/spark.png")
 
@@ -54,6 +55,7 @@ var _twin_light: OmniLight3D
 var _t := 0.0
 var _speed := 1.0
 var _push := 0.0
+var _has_dof := true
 var _dial_hands: Array[Node3D] = []
 
 
@@ -120,14 +122,18 @@ func _build_camera() -> void:
 	_cam.near = 0.05
 	_cam.far = 40.0
 	_cam.current = true
+	# Depth of field needs Forward+ or Mobile. The Compatibility renderer (which
+	# the web export uses) has none, and asking for it there only logs a warning.
+	_has_dof = RenderingServer.get_rendering_device() != null
 	var attr := CameraAttributesPractical.new()
-	attr.dof_blur_far_enabled = true
-	attr.dof_blur_far_distance = 4.6
-	attr.dof_blur_far_transition = 3.0
-	attr.dof_blur_near_enabled = true
-	attr.dof_blur_near_distance = 2.0
-	attr.dof_blur_near_transition = 1.0
-	attr.dof_blur_amount = 0.07
+	if _has_dof:
+		attr.dof_blur_far_enabled = true
+		attr.dof_blur_far_distance = 4.6
+		attr.dof_blur_far_transition = 3.0
+		attr.dof_blur_near_enabled = true
+		attr.dof_blur_near_distance = 2.0
+		attr.dof_blur_near_transition = 1.0
+		attr.dof_blur_amount = 0.07
 	_cam.attributes = attr
 	add_child(_cam)
 
@@ -423,8 +429,20 @@ func _build_twin() -> void:
 		inst.position = Vector3(-aabb.get_center().x * s, -aabb.position.y * s, -aabb.get_center().z * s)
 	_twin.position = Vector3(-0.30, -2.55, -11.6)
 	_twin.rotation.y = PI          # models face +Z, so turn him towards the camera
+	# Force him almost black. Depth of field and fog hid him in Forward+, but the
+	# Compatibility renderer (the web export) has neither, and there he came out
+	# as a brightly lit figure standing next to the menu. Overriding the material
+	# on this instance only -- the shared model is untouched -- makes him read as
+	# a silhouette in every renderer.
+	var dark := StandardMaterial3D.new()
+	dark.albedo_color = Color(0.035, 0.034, 0.038)
+	dark.roughness = 1.0
+	dark.metallic = 0.0
+	dark.specular_mode = BaseMaterial3D.SPECULAR_DISABLED
 	for mi in inst.find_children("*", "MeshInstance3D", true, false):
-		(mi as MeshInstance3D).cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		var m := mi as MeshInstance3D
+		m.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		m.material_override = dark
 
 	# Lit from behind only, so he is a cut-out against a faint warm patch of
 	# wall rather than a figure you can read. You notice him on a second look.
@@ -457,9 +475,13 @@ func _aabb(node: Node, xf: Transform3D) -> AABB:
 
 func _build_title() -> void:
 	# Bundled, not SystemFont: the web export has no system fonts to fall back on.
+	# The file's weight axis does not reach glyph outlines in Godot 4.7 (the
+	# contours come back identical at wght 300 and 700), and its default instance
+	# is Light, so the display weight has to come from embolden instead. That can
+	# make an outline cross itself, which title_glyph_mesh cleans up anyway.
 	var font := FontVariation.new()
 	font.base_font = load("res://assets/fonts/CormorantGaramond.ttf")
-	font.variation_opentype = {"wght": 700}
+	font.variation_embolden = 0.35
 
 	var face := StandardMaterial3D.new()
 	face.albedo_color = Color(0.86, 0.84, 0.78)
@@ -473,9 +495,11 @@ func _build_title() -> void:
 	_title_root = Node3D.new()
 	add_child(_title_root)
 
-	var px := 0.0035
+	# Cormorant has a taller cap height than the system serif this replaced,
+	# so the glyphs need to be a little smaller and set a little tighter.
+	var px := 0.0031
 	var size := 150
-	var tracking := 0.055
+	var tracking := 0.045
 	var x := 0.0
 	var widths: Array[float] = []
 	for ch in TITLE_TEXT:
@@ -486,19 +510,16 @@ func _build_title() -> void:
 		total += w + tracking
 	total -= tracking
 
+	# Not TextMesh: its convex decomposition cannot handle Cormorant's
+	# overlapping contours and drops the faces of M and B. See title_glyph_mesh.
+	var letters := TitleGlyphMesh.build_letters(font, size, TITLE_TEXT, 0.075, px)
+
 	for i in TITLE_TEXT.length():
-		var tm := TextMesh.new()
-		tm.text = TITLE_TEXT[i]
-		tm.font = font
-		tm.font_size = size
-		tm.pixel_size = px
-		tm.depth = 0.075
-		tm.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		tm.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-		tm.material = face
 		var holder := Node3D.new()
 		var mi := MeshInstance3D.new()
-		mi.mesh = tm
+		mi.mesh = letters[i]
+		if letters[i].get_surface_count() > 0:
+			letters[i].surface_set_material(0, face)
 		mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_ON
 		holder.add_child(mi)
 		holder.position = Vector3(x + widths[i] * 0.5 - total * 0.5, 0, 0)
@@ -506,7 +527,7 @@ func _build_title() -> void:
 		_letters.append(holder)
 		x += widths[i] + tracking
 
-	_title_root.position = Vector3(-0.19, 0.56, -2.92)
+	_title_root.position = Vector3(-0.34, 0.56, -2.92)
 	_title_root.rotation.y = deg_to_rad(5.0)
 
 
@@ -591,5 +612,6 @@ func _update_camera(_d: float) -> void:
 	_cam.position = Vector3(0.0, 0.05, 0.6) + drift + Vector3(0, 0, -2.6) * _push
 	_cam.look_at(Vector3(0.52 + sin(_t * 0.039) * 0.05, 0.04, -4.2))
 	_cam.rotate_object_local(Vector3.FORWARD, sin(_t * 0.055) * 0.009)
-	var attr := _cam.attributes as CameraAttributesPractical
-	attr.dof_blur_far_distance = 4.6 - _push * 1.6
+	if _has_dof:
+		var attr := _cam.attributes as CameraAttributesPractical
+		attr.dof_blur_far_distance = 4.6 - _push * 1.6

@@ -13,9 +13,7 @@
 
 [sub_resource type="FontVariation" id="Font_serif"]
 base_font = ExtResource("9_serif")
-variation_opentype = {
-"wght": 500
-}
+variation_embolden = 0.08
 
 [sub_resource type="FontVariation" id="Font_sans"]
 base_font = ExtResource("10_sans")
