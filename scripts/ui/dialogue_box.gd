@@ -5,7 +5,7 @@ extends CanvasLayer
 ##
 ## WORD BUDGET (AGENTS.md rule 4 / section 4.5): the death and ending overlay
 ## strings below are story text and count against the 150-word cap. The
-## "OBJECTIVE" header, the "[E] continue" hint and the overlay buttons are
+## "OBJECTIVE" header, the "[Space]" hint and the overlay buttons are
 ## interface chrome and are budgeted separately (see section 4.5). Update that
 ## table in the same commit as any change here.
 
@@ -104,8 +104,9 @@ func _advance() -> void:
 func _input(event: InputEvent) -> void:
 	if not _active or get_tree().paused or not event.is_pressed() or event.is_echo():
 		return
-	# Mouse clicks are left to the gun so shooting never skips story lines.
-	if event is InputEventKey and event.physical_keycode in [KEY_E, KEY_ENTER, KEY_KP_ENTER, KEY_SPACE]:
+	# Mouse clicks are left to Combat so shooting never skips story lines, and
+	# E is Suspend now, so advancing is Space or Enter only.
+	if event is InputEventKey and event.physical_keycode in [KEY_ENTER, KEY_KP_ENTER, KEY_SPACE]:
 		_advance()
 		get_viewport().set_input_as_handled()
 
@@ -240,7 +241,7 @@ func _build_ui() -> void:
 	_text.add_theme_color_override("font_color", Color(0.9, 0.88, 0.84))
 	vb.add_child(_text)
 	_hint = Label.new()
-	_hint.text = "[E] continue"
+	_hint.text = "[Space]"
 	_hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	_hint.add_theme_font_size_override("font_size", 12)
 	_hint.add_theme_color_override("font_color", Color(0.5, 0.5, 0.5))

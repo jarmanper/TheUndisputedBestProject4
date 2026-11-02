@@ -120,18 +120,27 @@ counted once. Speaker nameplates are counted once per distinct speaker.
 | Twin: "Here. With me. It's time you saw." | Final encounter | `story_layer.tscn:171` | 7 |
 | "Stop your brother" | Objective | `story_layer.tscn:172` | 3 |
 | Nameplates: MOM, ME, TWIN, ??? | Speaker labels (the `"Speaker:"` prefixes, drawn by `dialogue_box.gd:67`) | `story_layer.tscn` | 3 |
-| "Mom's keycard." | Pickup text | `scenes/game/main.tscn:130` | 2 |
-| "Locked. Needs a keycard." | Locked text | `scenes/game/main.tscn:142` | 4 |
-| "Power. A door opens below." | Switch text | `scenes/game/main.tscn:143` | 5 |
-| "Sealed. No power." | Locked text (both doors, counted once) | `scenes/game/main.tscn:151`, `:161` | 3 |
+| ~~"Mom's keycard."~~ | Pickup text - **no longer displayed** | `scenes/game/main.tscn:130` | 0 |
+| ~~"Locked. Needs a keycard."~~ | Locked text - **no longer displayed** | `scenes/game/main.tscn:142` | 0 |
+| ~~"Power. A door opens below."~~ | Switch text - **no longer displayed** | `scenes/game/main.tscn:143` | 0 |
+| ~~"Sealed. No power."~~ | Locked text - **no longer displayed** | `scenes/game/main.tscn:151`, `:161` | 0 |
 | "YOUR CLOCK STOPPED" / "He heard you." | Death screen | `scripts/ui/dialogue_box.gd:129` | 6 |
 | "THE CLOCK IS QUIET" / "Mom. Dad. My brother." | Ending screen (reconciliation) | `scripts/ui/dialogue_box.gd:136-137` | 8 |
 | "where are you", "mother" | Creature speech (failed patients) | `source/audio/voice_lines.txt:19-20` | 4 |
 | "brother", "tick tock", "you left me here" | Creature speech (the Twin) | `source/audio/voice_lines.txt:21-23` | 7 |
-| **Total as built** | | | **129** |
+| **Total as built** | | | **115** |
 
-**129 / 150. 21 words of headroom.** Verified by parsing the files above, not by
-re-reading this table. The three triggers with no `lines` (`research`,
+**115 / 150. 35 words of headroom.** Verified by parsing the files above, not by
+re-reading this table.
+
+**Why it dropped from 129 (Nov 2).** Team 3's rules allow no interact action, so
+the prompt the HUD used to draw over a prop is gone and with it the only way
+those four prop strings reached the screen. The strings are still on the nodes
+as inert data; they are counted as 0 because nothing can display them. **They
+should come back as world-space labels on the props themselves** - readable with
+no key press, which is both what the rules allow and what the "Found" theme and
+the Oct 28 playtest asked for. Until then the facility tells that part of the
+story only through props and sound. The three triggers with no `lines` (`research`,
 `cell_block`, `lower_stairs`) are deliberately wordless — those rooms carry their
 story in props and sound.
 
@@ -143,18 +152,22 @@ line was checked against `story_trigger.gd`'s `0 < idx < 24` window; the colon
 sits at index 2, 3 or 4 in all eleven of them.
 
 **What does not count, and why.** Rule 4 exempts the title and controls screens,
-which puts menus outside the cap, and section 6 specifies a wordless HUD. So the
-following ~53 words are treated as **interface chrome, not story**, and are
-excluded: HUD readouts (`HEALTH`, ammo, `RELOADING`, `NO AMMO`, `[R] RELOAD`,
-`MARKS`, `SUSPEND`/`READY`, `CHARGES` — `scripts/game/hud.gd`); the pause menu
-(`PAUSED`, `Resume`, `Settings`, `Quit to title` — `hud.gd:204-213`); the settings
-panel (`scripts/game/ui_settings_panel.gd`); interact prompts (`[E] Take keycard`,
-`[E] Restore power`, `[E] Try door` — `scripts/game/interactable.gd:61-66`); the
-`OBJECTIVE` header, the `[E] continue` hint and the end-screen buttons
-(`Retry`, `Play again`, `Return to title` — `scripts/ui/dialogue_box.gd`); and the
-title screen (exempt by rule 4). **If a grader counts chrome too, the total is
-182 and we fail.** Getting under 150 on the strict reading needs cuts in `hud.gd`
-and `ui_settings_panel.gd`, which section 6 already says should have no words.
+which puts menus outside the cap, and section 6 specifies a wordless HUD. The
+remaining **25 words** of interface chrome are excluded: the pause menu
+(`PAUSED`, `Resume`, `Settings`, `Quit to title` — `scripts/game/hud.gd`, 6); the
+settings panel (`Back`, `Fullscreen`, `Graphics quality`, `Master volume`,
+`Mouse sensitivity`, `Low`/`Medium`/`High` — `scripts/game/ui_settings_panel.gd`
+and `ui_settings.gd:20`, 11); and the `OBJECTIVE` header, the `[Space]` hint and
+the end-screen buttons (`Retry`, `Play again`, `Return to title` —
+`scripts/ui/dialogue_box.gd`, 8). The title screen is exempt by rule 4.
+
+**The strict reading now passes too: 115 + 25 = 140 / 150.** It used to be 182,
+which would have failed if a grader counted chrome, and section 4.5 flagged that
+as needing cuts in `hud.gd`. Those cuts happened on Nov 2 for a different
+reason - section 6 and Team 3 both require a wordless HUD - so the ammo counter,
+`HEALTH` label and the `MARKS`/`SUSPEND`/`CHARGES` status lines were replaced by
+four unlabelled cooldown meters, and the `[E]` prompts went with the interact
+action. Nothing on the HUD is a word any more.
 
 **Not words, by our reading:** the only text baked into a texture is the Roman
 numeral ring on clock faces, the Twin's head and the suspend effect
@@ -335,6 +348,28 @@ var cooldown_left := 0.0
 func is_ready() -> bool
 ```
 Abilities find each other as siblings under `Player/Abilities` (`$"../Suspend"`). Combat calls `suspend.reduce_cooldown(1.0)`. Explosion reads Marking's current target and asks Suspend to end suspensions. The HUD reads `cooldown_left` from all four.
+
+**As built (Nov 2 2026), where this branch differs from the sketch above.** The
+behaviour matches section 5 exactly; the names and paths do not all match this
+section, so read this before integrating:
+
+| This section | As built |
+| --- | --- |
+| `scripts/core/target.gd`, `class_name Target` | `scripts/game/enemy.gd`, `class_name TimbukEnemy` |
+| `scripts/core/player.gd`, `class_name Player` | `scripts/game/player.gd`, `class_name TimbukPlayer` |
+| `scripts/abilities/*` | `scripts/game/mechanics/{combat,marking,suspend,explosion}.gd` |
+| `Player/Abilities/<Ability>` | `Player/<Ability>` - the four ability nodes are **direct children** of the player, so each one reads `get_parent()` as the player and finds its siblings as `player.get_node("Suspend")` |
+| `hp`, `MAX_HP` | `health`, and the rule constant `TimbukEnemy.HEALTH` |
+| `apply_damage(amount: int)` | `apply_damage(amount: float)` |
+
+Everything else is present under the documented name: `defeated`, `marked`,
+`suspended`, `is_alive()`, `center()`, `upper_body_point()`,
+`crosshair_target()`, `take_hit()`, `cooldown_left`, `is_ready()` and
+`reduce_cooldown()`. The player is found by the `"player"` group and every
+enemy by the `"enemy"` group, which is what the level, HUD and AI all use
+rather than fixed paths. Each ability also exposes `cooldown_total()`,
+`effective_range()` and `ready_fraction()` so the HUD never has to reach for a
+script constant (`Object.get()` cannot read GDScript constants).
 
 ### Godot gotchas
 - **Timers:** count down with `delta` in `_physics_process` (or use Timer nodes). Both freeze when `get_tree().paused = true`. Never use wall-clock time. The pause menu node needs `PROCESS_MODE_WHEN_PAUSED`.

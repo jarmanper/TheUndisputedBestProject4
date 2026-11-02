@@ -16,14 +16,24 @@ const DIALOGUE_BOX := "res://scenes/ui/dialogue_box.tscn"
 ## generated collision. Only used if the facility has no collision at all.
 @export var min_collision_size := 0.6
 
+## Every target that has to die for the level to be won. The rules require the
+## full set to exist when the level begins, so this is filled once, at load,
+## and never added to.
+var _required: Array[Node] = []
+var _win_pending := false
+
 
 
 func _ready() -> void:
 	var facility := get_node(facility_path)
+	# must happen before the first frame: Compatibility cannot compile the
+	# fog shaders the facility ships with
+	TimbukCompat.adapt(self)
 	_ensure_collision(facility)
 	_hide_duplicate_keycards(facility)
 	for n in facility.find_children("SecurityDoor*", "", true, false) + facility.find_children("BlastDoor*", "", true, false):
 		_open_prop_door(n)
+	_open_required_doors()
 	for path in [STORY_LAYER, DIALOGUE_BOX]:
 		if ResourceLoader.exists(path):
 			add_child(load(path).instantiate())
@@ -32,6 +42,44 @@ func _ready() -> void:
 	get_tree().paused = false
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 	UiSettings.apply(get_tree())
+	_register_required_targets()
+
+
+## The Twin's chamber used to be sealed behind `power_restored`, which came from
+## the generator, which needed the keycard. With no interact action none of that
+## can be set, which would leave the Twin permanently unreachable and the level
+## impossible to win - so every scripted door opens at load.
+func _open_required_doors() -> void:
+	var opened := 0
+	for node in get_tree().get_nodes_in_group("interactable"):
+		if node is Interactable and node.kind == Interactable.Kind.DOOR:
+			node.open_now()
+			opened += 1
+	print("main: opened %d scripted doors" % opened)
+
+
+func _register_required_targets() -> void:
+	for e in get_tree().get_nodes_in_group("enemy"):
+		_required.append(e)
+		e.defeated.connect(_on_target_defeated)
+	print("main: %d required targets registered" % _required.size())
+
+
+func _on_target_defeated(target: Node) -> void:
+	_required.erase(target)
+	if not _required.is_empty() or _win_pending:
+		return
+	_win_pending = true
+	# The player and the last target can die in the same step, and the rules
+	# say loss wins that tie, so let the player's death land before deciding.
+	_resolve_win.call_deferred()
+
+
+func _resolve_win() -> void:
+	var player := get_tree().get_first_node_in_group("player")
+	if player and player.dead:
+		return  # loss wins the tie
+	TimbukFx.state_call(get_tree(), "win")
 
 
 func _ensure_collision(facility: Node) -> void:

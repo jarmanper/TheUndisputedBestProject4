@@ -51,7 +51,7 @@ move_right={
 ]
 }
 
-fire={
+attack={
 "deadzone": 0.2,
 "events": [Object(InputEventMouseButton,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"button_mask":0,"position":Vector2(0, 0),"global_position":Vector2(0, 0),"factor":1.0,"button_index":1,"canceled":false,"pressed":false,"double_click":false,"script":null)
 ]
@@ -89,13 +89,20 @@ pause={
 
 rendering_device/driver.windows="d3d12"
 renderer/rendering_method="forward_plus"
+; WebGL 2 can only run Compatibility, so the browser build switches renderer
+; and drops the passes Compatibility has no support for. TimbukCompat.adapt()
+; handles the scene-side half of this at load time.
+renderer/rendering_method.web="gl_compatibility"
 anti_aliasing/quality/msaa_3d=2
+anti_aliasing/quality/msaa_3d.web=0
 anti_aliasing/quality/use_taa=true
+anti_aliasing/quality/use_taa.web=false
 anti_aliasing/quality/screen_space_aa=0
 anti_aliasing/quality/use_debanding=true
 textures/default_filters/anisotropic_filtering_level=4
 textures/default_filters/texture_mipmap_bias=-0.3
 lights_and_shadows/positional_shadow/atlas_size=8192
+lights_and_shadows/positional_shadow/atlas_size.web=2048
 lights_and_shadows/positional_shadow/soft_shadow_filter_quality=4
 lights_and_shadows/directional_shadow/soft_shadow_filter_quality=4
 environment/ssao/quality=3

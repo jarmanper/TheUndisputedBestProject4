@@ -293,6 +293,11 @@ func damage(amount: float) -> void:
 		_die()
 
 
+## The contract's name for damage(); enemies call either.
+func take_hit(amount: float) -> void:
+	damage(amount)
+
+
 func heal(amount: float) -> void:
 	health = minf(max_health, health + amount)
 	health_changed.emit(health, max_health)
@@ -331,7 +336,7 @@ static func _ensure_input_actions() -> void:
 				var ev := InputEventKey.new()
 				ev.physical_keycode = k
 				InputMap.action_add_event(action, ev)
-	var buttons := {"fire": MOUSE_BUTTON_LEFT}
+	var buttons := {"attack": MOUSE_BUTTON_LEFT}
 	for action in buttons:
 		if not InputMap.has_action(action):
 			InputMap.add_action(action)

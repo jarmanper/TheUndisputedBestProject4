@@ -1,10 +1,14 @@
 class_name Interactable
 extends StaticBody3D
-## Anything the player can use with E. The player's ray calls interact(player).
-##   PICKUP: sets `grants_flag` and disappears (keycard).
-##   SWITCH: needs `required_flag`, sets `grants_flag` (generator).
-##   DOOR:   opens by itself once `required_flag` is set; E on a locked door
-##           shows `locked_text`.
+## Props that used to be used with E. Team 3's rules allow no interact action,
+## no keys and no door unlocking, so interact() is no longer called by anything:
+## the keycard and the generator are now set dressing the player finds but does
+## not operate, and every DOOR is opened at load by main.gd instead of by a
+## flag. The flag plumbing is kept because the prop models and placements hang
+## off it, and because the story still happens in these rooms.
+##   PICKUP: set dressing (keycard).
+##   SWITCH: set dressing (generator).
+##   DOOR:   opened by main.gd via open_now() at load.
 
 signal used(player)
 
@@ -86,6 +90,16 @@ func interact(player: Node) -> void:
 			used.emit(player)
 			if kind == Kind.PICKUP:
 				queue_free()
+
+
+## Opens a door immediately, with no tween, so nothing can be standing in a
+## closing door or reach it before it moves. Used by main.gd at load.
+func open_now() -> void:
+	done = true
+	for c in get_children():
+		if c is CollisionShape3D:
+			c.set_deferred("disabled", true)
+	position += open_offset
 
 
 func _open() -> void:

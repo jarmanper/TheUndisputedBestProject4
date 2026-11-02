@@ -38,7 +38,7 @@ func _physics_process(delta: float) -> void:
 	if player.dead or get_tree().paused:
 		return
 	# new press only: holding the button does not repeat
-	if Input.is_action_just_pressed("fire") and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
+	if Input.is_action_just_pressed("attack") and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
 		fire()
 
 
@@ -62,8 +62,8 @@ func fire() -> bool:
 ## cross-mechanic effect in Combat; it never changes the mark itself.
 func _relieve_suspend() -> void:
 	var s: Node = player.get_node_or_null("Suspend")
-	if s and s.cooldown_left > 0.0:
-		s.cooldown_left = maxf(0.0, s.cooldown_left - SUSPEND_RELIEF)
+	if s:
+		s.reduce_cooldown(SUSPEND_RELIEF)
 
 
 func _shot_fx(target: Node3D) -> void:

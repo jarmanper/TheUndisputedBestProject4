@@ -83,6 +83,13 @@ func activate() -> bool:
 	return true
 
 
+## Combat's reward for hitting a marked target. The relief cannot be banked:
+## with Suspend already off cooldown it does nothing.
+func reduce_cooldown(seconds: float) -> void:
+	if cooldown_left > 0.0:
+		cooldown_left = maxf(0.0, cooldown_left - seconds)
+
+
 ## Releases the frozen target, if any. Suspend's cooldown is untouched.
 func end_suspension() -> void:
 	_release_current()

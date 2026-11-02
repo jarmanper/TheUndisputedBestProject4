@@ -42,9 +42,6 @@ func set_objective(text: String) -> void:
 func set_flag(flag_name: String, value: Variant = true) -> void:
 	flags[flag_name] = value
 	flag_changed.emit(flag_name, value)
-	# The story ends the moment the Twin is stopped.
-	if flag_name == "twin_defeated" and bool(value):
-		win()
 
 
 func has_flag(flag_name: String) -> bool:
@@ -64,7 +61,10 @@ func lose() -> void:
 			go_to_title()
 
 
-## Twin defeated: the ending screen offers Play again / Title.
+## Every required target defeated: the ending screen offers Play again / Title.
+## Called by the level (main.gd), which owns the required-target list, rather
+## than by the Twin's death flag - the rules win on the LAST target, and the
+## Twin is not guaranteed to be it.
 func win() -> void:
 	if _game_over:
 		return

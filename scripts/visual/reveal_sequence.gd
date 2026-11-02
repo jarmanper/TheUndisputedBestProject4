@@ -17,6 +17,7 @@ var _cam: Camera3D
 
 
 func _ready() -> void:
+	TimbukCompat.adapt(self)
 	_twin = get_node(twin_path)
 	_cam = get_node(camera_path)
 	_cam.current = true
