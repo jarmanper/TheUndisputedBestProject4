@@ -88,9 +88,10 @@ godot --headless --path . --script tests/validate_resources.gd
 godot --headless --path . --script tests/assignment_mechanics.gd
 godot --path . --rendering-method gl_compatibility --script tests/compat_smoke.gd
 godot --path . --rendering-method gl_compatibility --script tests/rendered_playtest.gd
+godot --path . --rendering-method gl_compatibility --script tests/newgame_flow.gd
 ```
 
-The last two need a real window, not `--headless`, because the whole point is to
+The last three need a real window, not `--headless`, because the whole point is to
 compile shaders and draw frames.
 
 | Check | Result |
@@ -99,6 +100,7 @@ compile shaders and draw frames.
 | Exact mechanics suite | 59 checks, 0 failures |
 | Compatibility smoke run | 180 rendered frames, 52 fog volumes dropped, exit 0 |
 | Live input playtest | 29 checks, 0 failures |
+| New Game flow (title -> loading screen -> game) | reaches the game scene in 23.4 s with all 9 targets staged and both doors open |
 | Web export | produced `index.html` + `.wasm` + `.pck` with the `web_nothreads_release` template |
 
 The live playtest drives the real scene with real input events: it marks with
@@ -111,6 +113,15 @@ that also counting as a loss.
 These are automated checks and a produced build, not human playtest results.
 **The exported build has not been opened in a browser from this machine**, so
 "the web build loads" is not yet proven - only that the cause of the hang is
-removed and the game runs on the renderer the browser uses. The next step is to
-open the GitHub Pages build and confirm, and to walk the route to the Twin by
-hand, which no automated check here covers.
+removed and the game runs on the renderer the browser uses.
+
+**The deployed Pages build does not have this fix yet.** The workflow in
+`.github/workflows/deploy-pages.yml` only runs on a push to `main`, and this
+work is on `visual-rehaul`, so what a grader loads today is still the Forward+
+build that would not start. Either merge to `main` or run the workflow manually
+against this branch (`gh workflow run deploy-pages.yml --ref visual-rehaul`).
+
+Still needing a human: loading the deployed build in a browser, and walking the
+route from the entrance to the Twin. No automated check here proves the facility
+is navigable end to end - only that nothing is sealed shut and every target is
+reachable in principle.
