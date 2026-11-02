@@ -11,15 +11,15 @@ extends Control
 const SETTINGS_PATH := "user://settings.cfg"
 const BASE_SENSITIVITY := 0.0022  # player.gd default mouse_sensitivity
 
+## The whole control set. The HUD meters sit in this same order, top to
+## bottom, so the colours on screen never need a label to explain them.
 const CONTROLS := [
 	["WASD", "Move"],
-	["Shift", "Sprint"],
 	["Mouse", "Look"],
-	["E", "Interact"],
-	["Left mouse", "Fire  (Combat)"],
-	["Right mouse", "Mark target  (Marking)"],
-	["Q", "Suspend  (Suspend)"],
-	["F", "Throw charge  (Explosion)"],
+	["Left mouse", "Combat  -  20 damage within 3 m"],
+	["Q", "Marking  -  mark one target within 15 m"],
+	["E", "Suspend  -  freeze it, longer if marked"],
+	["R", "Explosion  -  detonate the marked target"],
 	["Esc", "Pause"],
 ]
 

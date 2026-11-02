@@ -1,24 +1,21 @@
 extends Node
-## COMBAT (Rickey): hitscan pistol. LMB fires, R reloads.
-## The gun at `muzzle_path` is a WeaponViewmodel (scenes/props/pistol.tscn):
-## it gets kick() on every shot and play_reload() synced to reload_time.
+## COMBAT (Rickey) - assignment rules.
+## Left Mouse hits the single target under the crosshair when it is visible and
+## within RANGE (inclusive): exactly DAMAGE, with no multiplier, ammo or reload.
+## A hit on a marked target takes SUSPEND_RELIEF off Suspend's remaining
+## cooldown, including when the hit is lethal. The mark is never consumed.
+## Invalid activation costs nothing: no damage, no cooldown.
+## Kept as polish only: muzzle flash, gun kick, impact spark and hit sounds.
 
-const MAX_HOLES := 48
-const WeaponSfx := preload("res://scripts/game/weapon_sfx.gd")
+const DAMAGE := 20.0
+const RANGE := 3.0
+const COOLDOWN := 0.6
+const SUSPEND_RELIEF := 1.0
 
-@export var damage := 25.0
-@export var max_range := 60.0
-@export var mag_size := 8
-@export var reserve_ammo := 48
-@export var fire_interval := 0.28
-@export var reload_time := 1.4
-@export var shot_noise_radius := 25.0
 @export var muzzle_path: NodePath
 
-var ammo := 8
-var reloading := false
-var _cd := 0.0
-var _holes: Array[Node3D] = []
+var cooldown_left := 0.0
+
 var _sfx: AudioStreamPlayer
 var _flesh: AudioStream = preload("res://assets/audio/sfx/hit_flesh.wav")
 
@@ -26,34 +23,50 @@ var _flesh: AudioStream = preload("res://assets/audio/sfx/hit_flesh.wav")
 
 
 func _ready() -> void:
-	ammo = mag_size
 	_sfx = AudioStreamPlayer.new()
 	_sfx.bus = "SFX"
 	_sfx.max_polyphony = 3
 	add_child(_sfx)
 
 
-func _process(delta: float) -> void:
-	_cd = maxf(0.0, _cd - delta)
+func is_ready() -> bool:
+	return cooldown_left <= 0.0
+
+
+func _physics_process(delta: float) -> void:
+	cooldown_left = TimbukFx.tick(cooldown_left, delta)
 	if player.dead or get_tree().paused:
 		return
-	if Input.is_action_just_pressed("reload"):
-		reload()
-	if Input.is_action_pressed("fire") and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
+	# new press only: holding the button does not repeat
+	if Input.is_action_just_pressed("fire") and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
 		fire()
 
 
-func fire() -> void:
-	if _cd > 0.0 or reloading:
-		return
-	if ammo <= 0:
-		if reserve_ammo > 0:
-			reload()
-		else:
-			_dry_fire()
-		return
-	_cd = fire_interval
-	ammo -= 1
+## Fires at the crosshair target. Returns true only when a shot landed.
+func fire() -> bool:
+	if player.dead or not is_ready():
+		return false
+	var target := player.crosshair_target(RANGE)
+	if target == null:
+		return false
+	cooldown_left = COOLDOWN
+	var was_marked: bool = target.marked
+	_shot_fx(target)
+	target.apply_damage(DAMAGE)
+	if was_marked:
+		_relieve_suspend()
+	return true
+
+
+## A marked hit shortens Suspend's remaining cooldown. This is the only
+## cross-mechanic effect in Combat; it never changes the mark itself.
+func _relieve_suspend() -> void:
+	var s: Node = player.get_node_or_null("Suspend")
+	if s and s.cooldown_left > 0.0:
+		s.cooldown_left = maxf(0.0, s.cooldown_left - SUSPEND_RELIEF)
+
+
+func _shot_fx(target: Node3D) -> void:
 	var muzzle := _muzzle()
 	var flash := TimbukFx.spawn(get_tree(), "res://scenes/effects/muzzle_flash.tscn", muzzle.global_position, true, player.camera.global_transform.basis)
 	if flash and muzzle != player.camera:
@@ -61,73 +74,12 @@ func fire() -> void:
 	var gun := _gun()
 	if gun and gun.has_method("kick"):
 		gun.kick()
-	player.make_noise(shot_noise_radius)
-	var hit := player.aim(max_range)
-	if not hit.is_empty():
-		_impact(hit)
-	if ammo == 0 and reserve_ammo > 0:
-		get_tree().create_timer(fire_interval).timeout.connect(reload)
-
-
-func _impact(hit: Dictionary) -> void:
-	var target: Node = hit.collider
-	var basis := TimbukFx.basis_from_normal(hit.normal).rotated(hit.normal.normalized(), randf() * TAU)
-	if target.has_method("damage") and target.is_in_group("enemy"):
-		# enemy.gd detects headshots from the world hit position
-		var headshot: bool = target.has_method("is_headshot") and target.is_headshot(hit.position)
-		target.damage(damage, hit.position)
-		var hud := get_tree().get_first_node_in_group("hud")
-		if hud and hud.has_method("show_hit_marker"):
-			hud.show_hit_marker(headshot)
-		_play_at(_flesh, hit.position, randf_range(0.9, 1.1))
-		return
-	TimbukFx.spawn(get_tree(), "res://scenes/effects/impact_sparks.tscn", hit.position, true, basis)
-	var hole := TimbukFx.spawn(get_tree(), "res://scenes/effects/bullet_hole.tscn", hit.position + hit.normal * 0.005, false, basis)
-	if hole:
-		var s := randf_range(0.8, 1.2)
-		hole.scale = Vector3(s, 1.0, s)
-		if target is Node3D and not (target is StaticBody3D):
-			hole.reparent(target, true)  # stick to moving props / doors
-		_holes.append(hole)
-		get_tree().create_timer(30.0).timeout.connect(hole.queue_free)
-		while _holes.size() > MAX_HOLES:
-			var old: Node3D = _holes.pop_front()
-			if is_instance_valid(old):
-				old.queue_free()
-
-
-func reload() -> void:
-	if reloading or ammo >= mag_size or reserve_ammo <= 0 or player.dead:
-		return
-	reloading = true
-	var gun := _gun()
-	if gun and gun.has_method("play_reload"):
-		gun.play_reload(reload_time, _reload_sound)
-	await get_tree().create_timer(reload_time).timeout
-	var need := mag_size - ammo
-	var take := mini(need, reserve_ammo)
-	ammo += take
-	reserve_ammo -= take
-	reloading = false
-
-
-func _dry_fire() -> void:
-	_cd = 0.35
-	_play(WeaponSfx.get_stream("dry"), randf_range(0.95, 1.05))
-	var gun := _gun()
-	if gun and gun.has_method("kick"):
-		gun.set("_recoil", 0.15)
-
-
-func _reload_sound(step: String) -> void:
-	_play(WeaponSfx.get_stream(step), randf_range(0.95, 1.05), -4.0)
-
-
-func _play(stream: AudioStream, pitch := 1.0, db := -2.0) -> void:
-	_sfx.stream = stream
-	_sfx.pitch_scale = pitch
-	_sfx.volume_db = db
-	_sfx.play()
+	var where: Vector3 = target.center()
+	TimbukFx.spawn(get_tree(), "res://scenes/effects/impact_sparks.tscn", where, true)
+	_play_at(_flesh, where, randf_range(0.9, 1.1))
+	var hud := get_tree().get_first_node_in_group("hud")
+	if hud and hud.has_method("show_hit_marker"):
+		hud.show_hit_marker(false)
 
 
 func _play_at(stream: AudioStream, pos: Vector3, pitch := 1.0) -> void:
@@ -154,3 +106,16 @@ func _muzzle() -> Node3D:
 		var tip := m.find_child("MUZZLE", true, false) as Node3D
 		return tip if tip else m
 	return player.camera
+
+
+## Accessors so the HUD never has to reach for a script constant.
+func cooldown_total() -> float:
+	return COOLDOWN
+
+
+func effective_range() -> float:
+	return RANGE
+
+
+func ready_fraction() -> float:
+	return clampf(1.0 - cooldown_left / COOLDOWN, 0.0, 1.0)

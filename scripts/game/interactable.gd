@@ -11,7 +11,7 @@ signal used(player)
 enum Kind { PICKUP, SWITCH, DOOR }
 
 @export var kind := Kind.PICKUP
-@export var prompt := "interact"
+@export var prompt := ""
 @export var required_flag := ""
 @export var grants_flag := ""
 @export var locked_text := "It won't budge."

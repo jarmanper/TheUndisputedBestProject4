@@ -1,21 +1,31 @@
 extends Node
-## SUSPEND (Jarman): Q freezes every enemy within `radius` of the point you
-## look at for `duration` seconds. AI and animation stop; a ghost
-## afterimage is left behind. Cooldown `cooldown` seconds.
+## SUSPEND (Jarman) - assignment rules.
+## E freezes the single target under the crosshair when it is visible and
+## within RANGE (inclusive). It holds for DURATION, or MARKED_DURATION when
+## the target was marked AT THE MOMENT of activation - gaining or losing the
+## mark afterwards never changes a running suspension. Exactly one target is
+## frozen at a time, so a new activation releases the previous one, and
+## re-suspending replaces the remaining time instead of stacking.
+## A frozen target keeps solid, damageable collision and cannot move.
+## Invalid activation costs nothing: no freeze, no cooldown.
+## Kept as polish only: the field effect, afterimages, particles and sounds.
 
-signal activated(center: Vector3, count: int)
+signal activated(target: Node)
 signal ready_again
+
+const DURATION := 2.0
+const MARKED_DURATION := 4.0
+const RANGE := 12.0
+const COOLDOWN := 7.0
 
 const Afterimage := preload("res://scripts/visual/afterimage_spawner.gd")
 const ACTIVATE_SFX := preload("res://assets/audio/sfx/suspend_activate.wav")
 const LOOP_SFX := preload("res://assets/audio/sfx/suspend_loop.wav")
 
-@export var radius := 10.0
-@export var duration := 4.0
-@export var cooldown := 10.0
-@export var max_range := 30.0
-
+var current_target: Node = null
+var duration_left := 0.0
 var cooldown_left := 0.0
+
 var _ghosts: Node
 
 @onready var player: TimbukPlayer = get_parent()
@@ -27,51 +37,86 @@ func _ready() -> void:
 	add_child(_ghosts)
 
 
-func _process(delta: float) -> void:
+func is_ready() -> bool:
+	return cooldown_left <= 0.0
+
+
+func _physics_process(delta: float) -> void:
 	if cooldown_left > 0.0:
-		cooldown_left = maxf(0.0, cooldown_left - delta)
+		cooldown_left = TimbukFx.tick(cooldown_left, delta)
 		if cooldown_left <= 0.0:
 			ready_again.emit()
+	_tick_duration(delta)
 	if player.dead or get_tree().paused:
 		return
-	if Input.is_action_just_pressed("suspend") and cooldown_left <= 0.0:
+	if Input.is_action_just_pressed("suspend"):
 		activate()
 
 
-## Returns how many enemies were frozen.
-func activate() -> int:
-	cooldown_left = cooldown
+func _tick_duration(delta: float) -> void:
+	if current_target == null:
+		return
+	if not is_instance_valid(current_target) or current_target.is_dead():
+		end_suspension()
+		return
+	duration_left = TimbukFx.tick(duration_left, delta)
+	if duration_left <= 0.0:
+		end_suspension()
+
+
+## Freezes the crosshair target. Returns true only when one was frozen.
+func activate() -> bool:
+	if player.dead or not is_ready():
+		return false
+	var target := player.crosshair_target(RANGE)
+	if target == null:
+		return false
+	# the mark only matters at this instant
+	var marked_now: bool = target.marked
+	_release_current()
+	current_target = target
+	duration_left = MARKED_DURATION if marked_now else DURATION
+	cooldown_left = COOLDOWN
+	target.set_suspended(true)
+	_freeze_fx(target, duration_left)
+	activated.emit(target)
+	return true
+
+
+## Releases the frozen target, if any. Suspend's cooldown is untouched.
+func end_suspension() -> void:
+	_release_current()
+	current_target = null
+	duration_left = 0.0
+
+
+func _release_current() -> void:
+	if current_target != null and is_instance_valid(current_target):
+		current_target.set_suspended(false)
+
+
+func _freeze_fx(target: Node3D, life: float) -> void:
 	var tree := get_tree()
-	var center := player.aim_point(max_range)
+	var center: Vector3 = target.center()
 	var field := TimbukFx.spawn(tree, "res://scenes/effects/suspend_field.tscn", center, false)
 	if field:
 		field.scale = Vector3.ONE * 0.1
 		var tw := field.create_tween()
 		tw.tween_property(field, "scale", Vector3.ONE, 0.35).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_BACK)
-		tw.tween_interval(maxf(0.0, duration - 0.7))
+		tw.tween_interval(maxf(0.0, life - 0.7))
 		tw.tween_property(field, "scale", Vector3.ONE * 0.05, 0.35).set_ease(Tween.EASE_IN)
 		tw.tween_callback(field.queue_free)
 	_sound(ACTIVATE_SFX, center, 0.0, 0.0)
-	_sound(LOOP_SFX, center, -6.0, duration)
+	_sound(LOOP_SFX, center, -6.0, life)
 	player.add_trauma(0.18)
-	var hits := 0
-	for e in tree.get_nodes_in_group("enemy"):
-		if not (e is Node3D) or not e.has_method("suspend"):
-			continue
-		if (e.has_method("is_dead") and e.is_dead()) or e.global_position.distance_to(center) > radius:
-			continue
-		e.suspend(duration)
-		hits += 1
-		var parts := TimbukFx.spawn(tree, "res://scenes/effects/suspended_particles.tscn", e.global_position + Vector3.UP, false)
-		if parts:
-			tree.create_timer(duration).timeout.connect(parts.queue_free)
-		if DisplayServer.get_name() == "headless":
-			continue  # no renderer to bake the pose with
-		for mi in e.find_children("*", "MeshInstance3D", true, false):
-			if mi.is_visible_in_tree() and mi.mesh and (mi.skeleton == NodePath() or mi.skin != null):
-				_ghosts.spawn(mi)
-	activated.emit(center, hits)
-	return hits
+	var parts := TimbukFx.spawn(tree, "res://scenes/effects/suspended_particles.tscn", center, false)
+	if parts:
+		tree.create_timer(life).timeout.connect(parts.queue_free)
+	if DisplayServer.get_name() == "headless":
+		return  # no renderer to bake the pose with
+	for mi in target.find_children("*", "MeshInstance3D", true, false):
+		if mi.is_visible_in_tree() and mi.mesh and (mi.skeleton == NodePath() or mi.skin != null):
+			_ghosts.spawn(mi)
 
 
 ## One-shot (life <= 0) or looping-for-`life`-seconds positional sound.
@@ -96,4 +141,12 @@ func _sound(stream: AudioStream, where: Vector3, vol: float, life: float) -> voi
 
 
 func ready_fraction() -> float:
-	return 1.0 if cooldown <= 0.0 else clampf(1.0 - cooldown_left / cooldown, 0.0, 1.0)
+	return clampf(1.0 - cooldown_left / COOLDOWN, 0.0, 1.0)
+
+
+func cooldown_total() -> float:
+	return COOLDOWN
+
+
+func effective_range() -> float:
+	return RANGE

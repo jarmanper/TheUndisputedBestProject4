@@ -1,6 +1,22 @@
 class_name TimbukFx
-## Small helpers shared by the gameplay mechanics: spawn effect scenes and
-## talk to the GameState autoload without a hard dependency on it.
+## Small helpers shared by the gameplay mechanics: tick timers, spawn effect
+## scenes and talk to the GameState autoload without a hard dependency on it.
+
+
+## Floating-point slack for timer boundaries. Subtracting deltas that sum to
+## exactly a timer's length leaves a residue of up to ~1e-15 on the positive
+## side (0.6 - 0.599 - 0.001 is 8.7e-19, not 0), which would hold an ability on
+## cooldown for one extra frame and make an 8 s mark last 8 s plus a frame.
+const TIMER_EPSILON := 1e-9
+
+
+## Ticks `timer` down by `delta`, snapping to exactly 0.0 once what is left is
+## only that residue. Every cooldown and duration in the game goes through this
+## so the assignment's exact timings land on the frame they should.
+static func tick(timer: float, delta: float) -> float:
+	var left := timer - delta
+	return 0.0 if left <= TIMER_EPSILON else left
+
 
 
 ## Instances an effect scene from scenes/effects/ at `where`.

@@ -1,65 +1,74 @@
 class_name TimbukEnemy
 extends CharacterBody3D
-## Patient enemy: idle/wander -> chase (sight or noise) -> attack -> dead.
-## Gameplay hooks used by the mechanics: damage(), mark(), unmark(),
-## is_marked(), suspend(), is_suspended(), hear_noise(), apply_knockback().
-## Hit zones: the body collider is sized at runtime from the model's mesh
-## AABB + skeleton (head/neck bones). Shape 0 = body capsule, shape 1 = head
-## sphere. damage(amount, hit_position) applies headshot_mult when the hit
-## point is above the neck; get_hit_multiplier() exposes the same lookup.
+## Patient enemy, to the assignment's exact rules.
+## Every enemy - the Twin included - has the same HEALTH, SPEED and attack.
+## It idles until the player comes within SIGHT (flat metres, inclusive) and
+## is visible; from then on it is alerted for good and never loses the scent.
+## Within ATTACK_RANGE it starts a WINDUP wind-up, and the blow only lands if
+## the player is STILL visible and in range when the wind-up finishes. Landing
+## it or missing it both start the same ATTACK_WAIT wait.
+## There is no hunting by sound, no headshot bonus and no boss phase.
+##
+## Shared API used by the mechanics (Rhaiyn's contract):
+##   center(), is_alive(), is_dead(), apply_damage()
+##   marked / set_marked(), suspended / set_suspended()
+##   mark_changed, defeated, died
 
 signal died(enemy)
+signal defeated(enemy)
+signal mark_changed(enemy)
 
-enum State { IDLE, WANDER, CHASE, ATTACK, DEAD }
+enum State { IDLE, CHASE, WINDUP, DEAD }
+
+## Assignment constants. These are the rules, so they are not @export vars:
+## no scene and no subclass may quietly give one enemy better numbers.
+const HEALTH := 100.0
+const SPEED := 2.5
+const SIGHT := 8.0
+const ATTACK_RANGE := 2.0
+const WINDUP := 0.75
+const ATTACK_DAMAGE := 10.0
+const ATTACK_WAIT := 2.0
+## Height above the node origin that counts as this enemy's centre for every
+## range, blast and line-of-sight test.
+const CENTER_HEIGHT := 1.1
 
 const HIT_FLASH := preload("res://assets/materials/fx_hit_flash.tres")
 const MARK_OUTLINE := preload("res://assets/materials/fx_marked_outline.tres")
 const TRACKER := "res://scenes/effects/tracking_indicator.tscn"
 
 @export var model_scene: PackedScene
-@export var max_health := 75.0
-@export var walk_speed := 1.2
-@export var chase_speed := 3.2
-@export var sight_range := 14.0
-@export var attack_range := 1.8
-@export var attack_damage := 15.0
-@export var attack_interval := 1.2
-@export var marked_damage_mult := 2.0
-## <= 0 means "derive from the model" (recommended).
 @export var capsule_radius := 0.0
 @export var capsule_height := 0.0
-@export var headshot_mult := 2.0
-## Soft push-apart between enemies so they don't stack/overlap.
 @export var separation_radius := 0.9
-@export var forget_time := 6.0
+## Tests and staged set pieces switch this off to hold an enemy in place.
+@export var navigation_enabled := true
 
-var health: float
+var health := HEALTH
 var state := State.IDLE
+var marked := false
+var suspended := false
+var alerted := false
+var windup_left := 0.0
+var attack_cooldown_left := 0.0
 var model: Node3D
+
 var _anim: AnimationPlayer
 var _player: Node3D
-var _state_time := 0.0
-var _wander_dir := Vector3.ZERO
-var _attack_cd := 0.0
-var _mark_time := 0.0
-var _suspend_time := 0.0
 var _tracker: Node3D
-var _alert_time := 0.0
-var _last_known := Vector3.ZERO
-var _knockback := Vector3.ZERO
 var _cur_anim := ""
 var _flash_mat: ShaderMaterial
 var _gravity: float = ProjectSettings.get_setting("physics/3d/default_gravity", 9.8)
-## Local-space height (above the feet) where the head zone starts / its centre.
-var head_min_y := 1.65
-var head_center := Vector3(0, 1.8, 0)
-var head_radius := 0.16
 var _body_shape: CollisionShape3D
 var _head_shape: CollisionShape3D
 
+var head_min_y := 1.65
+var head_center := Vector3(0, 1.8, 0)
+var head_radius := 0.16
+
 
 func _ready() -> void:
-	health = max_health
+	health = HEALTH
 	add_to_group("enemy")
 	collision_layer = 4
 	collision_mask = 1 | 2
@@ -143,104 +152,102 @@ func _build_hitboxes() -> void:
 func _physics_process(delta: float) -> void:
 	if state == State.DEAD:
 		return
-	if _mark_time > 0.0:
-		_mark_time -= delta
-		if _mark_time <= 0.0:
-			unmark()
-	if _suspend_time > 0.0:
-		_suspend_time -= delta
-		if _suspend_time <= 0.0:
-			_set_anim_paused(false)
-		velocity = Vector3.ZERO
-		return
 	if _player == null:
 		_player = get_tree().get_first_node_in_group("player")
-	_attack_cd = maxf(0.0, _attack_cd - delta)
-	_alert_time = maxf(0.0, _alert_time - delta)
-	_state_time += delta
-	_think()
+	# the wait between attacks keeps running even while frozen
+	attack_cooldown_left = TimbukFx.tick(attack_cooldown_left, delta)
+	if suspended:
+		velocity = Vector3.ZERO
+		return
+	_update_alert()
+	if state == State.WINDUP:
+		_tick_windup(delta)
+		return
+	if attack_cooldown_left <= 0.0 and _can_attack():
+		_begin_windup()
+		return
+	_move(delta)
+
+
+## Once alerted, always alerted: the assignment gives the chase no memory limit.
+func _update_alert() -> void:
+	if alerted or _player == null:
+		return
+	if _flat_distance_to_player() <= SIGHT and _can_see_player():
+		alerted = true
+		_set_state(State.CHASE)
+
+
+func _begin_windup() -> void:
+	_set_state(State.WINDUP)
+	windup_left = WINDUP
+	_face(_player.global_position)
+
+
+## The blow lands only if the player is still a valid target at the very end.
+## A miss costs the same wait as a hit, so backing out of range is a real out.
+func _tick_windup(delta: float) -> void:
+	_face(_player.global_position)
+	windup_left = TimbukFx.tick(windup_left, delta)
+	if windup_left > 0.0:
+		return
+	attack_cooldown_left = ATTACK_WAIT
+	_set_state(State.CHASE)
+	if _can_attack() and _player.has_method("damage"):
+		_play("react")
+		_player.damage(ATTACK_DAMAGE)
+
+
+func _can_attack() -> bool:
+	if _player == null:
+		return false
+	return _flat_distance_to_player() <= ATTACK_RANGE and _can_see_player()
+
+
+func _move(delta: float) -> void:
 	var move := Vector3.ZERO
-	match state:
-		State.WANDER:
-			move = _wander_dir * walk_speed
-			if is_on_wall():
-				_wander_dir = -_wander_dir
-		State.CHASE:
-			move = _flat_dir_to(_target_pos()) * _chase_speed()
-		State.ATTACK:
-			_face(_target_pos())
-			if _attack_cd <= 0.0 and _player and _player.has_method("damage"):
-				_attack_cd = attack_interval
-				_play("react")
-				_player.damage(attack_damage)
+	if alerted and navigation_enabled and _player:
+		move = _flat_dir_to(_player.global_position) * SPEED
 	if move.length() > 0.01:
 		_face(global_position + move)
 		move += _separation() * move.length()
-	velocity.x = move.x + _knockback.x
-	velocity.z = move.z + _knockback.z
-	_knockback = _knockback.move_toward(Vector3.ZERO, 12.0 * delta)
+	velocity.x = move.x
+	velocity.z = move.z
 	if not is_on_floor():
 		velocity.y -= _gravity * delta
-	elif _knockback.y > 0.0:
-		velocity.y = _knockback.y
-		_knockback.y = 0.0
 	move_and_slide()
-
-
-func _think() -> void:
-	var sees := _can_see_player()
-	if sees:
-		_alert_time = forget_time
-		_last_known = _player.global_position
-	var dist := global_position.distance_to(_target_pos())
-	if _alert_time > 0.0:
-		if sees and dist <= attack_range:
-			_set_state(State.ATTACK)
-		elif state != State.ATTACK or dist > attack_range * 1.3:
-			_set_state(State.CHASE)
-		if state == State.CHASE and not sees and global_position.distance_to(_last_known) < 1.0:
-			_alert_time = 0.0
-	else:
-		if state in [State.CHASE, State.ATTACK] or (state == State.WANDER and _state_time > 4.0):
-			_set_state(State.IDLE)
-		elif state == State.IDLE and _state_time > randf_range(2.0, 5.0):
-			var a := randf() * TAU
-			_wander_dir = Vector3(cos(a), 0, sin(a))
-			_set_state(State.WANDER)
 
 
 func _set_state(s: State) -> void:
 	if s == state:
 		return
 	state = s
-	_state_time = 0.0
 	match s:
 		State.IDLE: _play("idle")
-		State.WANDER, State.CHASE: _play("walk")
-		State.ATTACK: _play("twitch")
+		State.CHASE: _play("walk")
+		State.WINDUP: _play("twitch")
 
 
-func _chase_speed() -> float:
-	return chase_speed
+## Flat (XZ) distance: the assignment's ranges are floor distances, so a
+## target's height never pushes it out of reach.
+func _flat_distance_to_player() -> float:
+	if _player == null:
+		return INF
+	var d := _player.global_position - global_position
+	d.y = 0.0
+	return d.length()
 
 
-func _target_pos() -> Vector3:
-	return _last_known
-
-
+## Only world geometry blocks sight; other enemies never do.
 func _can_see_player() -> bool:
 	if _player == null:
 		return false
-	var to := _player.global_position - global_position
-	if to.length() > sight_range:
-		return false
-	var q := PhysicsRayQueryParameters3D.create(global_position + Vector3.UP * 1.6, _player.global_position + Vector3.UP * 1.5, 1)
+	var to: Vector3 = _player.global_position + Vector3.UP * 1.4
+	var q := PhysicsRayQueryParameters3D.create(center(), to, 1)
 	q.exclude = [get_rid(), (_player as CollisionObject3D).get_rid()]
 	return get_world_3d().direct_space_state.intersect_ray(q).is_empty()
 
 
-## Push-apart vector from nearby living enemies (they don't physically
-## collide with each other, so this keeps groups from merging into one blob).
 func _separation() -> Vector3:
 	var push := Vector3.ZERO
 	for e in get_tree().get_nodes_in_group("enemy"):
@@ -294,118 +301,87 @@ func _set_anim_paused(p: bool) -> void:
 
 # ---------------------------------------------------------------- API
 
-## Something made noise at `where`; alert if it's within `radius`.
-func hear_noise(where: Vector3, radius: float) -> void:
-	if state == State.DEAD:
-		return
-	if global_position.distance_to(where) <= radius:
-		_alert_time = forget_time
-		_last_known = where
+## The point every mechanic measures: range, blast radius and line of sight.
+func center() -> Vector3:
+	return global_position + Vector3.UP * CENTER_HEIGHT
 
 
-## Damage API. `hit_position` (world space) is optional; when given and it
-## lands in the head zone, headshot_mult is applied. When omitted for a
-## pistol shot fired this frame, the hit point is recovered from the
-## player's aim ray so headshots work with the existing combat call.
-func damage(amount: float, hit_position: Vector3 = Vector3.INF) -> void:
-	if state == State.DEAD:
-		return
-	if hit_position == Vector3.INF:
-		hit_position = _infer_shot_position()
-	take_hit(amount, hit_position, is_headshot(hit_position))
-
-
-## Same as damage() but the caller decides whether it was a headshot.
-func take_hit(amount: float, hit_position: Vector3 = Vector3.INF, headshot := false) -> void:
-	if state == State.DEAD:
-		return
-	if headshot:
-		amount *= headshot_mult
-	if is_marked():
-		amount *= marked_damage_mult
-	health -= amount
-	_flash()
-	if _player:
-		hear_noise(_player.global_position, INF)
-	if health <= 0.0:
-		_die()
-
-
-## True if the world-space point is in this enemy's head zone.
-func is_headshot(hit_position: Vector3) -> bool:
-	if hit_position == Vector3.INF or not hit_position.is_finite():
-		return false
-	var local := to_local(hit_position)
-	return local.y >= head_min_y
-
-
-## Damage multiplier for a hit, from a world-space hit position (Vector3)
-## or a collider shape index from a ray result (int: 1 = head).
-func get_hit_multiplier(where: Variant) -> float:
-	if where is int:
-		return headshot_mult if shape_owner_get_owner(shape_find_owner(where)) == _head_shape else 1.0
-	if where is Vector3:
-		return headshot_mult if is_headshot(where) else 1.0
-	return 1.0
-
-
-func _infer_shot_position() -> Vector3:
-	if _player == null or not _player.has_method("aim"):
-		return Vector3.INF
-	var c := _player.get_node_or_null("Combat")
-	if c == null or c.get("_cd") == null or c.get("fire_interval") == null:
-		return Vector3.INF
-	if float(c.get("_cd")) < float(c.get("fire_interval")) - 0.0001:
-		return Vector3.INF  # not a shot fired this frame (e.g. explosion)
-	var hit: Dictionary = _player.aim(float(c.get("max_range")) if c.get("max_range") else 60.0)
-	if hit.get("collider") == self:
-		return hit.position
-	return Vector3.INF
-
-
-func apply_knockback(v: Vector3) -> void:
-	if state != State.DEAD and _suspend_time <= 0.0:
-		_knockback += v
-
-
-func mark(duration: float) -> void:
-	if state == State.DEAD:
-		return
-	_mark_time = duration
-	_set_overlay(MARK_OUTLINE)
-	if _tracker == null:
-		_tracker = TimbukFx.spawn(get_tree(), TRACKER, global_position, false)
-		if _tracker:
-			_tracker.reparent(self)
-			_tracker.position = Vector3(0, 0.05, 0)
-
-
-func unmark() -> void:
-	_mark_time = 0.0
-	_set_overlay(null)
-	if is_instance_valid(_tracker):
-		_tracker.queue_free()
-	_tracker = null
-
-
-func is_marked() -> bool:
-	return _mark_time > 0.0
-
-
-func suspend(duration: float) -> void:
-	if state == State.DEAD:
-		return
-	_suspend_time = maxf(_suspend_time, duration)
-	_knockback = Vector3.ZERO
-	_set_anim_paused(true)
-
-
-func is_suspended() -> bool:
-	return _suspend_time > 0.0
+func is_alive() -> bool:
+	return state != State.DEAD
 
 
 func is_dead() -> bool:
 	return state == State.DEAD
+
+
+## The only damage path. Flat amount: no headshot bonus and no mark multiplier,
+## because the mark's whole job is to unlock Suspend and Explosion instead.
+func apply_damage(amount: float) -> void:
+	if state == State.DEAD or amount <= 0.0:
+		return
+	health = maxf(0.0, health - amount)
+	_flash()
+	if health <= 0.0:
+		_die()
+
+
+## Kept so existing callers and generated scenes still resolve.
+func damage(amount: float, _hit_position: Vector3 = Vector3.INF) -> void:
+	apply_damage(amount)
+
+
+func take_hit(amount: float, _hit_position: Vector3 = Vector3.INF, _headshot := false) -> void:
+	apply_damage(amount)
+
+
+## Marking owns the timer; the enemy only carries the flag and the visuals.
+func set_marked(on: bool) -> void:
+	if on and state == State.DEAD:
+		return
+	marked = on
+	if on:
+		_set_overlay(MARK_OUTLINE)
+		if _tracker == null:
+			_tracker = TimbukFx.spawn(get_tree(), TRACKER, global_position, false)
+			if _tracker:
+				_tracker.reparent(self)
+				_tracker.position = Vector3(0, 0.05, 0)
+	else:
+		_set_overlay(null)
+		if is_instance_valid(_tracker):
+			_tracker.queue_free()
+		_tracker = null
+	mark_changed.emit(self)
+
+
+## A wall hides the floating icon without touching the mark itself.
+func set_mark_icon_visible(v: bool) -> void:
+	if is_instance_valid(_tracker):
+		_tracker.visible = v
+
+
+func is_marked() -> bool:
+	return marked
+
+
+## Suspend owns the timer. Freezing cancels a wind-up and starts the normal
+## wait, which then keeps counting down while the enemy is held.
+func set_suspended(on: bool) -> void:
+	if on and state == State.DEAD:
+		return
+	suspended = on
+	_set_anim_paused(on)
+	if not on:
+		return
+	velocity = Vector3.ZERO
+	if state == State.WINDUP:
+		windup_left = 0.0
+		attack_cooldown_left = ATTACK_WAIT
+		_set_state(State.CHASE)
+
+
+func is_suspended() -> bool:
+	return suspended
 
 
 func _flash() -> void:
@@ -417,16 +393,19 @@ func _flash() -> void:
 	tw.tween_method(func(v: float): _flash_mat.set_shader_parameter("flash", v), 1.0, 0.0, 0.18)
 	tw.tween_callback(func():
 		if state != State.DEAD:
-			_set_overlay(MARK_OUTLINE if is_marked() else keep))
+			_set_overlay(MARK_OUTLINE if marked else keep))
 
 
 func _die() -> void:
-	unmark()
+	set_marked(false)
+	suspended = false
 	state = State.DEAD
 	_set_anim_paused(false)
+	# collision goes immediately so a corpse never blocks a shot or a blast
 	collision_layer = 0
-	collision_mask = 1
+	collision_mask = 0
 	died.emit(self)
+	defeated.emit(self)
 	_on_death()
 	_play("react")
 	var tw := create_tween()

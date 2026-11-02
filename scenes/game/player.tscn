@@ -1,0 +1,52 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/game/player.gd" id="player"]
+[ext_resource type="Script" path="res://scripts/game/mechanics/combat.gd" id="combat"]
+[ext_resource type="Script" path="res://scripts/game/mechanics/marking.gd" id="marking"]
+[ext_resource type="Script" path="res://scripts/game/mechanics/suspend.gd" id="suspend"]
+[ext_resource type="Script" path="res://scripts/game/mechanics/explosion.gd" id="explosion"]
+[ext_resource type="PackedScene" path="res://scenes/props/pistol.tscn" id="pistol"]
+
+[sub_resource type="CapsuleShape3D" id="cap"]
+radius = 0.3
+height = 1.75
+
+[node name="Player" type="CharacterBody3D"]
+script = ExtResource("player")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.875, 0)
+shape = SubResource("cap")
+
+[node name="Head" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6, 0)
+
+[node name="Camera3D" type="Camera3D" parent="Head"]
+current = true
+fov = 75.0
+near = 0.03
+
+[node name="Flashlight" type="SpotLight3D" parent="Head/Camera3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.15, -0.1, 0)
+light_color = Color(1, 0.95, 0.85, 1)
+light_energy = 3.0
+shadow_enabled = true
+spot_range = 24.0
+spot_angle = 26.0
+spot_attenuation = 0.8
+
+[node name="Pistol" parent="Head/Camera3D" instance=ExtResource("pistol")]
+transform = Transform3D(0.993572, 0, 0.113203, 0, 1, 0, -0.113203, 0, 0.993572, 0.125, -0.085, -0.27)
+
+[node name="Combat" type="Node" parent="."]
+script = ExtResource("combat")
+muzzle_path = NodePath("../Head/Camera3D/Pistol")
+
+[node name="Marking" type="Node" parent="."]
+script = ExtResource("marking")
+
+[node name="Suspend" type="Node" parent="."]
+script = ExtResource("suspend")
+
+[node name="Explosion" type="Node" parent="."]
+script = ExtResource("explosion")

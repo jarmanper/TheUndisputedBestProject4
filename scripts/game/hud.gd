@@ -1,6 +1,6 @@
 extends CanvasLayer
 ## HUD: crosshair (kicks on fire, hit marker), health bar with smooth drain,
-## ammo counter, mechanic status, "[E] ..." interaction prompt, damage
+## wordless ability cooldown meters, damage
 ## vignette and the pause menu (Resume / Settings / Quit to title).
 ## Built in code; reads the player and its mechanic nodes every frame.
 ##
@@ -34,16 +34,12 @@ var _cross: UiCrosshair
 var _health_bar: ProgressBar
 var _health_lag: ProgressBar
 var _health_label: Label
-var _ammo: Label
-var _ammo_sub: Label
-var _info: Label
-var _prompt: Label
+var _ability_bars := {}
 var _vignette: TextureRect
 var _hurt := 0.0
 var _shown_health := -1.0
 var _lag_health := -1.0
 var _lag_wait := 0.0
-var _last_ammo := -1
 var _pause: ColorRect
 var _pause_main: VBoxContainer
 var _settings: UiSettingsPanel
@@ -78,17 +74,8 @@ func _ready() -> void:
 	_cross.position -= _cross.size * 0.5
 	_root.add_child(_cross)
 
-	_prompt = UiStyle.label("", 20)
-	_prompt.set_anchors_and_offsets_preset(Control.PRESET_CENTER)
-	_prompt.offset_left = -300
-	_prompt.offset_right = 300
-	_prompt.offset_top = 46
-	_prompt.offset_bottom = 76
-	_prompt.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	_root.add_child(_prompt)
-
 	_build_health()
-	_build_ammo()
+	_build_abilities()
 	_build_pause()
 
 
@@ -133,7 +120,7 @@ func _build_health() -> void:
 	box.grow_vertical = Control.GROW_DIRECTION_BEGIN
 	box.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_root.add_child(box)
-	_health_label = UiStyle.label("HEALTH", 13, Color(0.75, 0.3, 0.25))
+	_health_label = UiStyle.label("", 13, Color(0.75, 0.3, 0.25))
 	box.add_child(_health_label)
 	var stack := Control.new()
 	stack.custom_minimum_size = Vector2(260, 16)
@@ -163,25 +150,39 @@ func _bar(fill_color: Color, bg_color: Color) -> ProgressBar:
 	return b
 
 
-func _build_ammo() -> void:
+## Wordless ability readout: one meter per ability node, in a fixed order, each
+## filling as its cooldown runs out. Rhaiyn's shared contract says the HUD finds
+## the ability nodes by name and reads `cooldown_left` and `COOLDOWN` itself, so
+## nothing here needs to know what any individual mechanic does.
+const ABILITY_ORDER := ["Combat", "Marking", "Suspend", "Explosion"]
+const ABILITY_COLORS := {
+	"Combat": Color(0.82, 0.22, 0.18),
+	"Marking": Color(0.95, 0.55, 0.15),
+	"Suspend": Color(0.35, 0.75, 0.9),
+	"Explosion": Color(0.95, 0.82, 0.3),
+}
+
+
+func _build_abilities() -> void:
 	var box := VBoxContainer.new()
 	box.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_RIGHT)
-	box.offset_left = -320
+	box.offset_left = -220
 	box.offset_right = -28
-	box.offset_top = -200
-	box.offset_bottom = -24
+	box.offset_top = -104
+	box.offset_bottom = -28
 	box.alignment = BoxContainer.ALIGNMENT_END
+	box.add_theme_constant_override("separation", 6)
 	box.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_root.add_child(box)
-	_info = UiStyle.label("", 14, Color(0.75, 0.75, 0.72))
-	_info.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
-	box.add_child(_info)
-	_ammo = UiStyle.label("", 40)
-	_ammo.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
-	box.add_child(_ammo)
-	_ammo_sub = UiStyle.label("", 14, Color(0.75, 0.3, 0.25))
-	_ammo_sub.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
-	box.add_child(_ammo_sub)
+	for name in ABILITY_ORDER:
+		var stack := Control.new()
+		stack.custom_minimum_size = Vector2(192, 10)
+		stack.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		box.add_child(stack)
+		var bar := _bar(ABILITY_COLORS[name], Color(0.03, 0.03, 0.03, 0.75))
+		bar.max_value = 1.0
+		stack.add_child(bar)
+		_ability_bars[name] = bar
 
 
 func _build_pause() -> void:
@@ -313,15 +314,18 @@ func _process(delta: float) -> void:
 	var over := _game_over() or player.dead
 	_root.visible = not _pause.visible and not (over and player.dead)
 	_update_health(delta)
-	_update_ammo()
-	_update_info()
-	var h: Node = player.hovered
-	if is_instance_valid(h) and h.has_method("get_prompt") and not over:
-		_prompt.text = h.get_prompt()
-	else:
-		_prompt.text = ""
-	_cross.highlight = _prompt.text != ""
+	_update_abilities()
+	_cross.highlight = _has_target()
 	_cross.visible = not over
+
+
+## The crosshair brightens when Combat could actually land, which replaces the
+## old "[E]" prompt with a cue that needs no words.
+func _has_target() -> bool:
+	var combat: Node = player.get_node_or_null("Combat")
+	if combat == null:
+		return false
+	return player.crosshair_target(combat.call("effective_range")) != null
 
 
 func _update_health(delta: float) -> void:
@@ -344,7 +348,7 @@ func _update_health(delta: float) -> void:
 	_health_bar.value = _shown_health
 	_health_lag.value = _lag_health
 	var frac := hp / mx
-	_health_label.text = "HEALTH  %d" % ceili(hp)
+	_health_label.text = "%d" % ceili(hp)
 	# Vignette: hit flash plus a slow pulse when health is low.
 	var low := 0.0
 	if frac < 0.35 and hp > 0.0:
@@ -352,40 +356,21 @@ func _update_health(delta: float) -> void:
 	_vignette.modulate.a = clampf(maxf(_hurt * 0.85, low), 0.0, 1.0)
 
 
-func _update_ammo() -> void:
-	var combat := player.get_node_or_null("Combat")
-	if combat == null:
-		_ammo.text = ""
-		_ammo_sub.text = ""
-		return
-	var a: int = combat.ammo
-	if _last_ammo >= 0 and a < _last_ammo:
-		_cross.kick()
-	_last_ammo = a
-	_ammo.text = "%d / %d" % [a, combat.reserve_ammo]
-	_ammo.add_theme_color_override("font_color", Color(0.95, 0.3, 0.25) if a <= 2 else UiStyle.TEXT)
-	if combat.reloading:
-		_ammo_sub.text = "RELOADING"
-	elif a == 0 and combat.reserve_ammo == 0:
-		_ammo_sub.text = "NO AMMO"
-	elif a <= 2:
-		_ammo_sub.text = "[R] RELOAD"
-	else:
-		_ammo_sub.text = ""
-
-
-func _update_info() -> void:
-	var lines: PackedStringArray = []
-	var marking := player.get_node_or_null("Marking")
-	if marking:
-		lines.append("MARKS %d / %d" % [marking.count(), marking.max_marks])
-	var suspend := player.get_node_or_null("Suspend")
-	if suspend:
-		lines.append("SUSPEND " + ("READY" if suspend.cooldown_left <= 0.0 else "%.1fs" % suspend.cooldown_left))
-	var boom := player.get_node_or_null("Explosion")
-	if boom:
-		lines.append("CHARGES %d / %d" % [boom.charges, boom.max_charges])
-	_info.text = "\n".join(lines)
+## Each meter reads 1.0 when the ability is ready. Marking also shows how much
+## of its mark is left: a live mark drains the same bar back down, so one meter
+## carries both facts without a word of text.
+func _update_abilities() -> void:
+	for name in _ability_bars:
+		var node: Node = player.get_node_or_null(name)
+		var bar: ProgressBar = _ability_bars[name]
+		if node == null:
+			bar.visible = false
+			continue
+		var frac: float = node.call("ready_fraction")
+		if name == "Marking" and node.call("has_mark"):
+			frac = node.call("duration_fraction")
+		bar.value = clampf(frac, 0.0, 1.0)
+		bar.modulate.a = 1.0 if frac >= 1.0 else 0.65
 
 
 static func _make_vignette() -> GradientTexture2D:

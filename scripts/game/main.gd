@@ -1,7 +1,11 @@
 extends Node3D
 ## Game scene glue: makes sure the facility has collision, loads the story
-## layer / dialogue box if they exist, and opens the facility's own
-## security + blast doors once the keycard is picked up.
+## layer / dialogue box if they exist, and opens the facility's own security +
+## blast doors.
+## The assignment has no keys, pickups or door unlocking, so every door on the
+## required route is simply open from the start. The keycard prop stays in the
+## world as set dressing - it is something the player finds, not something the
+## player uses.
 
 const STORY_LAYER := "res://scenes/game/story_layer.tscn"
 const DIALOGUE_BOX := "res://scenes/ui/dialogue_box.tscn"
@@ -12,9 +16,6 @@ const DIALOGUE_BOX := "res://scenes/ui/dialogue_box.tscn"
 ## generated collision. Only used if the facility has no collision at all.
 @export var min_collision_size := 0.6
 
-var _keycard_doors: Array[Node3D] = []
-var _doors_open := false
-var _poll := 0.0
 
 
 func _ready() -> void:
@@ -22,7 +23,7 @@ func _ready() -> void:
 	_ensure_collision(facility)
 	_hide_duplicate_keycards(facility)
 	for n in facility.find_children("SecurityDoor*", "", true, false) + facility.find_children("BlastDoor*", "", true, false):
-		_keycard_doors.append(n)
+		_open_prop_door(n)
 	for path in [STORY_LAYER, DIALOGUE_BOX]:
 		if ResourceLoader.exists(path):
 			add_child(load(path).instantiate())
@@ -31,19 +32,6 @@ func _ready() -> void:
 	get_tree().paused = false
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 	UiSettings.apply(get_tree())
-
-
-func _process(delta: float) -> void:
-	if _doors_open:
-		return
-	_poll -= delta
-	if _poll > 0.0:
-		return
-	_poll = 0.5
-	if TimbukFx.state_call(get_tree(), "has_flag", ["has_keycard"]):
-		_doors_open = true
-		for d in _keycard_doors:
-			_open_prop_door(d)
 
 
 func _ensure_collision(facility: Node) -> void:
@@ -69,8 +57,8 @@ func _hide_duplicate_keycards(facility: Node) -> void:
 			k.visible = false
 
 
+## Slides a prop door up and takes its collision out of the way for good.
 func _open_prop_door(d: Node3D) -> void:
 	for c in d.find_children("*", "CollisionShape3D", true, false):
 		c.set_deferred("disabled", true)
-	var tw := d.create_tween()
-	tw.tween_property(d, "position:y", d.position.y + 3.0, 1.6).set_trans(Tween.TRANS_SINE)
+	d.position.y += 3.0
