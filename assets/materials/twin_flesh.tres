@@ -1,0 +1,21 @@
+[gd_resource type="StandardMaterial3D" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/textures/skin_corpse_albedo.png" id="1_c6pjf"]
+[ext_resource type="Texture2D" path="res://assets/textures/skin_corpse_normal.png" id="2_4j576"]
+[ext_resource type="Texture2D" path="res://assets/textures/skin_corpse_rough.png" id="3_siv4q"]
+
+[resource]
+resource_name = "twin_flesh"
+albedo_color = Color(0.47, 0.46, 0.47, 1)
+albedo_texture = ExtResource("1_c6pjf")
+roughness = 0.85
+roughness_texture = ExtResource("3_siv4q")
+normal_enabled = true
+normal_scale = 0.8
+normal_texture = ExtResource("2_4j576")
+subsurf_scatter_enabled = true
+subsurf_scatter_strength = 0.07
+subsurf_scatter_skin_mode = true
+backlight_enabled = true
+backlight = Color(0.0875, 0.045, 0.045, 0.25)
+uv1_scale = Vector3(6.6666665, 6.6666665, 6.6666665)

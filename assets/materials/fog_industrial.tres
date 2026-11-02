@@ -9,7 +9,7 @@ noise = SubResource("FastNoiseLite_jma02")
 seamless = true
 
 [resource]
-density = 0.02
+density = 0.022
 albedo = Color(0.75, 0.8, 0.82, 1)
 height_falloff = 0.15
 edge_fade = 0.3

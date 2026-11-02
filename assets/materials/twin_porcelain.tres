@@ -1,0 +1,16 @@
+[gd_resource type="StandardMaterial3D" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/textures/porcelain_crack_albedo.png" id="1_csoba"]
+[ext_resource type="Texture2D" path="res://assets/textures/porcelain_crack_normal.png" id="2_vfnt5"]
+[ext_resource type="Texture2D" path="res://assets/textures/porcelain_crack_rough.png" id="3_2iku5"]
+
+[resource]
+resource_name = "twin_porcelain"
+albedo_color = Color(0.5, 0.47, 0.4, 1)
+albedo_texture = ExtResource("1_csoba")
+roughness = 0.7
+roughness_texture = ExtResource("3_2iku5")
+normal_enabled = true
+normal_scale = 0.85
+normal_texture = ExtResource("2_vfnt5")
+uv1_scale = Vector3(5.5555553, 5.5555553, 5.5555553)
