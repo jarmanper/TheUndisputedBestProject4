@@ -1,55 +1,116 @@
 [gd_scene format=3]
 
-[ext_resource type="PackedScene" path="res://assets/models/environment/area_a_entrance.glb" id="1_yof5m"]
-[ext_resource type="Script" path="res://scripts/visual/light_flicker.gd" id="2_l0yr5"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/buzz_fluorescent_loop.wav" id="3_xwd2b"]
-[ext_resource type="PackedScene" path="res://scenes/props/street_lamp.tscn" id="4_6m1cy"]
-[ext_resource type="PackedScene" path="res://scenes/props/jersey_barrier.tscn" id="5_k7xis"]
-[ext_resource type="PackedScene" path="res://scenes/props/chem_barrel.tscn" id="6_sbxq8"]
-[ext_resource type="PackedScene" path="res://scenes/props/chem_barrel_leaking.tscn" id="7_j7hl8"]
-[ext_resource type="PackedScene" path="res://scenes/props/debris_pile.tscn" id="8_ne2t4"]
-[ext_resource type="PackedScene" path="res://scenes/props/papers_scattered.tscn" id="9_y4w4e"]
-[ext_resource type="PackedScene" path="res://scenes/props/warning_sign_plate.tscn" id="10_y8g4e"]
-[ext_resource type="PackedScene" path="res://scenes/props/hanging_light_broken.tscn" id="11_o1vl3"]
-[ext_resource type="PackedScene" path="res://scenes/props/ceiling_tile_fallen.tscn" id="12_gjmx8"]
-[ext_resource type="PackedScene" path="res://scenes/props/wall_clock.tscn" id="13_mtihq"]
-[ext_resource type="PackedScene" path="res://scenes/props/security_desk.tscn" id="14_334gh"]
-[ext_resource type="PackedScene" path="res://scenes/props/office_chair.tscn" id="15_3s3h4"]
-[ext_resource type="PackedScene" path="res://scenes/props/security_gate.tscn" id="16_q43jm"]
-[ext_resource type="PackedScene" path="res://scenes/props/security_door.tscn" id="17_8sfex"]
-[ext_resource type="PackedScene" path="res://scenes/props/emergency_beacon.tscn" id="18_4pwf4"]
-[ext_resource type="PackedScene" path="res://scenes/props/bench_seating.tscn" id="19_1wowk"]
-[ext_resource type="PackedScene" path="res://scenes/props/filing_cabinet.tscn" id="20_dnt85"]
-[ext_resource type="PackedScene" path="res://scenes/props/storage_cabinet.tscn" id="21_t8e1y"]
-[ext_resource type="PackedScene" path="res://scenes/props/blood_trail.tscn" id="22_bun1t"]
-[ext_resource type="PackedScene" path="res://scenes/props/office_desk.tscn" id="23_df5w3"]
-[ext_resource type="PackedScene" path="res://scenes/props/computer_terminal.tscn" id="24_frpjb"]
-[ext_resource type="PackedScene" path="res://scenes/props/photo_frame.tscn" id="25_8xn05"]
-[ext_resource type="PackedScene" path="res://scenes/props/lab_table.tscn" id="26_tr5vj"]
-[ext_resource type="PackedScene" path="res://scenes/props/server_rack.tscn" id="27_rdtpu"]
-[ext_resource type="PackedScene" path="res://scenes/props/locker_row.tscn" id="28_6mocw"]
-[ext_resource type="PackedScene" path="res://scenes/props/wall_bloodsmear.tscn" id="29_p1qbp"]
-[ext_resource type="PackedScene" path="res://scenes/props/pistol.tscn" id="30_2tjki"]
-[ext_resource type="PackedScene" path="res://scenes/props/keycard.tscn" id="31_fwnrx"]
-[ext_resource type="PackedScene" path="res://scenes/props/cubicle.tscn" id="32_mxn03"]
-[ext_resource type="PackedScene" path="res://scenes/props/cardboard_boxes.tscn" id="33_r13wy"]
-[ext_resource type="PackedScene" path="res://scenes/props/vending_machine.tscn" id="34_r6smg"]
-[ext_resource type="AudioStream" path="res://assets/audio/ambience/amb_exterior.wav" id="35_sgt5a"]
-[ext_resource type="Material" path="res://assets/materials/fog_outdoor.tres" id="36_37geg"]
-[ext_resource type="AudioStream" path="res://assets/audio/ambience/amb_facility_hum.wav" id="37_bqbke"]
-[ext_resource type="AudioStream" path="res://assets/audio/ambience/amb_lab.wav" id="38_qxm6o"]
+[ext_resource type="PackedScene" path="res://assets/models/environment/area_a_entrance.glb" id="1_k7xis"]
+[ext_resource type="Script" path="res://scripts/visual/light_flicker.gd" id="2_sbxq8"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/buzz_fluorescent_loop.wav" id="3_j7hl8"]
+[ext_resource type="PackedScene" path="res://scenes/props/street_lamp.tscn" id="4_ne2t4"]
+[ext_resource type="PackedScene" path="res://scenes/props/jersey_barrier.tscn" id="5_y4w4e"]
+[ext_resource type="PackedScene" path="res://scenes/props/chem_barrel.tscn" id="6_y8g4e"]
+[ext_resource type="PackedScene" path="res://scenes/props/chem_barrel_leaking.tscn" id="7_o1vl3"]
+[ext_resource type="PackedScene" path="res://scenes/props/debris_pile.tscn" id="8_gjmx8"]
+[ext_resource type="PackedScene" path="res://scenes/props/papers_scattered.tscn" id="9_mtihq"]
+[ext_resource type="PackedScene" path="res://scenes/props/warning_sign_plate.tscn" id="10_334gh"]
+[ext_resource type="PackedScene" path="res://scenes/props/hanging_light_broken.tscn" id="11_3s3h4"]
+[ext_resource type="PackedScene" path="res://scenes/props/ceiling_tile_fallen.tscn" id="12_q43jm"]
+[ext_resource type="PackedScene" path="res://scenes/props/wall_clock.tscn" id="13_8sfex"]
+[ext_resource type="PackedScene" path="res://scenes/props/security_desk.tscn" id="14_4pwf4"]
+[ext_resource type="PackedScene" path="res://scenes/props/office_chair.tscn" id="15_1wowk"]
+[ext_resource type="PackedScene" path="res://scenes/props/security_gate.tscn" id="16_dnt85"]
+[ext_resource type="PackedScene" path="res://scenes/props/security_door.tscn" id="17_t8e1y"]
+[ext_resource type="PackedScene" path="res://scenes/props/emergency_beacon.tscn" id="18_bun1t"]
+[ext_resource type="PackedScene" path="res://scenes/props/bench_seating.tscn" id="19_df5w3"]
+[ext_resource type="PackedScene" path="res://scenes/props/filing_cabinet.tscn" id="20_frpjb"]
+[ext_resource type="PackedScene" path="res://scenes/props/storage_cabinet.tscn" id="21_8xn05"]
+[ext_resource type="PackedScene" path="res://scenes/props/blood_trail.tscn" id="22_tr5vj"]
+[ext_resource type="PackedScene" path="res://scenes/props/office_desk.tscn" id="23_rdtpu"]
+[ext_resource type="PackedScene" path="res://scenes/props/computer_terminal.tscn" id="24_6mocw"]
+[ext_resource type="PackedScene" path="res://scenes/props/photo_frame.tscn" id="25_p1qbp"]
+[ext_resource type="PackedScene" path="res://scenes/props/lab_table.tscn" id="26_2tjki"]
+[ext_resource type="PackedScene" path="res://scenes/props/server_rack.tscn" id="27_fwnrx"]
+[ext_resource type="PackedScene" path="res://scenes/props/locker_row.tscn" id="28_mxn03"]
+[ext_resource type="PackedScene" path="res://scenes/props/wall_bloodsmear.tscn" id="29_r13wy"]
+[ext_resource type="PackedScene" path="res://scenes/props/pistol.tscn" id="30_r6smg"]
+[ext_resource type="PackedScene" path="res://scenes/props/keycard.tscn" id="31_sgt5a"]
+[ext_resource type="PackedScene" path="res://scenes/props/cubicle.tscn" id="32_37geg"]
+[ext_resource type="PackedScene" path="res://scenes/props/cardboard_boxes.tscn" id="33_bqbke"]
+[ext_resource type="PackedScene" path="res://scenes/props/vending_machine.tscn" id="34_qxm6o"]
+[ext_resource type="AudioStream" path="res://assets/audio/ambience/amb_exterior.wav" id="35_3jx2u"]
+[ext_resource type="Material" path="res://assets/materials/fog_outdoor.tres" id="36_a0ejt"]
+[ext_resource type="AudioStream" path="res://assets/audio/ambience/amb_facility_hum.wav" id="37_3e55o"]
+[ext_resource type="QuadMesh" path="res://assets/materials/fx_dust_mote.tres" id="38_rujgf"]
+[ext_resource type="Script" path="res://scripts/visual/dust_motes.gd" id="39_ore8y"]
+[ext_resource type="Material" path="res://assets/materials/fog_lobby.tres" id="40_81m7y"]
+[ext_resource type="AudioStream" path="res://assets/audio/ambience/amb_lab.wav" id="41_qnrjv"]
+[ext_resource type="Material" path="res://assets/materials/fog_lab.tres" id="42_x6xnr"]
 
-[node name="AreaAEntrance" type="Node3D" unique_id=533110316]
+[sub_resource type="Gradient" id="Gradient_wm6y2"]
+offsets = PackedFloat32Array(0, 0.22, 0.78, 1)
+colors = PackedColorArray(0.85, 0.88, 0.92, 0, 0.85, 0.88, 0.92, 0.55, 0.85, 0.88, 0.92, 0.55, 0.85, 0.88, 0.92, 0)
 
-[node name="Model" type="Node3D" parent="." unique_id=2145720102 instance=ExtResource("1_yof5m")]
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_cul65"]
+gradient = SubResource("Gradient_wm6y2")
 
-[node name="Lights" type="Node3D" parent="." unique_id=800478840]
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_hiwq0"]
+emission_shape = 3
+emission_box_extents = Vector3(7.52, 1.89, 5.64)
+direction = Vector3(0, 1, 0)
+spread = 180.0
+initial_velocity_min = 0.008
+initial_velocity_max = 0.05
+gravity = Vector3(0.004, -0.006, 0)
+scale_min = 0.35
+scale_max = 1.5
+color_ramp = SubResource("GradientTexture1D_cul65")
 
-[node name="spot_light" type="SpotLight3D" parent="Lights" unique_id=1122056822]
+[sub_resource type="Gradient" id="Gradient_276m5"]
+offsets = PackedFloat32Array(0, 0.22, 0.78, 1)
+colors = PackedColorArray(0.85, 0.88, 0.92, 0, 0.85, 0.88, 0.92, 0.55, 0.85, 0.88, 0.92, 0.55, 0.85, 0.88, 0.92, 0)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_o57jd"]
+gradient = SubResource("Gradient_276m5")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_4ji2i"]
+emission_shape = 3
+emission_box_extents = Vector3(3.619, 1.344, 4.23)
+direction = Vector3(0, 1, 0)
+spread = 180.0
+initial_velocity_min = 0.008
+initial_velocity_max = 0.05
+gravity = Vector3(0.004, -0.006, 0)
+scale_min = 0.35
+scale_max = 1.5
+color_ramp = SubResource("GradientTexture1D_o57jd")
+
+[sub_resource type="Gradient" id="Gradient_ujao7"]
+offsets = PackedFloat32Array(0, 0.22, 0.78, 1)
+colors = PackedColorArray(0.85, 0.88, 0.92, 0, 0.85, 0.88, 0.92, 0.55, 0.85, 0.88, 0.92, 0.55, 0.85, 0.88, 0.92, 0)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_ve665"]
+gradient = SubResource("Gradient_ujao7")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_wujx8"]
+emission_shape = 3
+emission_box_extents = Vector3(6.439, 1.344, 5.64)
+direction = Vector3(0, 1, 0)
+spread = 180.0
+initial_velocity_min = 0.008
+initial_velocity_max = 0.05
+gravity = Vector3(0.004, -0.006, 0)
+scale_min = 0.35
+scale_max = 1.5
+color_ramp = SubResource("GradientTexture1D_ve665")
+
+[node name="AreaAEntrance" type="Node3D" unique_id=179491957]
+
+[node name="Model" type="Node3D" parent="." unique_id=270677931 instance=ExtResource("1_k7xis")]
+
+[node name="Lights" type="Node3D" parent="." unique_id=1986951064]
+
+[node name="spot_light" type="SpotLight3D" parent="Lights" unique_id=1711505099]
 transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 0, 3.7, 8.6)
 light_color = Color(0.75, 0.85, 1, 1)
 light_energy = 3.0
-light_volumetric_fog_energy = 1.5
+light_volumetric_fog_energy = 3.5
 shadow_enabled = true
 shadow_blur = 1.5
 distance_fade_enabled = true
@@ -59,14 +120,14 @@ spot_range = 7.0
 spot_attenuation = 0.8
 spot_angle = 30.0
 spot_angle_attenuation = 1.6
-script = ExtResource("2_l0yr5")
+script = ExtResource("2_sbxq8")
 flicker = 0.4
 
-[node name="sign_light" type="OmniLight3D" parent="Lights" unique_id=1037495158]
+[node name="sign_light" type="OmniLight3D" parent="Lights" unique_id=1006344082]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.1, 6.4, 7.8)
 light_color = Color(1, 0.12, 0.06, 1)
 light_energy = 1.2
-light_volumetric_fog_energy = 1.5
+light_volumetric_fog_energy = 1.2
 shadow_blur = 1.5
 distance_fade_enabled = true
 distance_fade_begin = 30.0
@@ -74,11 +135,11 @@ distance_fade_shadow = 18.0
 omni_range = 4.5
 omni_attenuation = 1.2
 
-[node name="sign_light2" type="OmniLight3D" parent="Lights" unique_id=1573999425]
+[node name="sign_light2" type="OmniLight3D" parent="Lights" unique_id=769341698]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.46, 6.4, 7.8)
 light_color = Color(1, 0.12, 0.06, 1)
 light_energy = 1.2
-light_volumetric_fog_energy = 1.5
+light_volumetric_fog_energy = 1.2
 shadow_blur = 1.5
 distance_fade_enabled = true
 distance_fade_begin = 30.0
@@ -86,11 +147,11 @@ distance_fade_shadow = 18.0
 omni_range = 4.5
 omni_attenuation = 1.2
 
-[node name="sign_light3" type="OmniLight3D" parent="Lights" unique_id=1862434512]
+[node name="sign_light3" type="OmniLight3D" parent="Lights" unique_id=1256272998]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.82, 6.4, 7.8)
 light_color = Color(1, 0.12, 0.06, 1)
 light_energy = 1.2
-light_volumetric_fog_energy = 1.5
+light_volumetric_fog_energy = 1.2
 shadow_blur = 1.5
 distance_fade_enabled = true
 distance_fade_begin = 30.0
@@ -98,84 +159,99 @@ distance_fade_shadow = 18.0
 omni_range = 4.5
 omni_attenuation = 1.2
 
-[node name="sign_light4" type="OmniLight3D" parent="Lights" unique_id=2031190705]
+[node name="sign_light4" type="OmniLight3D" parent="Lights" unique_id=2047733279]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.1, 6.4, 7.8)
 light_color = Color(1, 0.12, 0.06, 1)
 light_energy = 1.2
-light_volumetric_fog_energy = 1.5
+light_volumetric_fog_energy = 1.2
 shadow_blur = 1.5
 distance_fade_enabled = true
 distance_fade_begin = 30.0
 distance_fade_shadow = 18.0
 omni_range = 4.5
 omni_attenuation = 1.2
-script = ExtResource("2_l0yr5")
+script = ExtResource("2_sbxq8")
 flicker = 0.25
 
-[node name="fluor_light" type="OmniLight3D" parent="Lights" unique_id=725010312]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.25, 4.15, 3.3333333)
+[node name="fluor_light" type="SpotLight3D" parent="Lights" unique_id=636010493]
+transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, -5.25, 4.36, 3.3333333)
 light_color = Color(0.82, 0.9, 1, 1)
-light_energy = 0.95
-light_volumetric_fog_energy = 1.5
+light_energy = 1.9
+light_volumetric_fog_energy = 12.0
+shadow_enabled = true
 shadow_blur = 1.5
 distance_fade_enabled = true
 distance_fade_begin = 30.0
 distance_fade_shadow = 18.0
-omni_range = 5.5
-omni_attenuation = 1.2
+spot_range = 7.0
+spot_attenuation = 0.8
+spot_angle = 46.0
+spot_angle_attenuation = 0.35
 
-[node name="fluor_light2" type="OmniLight3D" parent="Lights" unique_id=580512097]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.25, 4.15, 0)
+[node name="fluor_light2" type="SpotLight3D" parent="Lights" unique_id=486625785]
+transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, -5.25, 4.36, 0)
 light_color = Color(0.82, 0.9, 1, 1)
-light_energy = 0.95
-light_volumetric_fog_energy = 1.5
+light_energy = 1.9
+light_volumetric_fog_energy = 12.0
+shadow_enabled = true
 shadow_blur = 1.5
 distance_fade_enabled = true
 distance_fade_begin = 30.0
 distance_fade_shadow = 18.0
-omni_range = 5.5
-omni_attenuation = 1.2
+spot_range = 7.0
+spot_attenuation = 0.8
+spot_angle = 46.0
+spot_angle_attenuation = 0.35
 
-[node name="fluor_light3" type="OmniLight3D" parent="Lights" unique_id=347312103]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.25, 4.15, -3.3333333)
+[node name="fluor_light3" type="SpotLight3D" parent="Lights" unique_id=1307508098]
+transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, -5.25, 4.36, -3.3333333)
 light_color = Color(0.82, 0.9, 1, 1)
-light_energy = 0.95
-light_volumetric_fog_energy = 1.5
+light_energy = 1.9
+light_volumetric_fog_energy = 12.0
+shadow_enabled = true
 shadow_blur = 1.5
 distance_fade_enabled = true
 distance_fade_begin = 30.0
 distance_fade_shadow = 18.0
-omni_range = 5.5
-omni_attenuation = 1.2
+spot_range = 7.0
+spot_attenuation = 0.8
+spot_angle = 46.0
+spot_angle_attenuation = 0.35
 
-[node name="fluor_light4" type="OmniLight3D" parent="Lights" unique_id=1392642698]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.75, 4.15, 0)
+[node name="fluor_light4" type="SpotLight3D" parent="Lights" unique_id=1060621185]
+transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, -1.75, 4.36, 0)
 light_color = Color(0.82, 0.9, 1, 1)
-light_energy = 0.95
-light_volumetric_fog_energy = 1.5
+light_energy = 1.9
+light_volumetric_fog_energy = 12.0
+shadow_enabled = true
 shadow_blur = 1.5
 distance_fade_enabled = true
 distance_fade_begin = 30.0
 distance_fade_shadow = 18.0
-omni_range = 5.5
-omni_attenuation = 1.2
+spot_range = 7.0
+spot_attenuation = 0.8
+spot_angle = 46.0
+spot_angle_attenuation = 0.35
 
-[node name="fluor_light5" type="OmniLight3D" parent="Lights" unique_id=58751297]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.75, 4.15, -3.3333333)
+[node name="fluor_light5" type="SpotLight3D" parent="Lights" unique_id=197729089]
+transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, -1.75, 4.36, -3.3333333)
 light_color = Color(0.82, 0.9, 1, 1)
-light_energy = 0.95
-light_volumetric_fog_energy = 1.5
+light_energy = 1.9
+light_volumetric_fog_energy = 12.0
+shadow_enabled = true
 shadow_blur = 1.5
 distance_fade_enabled = true
 distance_fade_begin = 30.0
 distance_fade_shadow = 18.0
-omni_range = 5.5
-omni_attenuation = 1.2
-script = ExtResource("2_l0yr5")
+spot_range = 7.0
+spot_attenuation = 0.8
+spot_angle = 46.0
+spot_angle_attenuation = 0.35
+script = ExtResource("2_sbxq8")
 flicker = 0.4820407575747153
 
-[node name="Audio_buzz_fluorescent_loop" type="AudioStreamPlayer3D" parent="Lights/fluor_light5" unique_id=1958163463]
-stream = ExtResource("3_xwd2b")
+[node name="Audio_buzz_fluorescent_loop" type="AudioStreamPlayer3D" parent="Lights/fluor_light5" unique_id=583727444]
+stream = ExtResource("3_j7hl8")
 volume_db = -13.107756
 unit_size = 1.2
 autoplay = true
@@ -183,22 +259,25 @@ max_distance = 9.0
 bus = &"SFX"
 attenuation_filter_cutoff_hz = 6000.0
 
-[node name="fluor_light6" type="OmniLight3D" parent="Lights" unique_id=425692088]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.75, 4.15, 0)
+[node name="fluor_light6" type="SpotLight3D" parent="Lights" unique_id=910365420]
+transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 1.75, 4.36, 0)
 light_color = Color(0.82, 0.9, 1, 1)
-light_energy = 0.95
-light_volumetric_fog_energy = 1.5
+light_energy = 1.9
+light_volumetric_fog_energy = 12.0
+shadow_enabled = true
 shadow_blur = 1.5
 distance_fade_enabled = true
 distance_fade_begin = 30.0
 distance_fade_shadow = 18.0
-omni_range = 5.5
-omni_attenuation = 1.2
-script = ExtResource("2_l0yr5")
+spot_range = 7.0
+spot_attenuation = 0.8
+spot_angle = 46.0
+spot_angle_attenuation = 0.35
+script = ExtResource("2_sbxq8")
 flicker = 0.8893160524792669
 
-[node name="Audio_buzz_fluorescent_loop" type="AudioStreamPlayer3D" parent="Lights/fluor_light6" unique_id=943244689]
-stream = ExtResource("3_xwd2b")
+[node name="Audio_buzz_fluorescent_loop" type="AudioStreamPlayer3D" parent="Lights/fluor_light6" unique_id=955161544]
+stream = ExtResource("3_j7hl8")
 volume_db = -10.6641035
 unit_size = 1.2
 autoplay = true
@@ -206,34 +285,40 @@ max_distance = 9.0
 bus = &"SFX"
 attenuation_filter_cutoff_hz = 6000.0
 
-[node name="fluor_light7" type="OmniLight3D" parent="Lights" unique_id=1939002749]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.75, 4.15, -3.3333333)
+[node name="fluor_light7" type="SpotLight3D" parent="Lights" unique_id=2140456623]
+transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 1.75, 4.36, -3.3333333)
 light_color = Color(0.82, 0.9, 1, 1)
-light_energy = 0.95
-light_volumetric_fog_energy = 1.5
+light_energy = 1.9
+light_volumetric_fog_energy = 12.0
+shadow_enabled = true
 shadow_blur = 1.5
 distance_fade_enabled = true
 distance_fade_begin = 30.0
 distance_fade_shadow = 18.0
-omni_range = 5.5
-omni_attenuation = 1.2
+spot_range = 7.0
+spot_attenuation = 0.8
+spot_angle = 46.0
+spot_angle_attenuation = 0.35
 
-[node name="fluor_light8" type="OmniLight3D" parent="Lights" unique_id=2010879383]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.25, 4.15, 3.3333333)
+[node name="fluor_light8" type="SpotLight3D" parent="Lights" unique_id=779807861]
+transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 5.25, 4.36, 3.3333333)
 light_color = Color(0.82, 0.9, 1, 1)
-light_energy = 0.95
-light_volumetric_fog_energy = 1.5
+light_energy = 1.9
+light_volumetric_fog_energy = 12.0
+shadow_enabled = true
 shadow_blur = 1.5
 distance_fade_enabled = true
 distance_fade_begin = 30.0
 distance_fade_shadow = 18.0
-omni_range = 5.5
-omni_attenuation = 1.2
-script = ExtResource("2_l0yr5")
+spot_range = 7.0
+spot_attenuation = 0.8
+spot_angle = 46.0
+spot_angle_attenuation = 0.35
+script = ExtResource("2_sbxq8")
 flicker = 0.3090004421697629
 
-[node name="Audio_buzz_fluorescent_loop" type="AudioStreamPlayer3D" parent="Lights/fluor_light8" unique_id=1451406621]
-stream = ExtResource("3_xwd2b")
+[node name="Audio_buzz_fluorescent_loop" type="AudioStreamPlayer3D" parent="Lights/fluor_light8" unique_id=1413852882]
+stream = ExtResource("3_j7hl8")
 volume_db = -14.145997
 unit_size = 1.2
 autoplay = true
@@ -241,22 +326,25 @@ max_distance = 9.0
 bus = &"SFX"
 attenuation_filter_cutoff_hz = 6000.0
 
-[node name="fluor_light9" type="OmniLight3D" parent="Lights" unique_id=1698399938]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.25, 4.15, 0)
+[node name="fluor_light9" type="SpotLight3D" parent="Lights" unique_id=1327194158]
+transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 5.25, 4.36, 0)
 light_color = Color(0.82, 0.9, 1, 1)
-light_energy = 0.95
-light_volumetric_fog_energy = 1.5
+light_energy = 1.9
+light_volumetric_fog_energy = 12.0
+shadow_enabled = true
 shadow_blur = 1.5
 distance_fade_enabled = true
 distance_fade_begin = 30.0
 distance_fade_shadow = 18.0
-omni_range = 5.5
-omni_attenuation = 1.2
-script = ExtResource("2_l0yr5")
+spot_range = 7.0
+spot_attenuation = 0.8
+spot_angle = 46.0
+spot_angle_attenuation = 0.35
+script = ExtResource("2_sbxq8")
 flicker = 0.41412495767875745
 
-[node name="Audio_buzz_fluorescent_loop" type="AudioStreamPlayer3D" parent="Lights/fluor_light9" unique_id=1392622096]
-stream = ExtResource("3_xwd2b")
+[node name="Audio_buzz_fluorescent_loop" type="AudioStreamPlayer3D" parent="Lights/fluor_light9" unique_id=515406878]
+stream = ExtResource("3_j7hl8")
 volume_db = -13.51525
 unit_size = 1.2
 autoplay = true
@@ -264,22 +352,25 @@ max_distance = 9.0
 bus = &"SFX"
 attenuation_filter_cutoff_hz = 6000.0
 
-[node name="fluor_light10" type="OmniLight3D" parent="Lights" unique_id=1002939351]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14.075, 2.85, 4.5)
+[node name="fluor_light10" type="SpotLight3D" parent="Lights" unique_id=186100928]
+transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, -14.075, 3.06, 4.5)
 light_color = Color(0.82, 0.9, 1, 1)
-light_energy = 0.95
-light_volumetric_fog_energy = 1.5
+light_energy = 1.9
+light_volumetric_fog_energy = 12.0
+shadow_enabled = true
 shadow_blur = 1.5
 distance_fade_enabled = true
 distance_fade_begin = 30.0
 distance_fade_shadow = 18.0
-omni_range = 5.5
-omni_attenuation = 1.2
-script = ExtResource("2_l0yr5")
+spot_range = 7.0
+spot_attenuation = 0.8
+spot_angle = 46.0
+spot_angle_attenuation = 0.35
+script = ExtResource("2_sbxq8")
 flicker = 0.8791506642366669
 
-[node name="Audio_buzz_fluorescent_loop" type="AudioStreamPlayer3D" parent="Lights/fluor_light10" unique_id=1900959915]
-stream = ExtResource("3_xwd2b")
+[node name="Audio_buzz_fluorescent_loop" type="AudioStreamPlayer3D" parent="Lights/fluor_light10" unique_id=2127731805]
+stream = ExtResource("3_j7hl8")
 volume_db = -10.725096
 unit_size = 1.2
 autoplay = true
@@ -287,34 +378,40 @@ max_distance = 9.0
 bus = &"SFX"
 attenuation_filter_cutoff_hz = 6000.0
 
-[node name="fluor_light11" type="OmniLight3D" parent="Lights" unique_id=1690060098]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14.075, 2.85, 1.5)
+[node name="fluor_light11" type="SpotLight3D" parent="Lights" unique_id=627551606]
+transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, -14.075, 3.06, 1.5)
 light_color = Color(0.82, 0.9, 1, 1)
-light_energy = 0.95
-light_volumetric_fog_energy = 1.5
+light_energy = 1.9
+light_volumetric_fog_energy = 12.0
+shadow_enabled = true
 shadow_blur = 1.5
 distance_fade_enabled = true
 distance_fade_begin = 30.0
 distance_fade_shadow = 18.0
-omni_range = 5.5
-omni_attenuation = 1.2
+spot_range = 7.0
+spot_attenuation = 0.8
+spot_angle = 46.0
+spot_angle_attenuation = 0.35
 
-[node name="fluor_light12" type="OmniLight3D" parent="Lights" unique_id=1143741169]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14.075, 2.85, -1.5)
+[node name="fluor_light12" type="SpotLight3D" parent="Lights" unique_id=1785923967]
+transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, -14.075, 3.06, -1.5)
 light_color = Color(0.82, 0.9, 1, 1)
-light_energy = 0.95
-light_volumetric_fog_energy = 1.5
+light_energy = 1.9
+light_volumetric_fog_energy = 12.0
+shadow_enabled = true
 shadow_blur = 1.5
 distance_fade_enabled = true
 distance_fade_begin = 30.0
 distance_fade_shadow = 18.0
-omni_range = 5.5
-omni_attenuation = 1.2
-script = ExtResource("2_l0yr5")
+spot_range = 7.0
+spot_attenuation = 0.8
+spot_angle = 46.0
+spot_angle_attenuation = 0.35
+script = ExtResource("2_sbxq8")
 flicker = 0.4330177497157444
 
-[node name="Audio_buzz_fluorescent_loop" type="AudioStreamPlayer3D" parent="Lights/fluor_light12" unique_id=971943623]
-stream = ExtResource("3_xwd2b")
+[node name="Audio_buzz_fluorescent_loop" type="AudioStreamPlayer3D" parent="Lights/fluor_light12" unique_id=809821612]
+stream = ExtResource("3_j7hl8")
 volume_db = -13.401894
 unit_size = 1.2
 autoplay = true
@@ -322,22 +419,25 @@ max_distance = 9.0
 bus = &"SFX"
 attenuation_filter_cutoff_hz = 6000.0
 
-[node name="fluor_light13" type="OmniLight3D" parent="Lights" unique_id=726316067]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10.225, 2.85, 1.5)
+[node name="fluor_light13" type="SpotLight3D" parent="Lights" unique_id=1876636998]
+transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, -10.225, 3.06, 1.5)
 light_color = Color(0.82, 0.9, 1, 1)
-light_energy = 0.95
-light_volumetric_fog_energy = 1.5
+light_energy = 1.9
+light_volumetric_fog_energy = 12.0
+shadow_enabled = true
 shadow_blur = 1.5
 distance_fade_enabled = true
 distance_fade_begin = 30.0
 distance_fade_shadow = 18.0
-omni_range = 5.5
-omni_attenuation = 1.2
-script = ExtResource("2_l0yr5")
+spot_range = 7.0
+spot_attenuation = 0.8
+spot_angle = 46.0
+spot_angle_attenuation = 0.35
+script = ExtResource("2_sbxq8")
 flicker = 0.8826635708122643
 
-[node name="Audio_buzz_fluorescent_loop" type="AudioStreamPlayer3D" parent="Lights/fluor_light13" unique_id=475139715]
-stream = ExtResource("3_xwd2b")
+[node name="Audio_buzz_fluorescent_loop" type="AudioStreamPlayer3D" parent="Lights/fluor_light13" unique_id=2037921776]
+stream = ExtResource("3_j7hl8")
 volume_db = -10.704019
 unit_size = 1.2
 autoplay = true
@@ -345,22 +445,25 @@ max_distance = 9.0
 bus = &"SFX"
 attenuation_filter_cutoff_hz = 6000.0
 
-[node name="fluor_light14" type="OmniLight3D" parent="Lights" unique_id=653857145]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.0125, 2.85, 1.5)
+[node name="fluor_light14" type="SpotLight3D" parent="Lights" unique_id=104520376]
+transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 10.0125, 3.06, 1.5)
 light_color = Color(0.82, 0.9, 1, 1)
-light_energy = 0.95
-light_volumetric_fog_energy = 1.5
+light_energy = 1.9
+light_volumetric_fog_energy = 12.0
+shadow_enabled = true
 shadow_blur = 1.5
 distance_fade_enabled = true
 distance_fade_begin = 30.0
 distance_fade_shadow = 18.0
-omni_range = 5.5
-omni_attenuation = 1.2
-script = ExtResource("2_l0yr5")
+spot_range = 7.0
+spot_attenuation = 0.8
+spot_angle = 46.0
+spot_angle_attenuation = 0.35
+script = ExtResource("2_sbxq8")
 flicker = 0.7275041684251247
 
-[node name="Audio_buzz_fluorescent_loop" type="AudioStreamPlayer3D" parent="Lights/fluor_light14" unique_id=1990566146]
-stream = ExtResource("3_xwd2b")
+[node name="Audio_buzz_fluorescent_loop" type="AudioStreamPlayer3D" parent="Lights/fluor_light14" unique_id=1501179134]
+stream = ExtResource("3_j7hl8")
 volume_db = -11.634975
 unit_size = 1.2
 autoplay = true
@@ -368,94 +471,115 @@ max_distance = 9.0
 bus = &"SFX"
 attenuation_filter_cutoff_hz = 6000.0
 
-[node name="fluor_light15" type="OmniLight3D" parent="Lights" unique_id=1442581622]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.0125, 2.85, -1.5)
+[node name="fluor_light15" type="SpotLight3D" parent="Lights" unique_id=2078040080]
+transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 10.0125, 3.06, -1.5)
 light_color = Color(0.82, 0.9, 1, 1)
-light_energy = 0.95
-light_volumetric_fog_energy = 1.5
+light_energy = 1.9
+light_volumetric_fog_energy = 12.0
+shadow_enabled = true
 shadow_blur = 1.5
 distance_fade_enabled = true
 distance_fade_begin = 30.0
 distance_fade_shadow = 18.0
-omni_range = 5.5
-omni_attenuation = 1.2
+spot_range = 7.0
+spot_attenuation = 0.8
+spot_angle = 46.0
+spot_angle_attenuation = 0.35
 
-[node name="fluor_light16" type="OmniLight3D" parent="Lights" unique_id=874917752]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.0125, 2.85, -4.5)
+[node name="fluor_light16" type="SpotLight3D" parent="Lights" unique_id=1670367018]
+transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 10.0125, 3.06, -4.5)
 light_color = Color(0.82, 0.9, 1, 1)
-light_energy = 0.95
-light_volumetric_fog_energy = 1.5
+light_energy = 1.9
+light_volumetric_fog_energy = 12.0
+shadow_enabled = true
 shadow_blur = 1.5
 distance_fade_enabled = true
 distance_fade_begin = 30.0
 distance_fade_shadow = 18.0
-omni_range = 5.5
-omni_attenuation = 1.2
+spot_range = 7.0
+spot_attenuation = 0.8
+spot_angle = 46.0
+spot_angle_attenuation = 0.35
 
-[node name="fluor_light17" type="OmniLight3D" parent="Lights" unique_id=1145141381]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13.4375, 2.85, 1.5)
+[node name="fluor_light17" type="SpotLight3D" parent="Lights" unique_id=2141177846]
+transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 13.4375, 3.06, 1.5)
 light_color = Color(0.82, 0.9, 1, 1)
-light_energy = 0.95
-light_volumetric_fog_energy = 1.5
+light_energy = 1.9
+light_volumetric_fog_energy = 12.0
+shadow_enabled = true
 shadow_blur = 1.5
 distance_fade_enabled = true
 distance_fade_begin = 30.0
 distance_fade_shadow = 18.0
-omni_range = 5.5
-omni_attenuation = 1.2
+spot_range = 7.0
+spot_attenuation = 0.8
+spot_angle = 46.0
+spot_angle_attenuation = 0.35
 
-[node name="fluor_light18" type="OmniLight3D" parent="Lights" unique_id=528262952]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13.4375, 2.85, -1.5)
+[node name="fluor_light18" type="SpotLight3D" parent="Lights" unique_id=818795140]
+transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 13.4375, 3.06, -1.5)
 light_color = Color(0.82, 0.9, 1, 1)
-light_energy = 0.95
-light_volumetric_fog_energy = 1.5
+light_energy = 1.9
+light_volumetric_fog_energy = 12.0
+shadow_enabled = true
 shadow_blur = 1.5
 distance_fade_enabled = true
 distance_fade_begin = 30.0
 distance_fade_shadow = 18.0
-omni_range = 5.5
-omni_attenuation = 1.2
+spot_range = 7.0
+spot_attenuation = 0.8
+spot_angle = 46.0
+spot_angle_attenuation = 0.35
 
-[node name="fluor_light19" type="OmniLight3D" parent="Lights" unique_id=685308579]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16.8625, 2.85, -1.5)
+[node name="fluor_light19" type="SpotLight3D" parent="Lights" unique_id=1464239438]
+transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 16.8625, 3.06, -1.5)
 light_color = Color(0.82, 0.9, 1, 1)
-light_energy = 0.95
-light_volumetric_fog_energy = 1.5
+light_energy = 1.9
+light_volumetric_fog_energy = 12.0
+shadow_enabled = true
 shadow_blur = 1.5
 distance_fade_enabled = true
 distance_fade_begin = 30.0
 distance_fade_shadow = 18.0
-omni_range = 5.5
-omni_attenuation = 1.2
+spot_range = 7.0
+spot_attenuation = 0.8
+spot_angle = 46.0
+spot_angle_attenuation = 0.35
 
-[node name="fluor_light20" type="OmniLight3D" parent="Lights" unique_id=492957943]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16.8625, 2.85, -4.5)
+[node name="fluor_light20" type="SpotLight3D" parent="Lights" unique_id=803856405]
+transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 16.8625, 3.06, -4.5)
 light_color = Color(0.82, 0.9, 1, 1)
-light_energy = 0.95
-light_volumetric_fog_energy = 1.5
+light_energy = 1.9
+light_volumetric_fog_energy = 12.0
+shadow_enabled = true
 shadow_blur = 1.5
 distance_fade_enabled = true
 distance_fade_begin = 30.0
 distance_fade_shadow = 18.0
-omni_range = 5.5
-omni_attenuation = 1.2
+spot_range = 7.0
+spot_attenuation = 0.8
+spot_angle = 46.0
+spot_angle_attenuation = 0.35
 
-[node name="fluor_light21" type="OmniLight3D" parent="Lights" unique_id=622900891]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20.2875, 2.85, 1.5)
+[node name="fluor_light21" type="SpotLight3D" parent="Lights" unique_id=984051167]
+transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 20.2875, 3.06, 1.5)
 light_color = Color(0.82, 0.9, 1, 1)
-light_energy = 0.95
-light_volumetric_fog_energy = 1.5
+light_energy = 1.9
+light_volumetric_fog_energy = 12.0
+shadow_enabled = true
 shadow_blur = 1.5
 distance_fade_enabled = true
 distance_fade_begin = 30.0
 distance_fade_shadow = 18.0
-omni_range = 5.5
-omni_attenuation = 1.2
-script = ExtResource("2_l0yr5")
+spot_range = 7.0
+spot_attenuation = 0.8
+spot_angle = 46.0
+spot_angle_attenuation = 0.35
+script = ExtResource("2_sbxq8")
 flicker = 0.6726609680594188
 
-[node name="Audio_buzz_fluorescent_loop" type="AudioStreamPlayer3D" parent="Lights/fluor_light21" unique_id=248640536]
-stream = ExtResource("3_xwd2b")
+[node name="Audio_buzz_fluorescent_loop" type="AudioStreamPlayer3D" parent="Lights/fluor_light21" unique_id=1793835779]
+stream = ExtResource("3_j7hl8")
 volume_db = -11.964034
 unit_size = 1.2
 autoplay = true
@@ -463,236 +587,239 @@ max_distance = 9.0
 bus = &"SFX"
 attenuation_filter_cutoff_hz = 6000.0
 
-[node name="fluor_light22" type="OmniLight3D" parent="Lights" unique_id=725668630]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20.2875, 2.85, -1.5)
+[node name="fluor_light22" type="SpotLight3D" parent="Lights" unique_id=636233030]
+transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 20.2875, 3.06, -1.5)
 light_color = Color(0.82, 0.9, 1, 1)
-light_energy = 0.95
-light_volumetric_fog_energy = 1.5
+light_energy = 1.9
+light_volumetric_fog_energy = 12.0
+shadow_enabled = true
 shadow_blur = 1.5
 distance_fade_enabled = true
 distance_fade_begin = 30.0
 distance_fade_shadow = 18.0
-omni_range = 5.5
-omni_attenuation = 1.2
+spot_range = 7.0
+spot_attenuation = 0.8
+spot_angle = 46.0
+spot_angle_attenuation = 0.35
 
-[node name="Props" type="Node3D" parent="." unique_id=111952638]
+[node name="Props" type="Node3D" parent="." unique_id=876753524]
 
-[node name="StreetLamp" type="Node3D" parent="Props" unique_id=1154142302 instance=ExtResource("4_6m1cy")]
+[node name="StreetLamp" type="Node3D" parent="Props" unique_id=1742373951 instance=ExtResource("4_ne2t4")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -7.5, 0, 12.5)
 
-[node name="StreetLamp2" type="Node3D" parent="Props" unique_id=1448495569 instance=ExtResource("4_6m1cy")]
+[node name="StreetLamp2" type="Node3D" parent="Props" unique_id=808241621 instance=ExtResource("4_ne2t4")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 7.5, 0, 12.5)
 
-[node name="JerseyBarrier" type="Node3D" parent="Props" unique_id=1324838735 instance=ExtResource("5_k7xis")]
+[node name="JerseyBarrier" type="Node3D" parent="Props" unique_id=147629807 instance=ExtResource("5_y4w4e")]
 transform = Transform3D(0.9887711, 0, 0.14943813, 0, 1, 0, -0.14943813, 0, 0.9887711, -3.5, 0, 16)
 
-[node name="JerseyBarrier2" type="Node3D" parent="Props" unique_id=1153802888 instance=ExtResource("5_k7xis")]
+[node name="JerseyBarrier2" type="Node3D" parent="Props" unique_id=576980052 instance=ExtResource("5_y4w4e")]
 transform = Transform3D(0.92106104, 0, -0.3894183, 0, 1, 0, 0.3894183, 0, 0.92106104, 2.8, 0, 17)
 
-[node name="ChemBarrel" type="Node3D" parent="Props" unique_id=482222005 instance=ExtResource("6_sbxq8")]
+[node name="ChemBarrel" type="Node3D" parent="Props" unique_id=1605614201 instance=ExtResource("6_y8g4e")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.5, 0, 8.2)
 
-[node name="ChemBarrelLeaking" type="Node3D" parent="Props" unique_id=721982648 instance=ExtResource("7_j7hl8")]
+[node name="ChemBarrelLeaking" type="Node3D" parent="Props" unique_id=1648400357 instance=ExtResource("7_o1vl3")]
 transform = Transform3D(0.8253356, 0, 0.5646424, 0, 1, 0, -0.5646424, 0, 0.8253356, -10.3, 0, 9)
 
-[node name="DebrisPile" type="Node3D" parent="Props" unique_id=848582753 instance=ExtResource("8_ne2t4")]
+[node name="DebrisPile" type="Node3D" parent="Props" unique_id=378491580 instance=ExtResource("8_gjmx8")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.5, 0, 9)
 
-[node name="PapersScattered" type="Node3D" parent="Props" unique_id=579558759 instance=ExtResource("9_y4w4e")]
+[node name="PapersScattered" type="Node3D" parent="Props" unique_id=1925675474 instance=ExtResource("9_mtihq")]
 transform = Transform3D(0.7648423, 0, 0.6442176, 0, 1, 0, -0.6442176, 0, 0.7648423, 1, 0, 11.5)
 
-[node name="WarningSignPlate" type="Node3D" parent="Props" unique_id=964243739 instance=ExtResource("10_y8g4e")]
+[node name="WarningSignPlate" type="Node3D" parent="Props" unique_id=1413462707 instance=ExtResource("10_334gh")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.9, 1.7, 6.95)
 
-[node name="HangingLightBroken" type="Node3D" parent="Props" unique_id=201326528 instance=ExtResource("11_o1vl3")]
+[node name="HangingLightBroken" type="Node3D" parent="Props" unique_id=268941193 instance=ExtResource("11_3s3h4")]
 transform = Transform3D(0.96947503, 0, 0.24518996, 0, 1, 0, -0.24518996, 0, 0.96947503, 1.75, 4.5, 3.0333333)
 
-[node name="DebrisPile2" type="Node3D" parent="Props" unique_id=1239935997 instance=ExtResource("8_ne2t4")]
+[node name="DebrisPile2" type="Node3D" parent="Props" unique_id=730990765 instance=ExtResource("8_gjmx8")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.5, 0, -3.5)
 
-[node name="CeilingTileFallen" type="Node3D" parent="Props" unique_id=176113994 instance=ExtResource("12_gjmx8")]
+[node name="CeilingTileFallen" type="Node3D" parent="Props" unique_id=289361959 instance=ExtResource("12_q43jm")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.4, 0, -2.3)
 
-[node name="WallClock" type="Node3D" parent="Props" unique_id=1302150018 instance=ExtResource("13_mtihq")]
+[node name="WallClock" type="Node3D" parent="Props" unique_id=2052358599 instance=ExtResource("13_8sfex")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.4, 3.45, -5.9)
 
-[node name="SecurityDesk" type="Node3D" parent="Props" unique_id=1696301548 instance=ExtResource("14_334gh")]
+[node name="SecurityDesk" type="Node3D" parent="Props" unique_id=743794164 instance=ExtResource("14_4pwf4")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.6)
 
-[node name="OfficeChair" type="Node3D" parent="Props" unique_id=1670637192 instance=ExtResource("15_3s3h4")]
+[node name="OfficeChair" type="Node3D" parent="Props" unique_id=620495849 instance=ExtResource("15_1wowk")]
 transform = Transform3D(-0.8568888, 0, 0.51550144, 0, 1, 0, -0.51550144, 0, -0.8568888, 0.4, 0, -2.1)
 
-[node name="OfficeChair2" type="Node3D" parent="Props" unique_id=412535640 instance=ExtResource("15_3s3h4")]
+[node name="OfficeChair2" type="Node3D" parent="Props" unique_id=279664577 instance=ExtResource("15_1wowk")]
 transform = Transform3D(0.54030234, 0.8414706, 0.0006700754, -2.9802322e-08, 0.00079637766, -0.99999964, -0.8414709, 0.54030216, 0.00043034554, -1.6, 0.25, -3)
 
-[node name="SecurityGate" type="Node3D" parent="Props" unique_id=1767741759 instance=ExtResource("16_q43jm")]
+[node name="SecurityGate" type="Node3D" parent="Props" unique_id=6567426 instance=ExtResource("16_dnt85")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -4.4)
 
-[node name="SecurityDoor" type="Node3D" parent="Props" unique_id=1262891408 instance=ExtResource("17_8sfex")]
+[node name="SecurityDoor" type="Node3D" parent="Props" unique_id=412391157 instance=ExtResource("17_t8e1y")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -6.15)
 
-[node name="EmergencyBeacon" type="Node3D" parent="Props" unique_id=1878911767 instance=ExtResource("18_4pwf4")]
+[node name="EmergencyBeacon" type="Node3D" parent="Props" unique_id=1249579546 instance=ExtResource("18_bun1t")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.7, -5.98)
 
-[node name="WarningSignPlate2" type="Node3D" parent="Props" unique_id=2120859577 instance=ExtResource("10_y8g4e")]
+[node name="WarningSignPlate2" type="Node3D" parent="Props" unique_id=911201246 instance=ExtResource("10_334gh")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 1.7, -5.97)
 
-[node name="BenchSeating" type="Node3D" parent="Props" unique_id=1923913865 instance=ExtResource("19_1wowk")]
+[node name="BenchSeating" type="Node3D" parent="Props" unique_id=814462839 instance=ExtResource("19_df5w3")]
 transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -7.3, 0, 2)
 
-[node name="BenchSeating2" type="Node3D" parent="Props" unique_id=1067147056 instance=ExtResource("19_1wowk")]
+[node name="BenchSeating2" type="Node3D" parent="Props" unique_id=785828842 instance=ExtResource("19_df5w3")]
 transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -7.3, 0, -1.5)
 
-[node name="BenchSeating3" type="Node3D" parent="Props" unique_id=1774458133 instance=ExtResource("19_1wowk")]
+[node name="BenchSeating3" type="Node3D" parent="Props" unique_id=1598231324 instance=ExtResource("19_df5w3")]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 7.3, 0, 1)
 
-[node name="FilingCabinet" type="Node3D" parent="Props" unique_id=823191535 instance=ExtResource("20_dnt85")]
+[node name="FilingCabinet" type="Node3D" parent="Props" unique_id=1219730718 instance=ExtResource("20_frpjb")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 6, 0, -5.6)
 
-[node name="FilingCabinet2" type="Node3D" parent="Props" unique_id=1547309597 instance=ExtResource("20_dnt85")]
+[node name="FilingCabinet2" type="Node3D" parent="Props" unique_id=1766575325 instance=ExtResource("20_frpjb")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 6.6, 0, -5.6)
 
-[node name="StorageCabinet" type="Node3D" parent="Props" unique_id=1419874528 instance=ExtResource("21_t8e1y")]
+[node name="StorageCabinet" type="Node3D" parent="Props" unique_id=1550270702 instance=ExtResource("21_8xn05")]
 transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -7.6, 0, -4.8)
 
-[node name="PapersScattered2" type="Node3D" parent="Props" unique_id=380790322 instance=ExtResource("9_y4w4e")]
+[node name="PapersScattered2" type="Node3D" parent="Props" unique_id=1017990481 instance=ExtResource("9_mtihq")]
 transform = Transform3D(0.95533645, 0, 0.29552022, 0, 1, 0, -0.29552022, 0, 0.95533645, 2.5, 0, 1.5)
 
-[node name="PapersScattered3" type="Node3D" parent="Props" unique_id=943953347 instance=ExtResource("9_y4w4e")]
+[node name="PapersScattered3" type="Node3D" parent="Props" unique_id=246146240 instance=ExtResource("9_mtihq")]
 transform = Transform3D(-0.41614676, 0, 0.9092974, 0, 1, 0, -0.9092974, 0, -0.41614676, -2, 0, -2.5)
 
-[node name="BloodTrail" type="Node3D" parent="Props" unique_id=1880391188 instance=ExtResource("22_bun1t")]
+[node name="BloodTrail" type="Node3D" parent="Props" unique_id=1038069133 instance=ExtResource("22_tr5vj")]
 transform = Transform3D(0.9887711, 0, 0.14943813, 0, 1, 0, -0.14943813, 0, 0.9887711, 0.8, 0, -4)
 
-[node name="ChemBarrel2" type="Node3D" parent="Props" unique_id=1032845326 instance=ExtResource("6_sbxq8")]
+[node name="ChemBarrel2" type="Node3D" parent="Props" unique_id=1353067040 instance=ExtResource("6_y8g4e")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.8, 0, 4.8)
 
-[node name="OfficeDesk" type="Node3D" parent="Props" unique_id=2087311728 instance=ExtResource("23_df5w3")]
+[node name="OfficeDesk" type="Node3D" parent="Props" unique_id=857760374 instance=ExtResource("23_rdtpu")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 5.6, 0, -3.6)
 
-[node name="ComputerTerminal" type="Node3D" parent="Props" unique_id=1974752722 instance=ExtResource("24_frpjb")]
+[node name="ComputerTerminal" type="Node3D" parent="Props" unique_id=1749731096 instance=ExtResource("24_6mocw")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 5.3, 0.76, -3.6)
 
-[node name="PhotoFrame" type="Node3D" parent="Props" unique_id=802859396 instance=ExtResource("25_8xn05")]
+[node name="PhotoFrame" type="Node3D" parent="Props" unique_id=1494783019 instance=ExtResource("25_p1qbp")]
 transform = Transform3D(-0.95533645, 0, -0.29552025, 0, 1, 0, 0.29552025, 0, -0.95533645, 6.1, 0.76, -3.5)
 
-[node name="HangingLightBroken2" type="Node3D" parent="Props" unique_id=160973184 instance=ExtResource("11_o1vl3")]
+[node name="HangingLightBroken2" type="Node3D" parent="Props" unique_id=729150208 instance=ExtResource("11_3s3h4")]
 transform = Transform3D(0.97004735, 0, -0.24291593, 0, 1, 0, 0.24291593, 0, 0.97004735, -10.225, 3.2, -1.8)
 
-[node name="OfficeDesk2" type="Node3D" parent="Props" unique_id=1368519325 instance=ExtResource("23_df5w3")]
+[node name="OfficeDesk2" type="Node3D" parent="Props" unique_id=1118344310 instance=ExtResource("23_rdtpu")]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -12, 0, 1)
 
-[node name="ComputerTerminal2" type="Node3D" parent="Props" unique_id=247605929 instance=ExtResource("24_frpjb")]
+[node name="ComputerTerminal2" type="Node3D" parent="Props" unique_id=1689425454 instance=ExtResource("24_6mocw")]
 transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -15.55, 0.92, 4.6)
 
-[node name="ComputerTerminal3" type="Node3D" parent="Props" unique_id=338914497 instance=ExtResource("24_frpjb")]
+[node name="ComputerTerminal3" type="Node3D" parent="Props" unique_id=479978976 instance=ExtResource("24_6mocw")]
 transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -15.55, 0.92, 3.7)
 
-[node name="ComputerTerminal4" type="Node3D" parent="Props" unique_id=1749782410 instance=ExtResource("24_frpjb")]
+[node name="ComputerTerminal4" type="Node3D" parent="Props" unique_id=1308339756 instance=ExtResource("24_6mocw")]
 transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -15.55, 0.92, 2.8)
 
-[node name="ComputerTerminal5" type="Node3D" parent="Props" unique_id=402367421 instance=ExtResource("24_frpjb")]
+[node name="ComputerTerminal5" type="Node3D" parent="Props" unique_id=2047501955 instance=ExtResource("24_6mocw")]
 transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -15.55, 0.92, 1.9)
 
-[node name="LabTable" type="Node3D" parent="Props" unique_id=196746739 instance=ExtResource("26_tr5vj")]
+[node name="LabTable" type="Node3D" parent="Props" unique_id=1728505123 instance=ExtResource("26_2tjki")]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -15.3, 0, 3.2)
 
-[node name="ServerRack" type="Node3D" parent="Props" unique_id=243980865 instance=ExtResource("27_rdtpu")]
+[node name="ServerRack" type="Node3D" parent="Props" unique_id=1064590895 instance=ExtResource("27_fwnrx")]
 transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -15.6, 0, -1.8)
 
-[node name="LockerRow" type="Node3D" parent="Props" unique_id=1117141001 instance=ExtResource("28_6mocw")]
+[node name="LockerRow" type="Node3D" parent="Props" unique_id=1294253598 instance=ExtResource("28_mxn03")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -12, 0, -2.65)
 
-[node name="OfficeChair3" type="Node3D" parent="Props" unique_id=1835929102 instance=ExtResource("15_3s3h4")]
+[node name="OfficeChair3" type="Node3D" parent="Props" unique_id=898408755 instance=ExtResource("15_1wowk")]
 transform = Transform3D(0.9553365, 0.29552013, 0.00023530424, -1.4901161e-08, 0.00079631805, -0.9999997, -0.2955202, 0.95533615, 0.0007607341, -13.2, 0.25, 1.6)
 
-[node name="FilingCabinet3" type="Node3D" parent="Props" unique_id=791785433 instance=ExtResource("20_dnt85")]
+[node name="FilingCabinet3" type="Node3D" parent="Props" unique_id=2128492444 instance=ExtResource("20_frpjb")]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -8.8, 0, 5.5)
 
-[node name="PapersScattered4" type="Node3D" parent="Props" unique_id=1817561313 instance=ExtResource("9_y4w4e")]
+[node name="PapersScattered4" type="Node3D" parent="Props" unique_id=821865514 instance=ExtResource("9_mtihq")]
 transform = Transform3D(0.6967068, 0, 0.717356, 0, 1, 0, -0.717356, 0, 0.6967068, -11, 0, 3)
 
-[node name="WallBloodsmear" type="Node3D" parent="Props" unique_id=1826721335 instance=ExtResource("29_p1qbp")]
+[node name="WallBloodsmear" type="Node3D" parent="Props" unique_id=1466081279 instance=ExtResource("29_r13wy")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -10.5, 0, -2.97)
 
-[node name="Pistol" type="Node3D" parent="Props" unique_id=1604468803 instance=ExtResource("30_2tjki")]
+[node name="Pistol" type="Node3D" parent="Props" unique_id=1624889089 instance=ExtResource("30_r6smg")]
 transform = Transform3D(0.92106104, 0, 0.3894183, 0, 1, 0, -0.3894183, 0, 0.92106104, -12.3, 0.76, 0.8)
 
-[node name="Keycard" type="Node3D" parent="Props" unique_id=494564928 instance=ExtResource("31_fwnrx")]
+[node name="Keycard" type="Node3D" parent="Props" unique_id=1933609888 instance=ExtResource("31_sgt5a")]
 transform = Transform3D(0.45359606, 0, 0.8912074, 0, 1, 0, -0.8912074, 0, 0.45359606, -11.6, 0.76, 1.2)
 
-[node name="EmergencyBeacon2" type="Node3D" parent="Props" unique_id=775037815 instance=ExtResource("18_4pwf4")]
+[node name="EmergencyBeacon2" type="Node3D" parent="Props" unique_id=2118852647 instance=ExtResource("18_bun1t")]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -8.45, 2.6, -2)
 
-[node name="HangingLightBroken3" type="Node3D" parent="Props" unique_id=1323805011 instance=ExtResource("11_o1vl3")]
+[node name="HangingLightBroken3" type="Node3D" parent="Props" unique_id=815902657 instance=ExtResource("11_3s3h4")]
 transform = Transform3D(0.9997097, 0, 0.024092283, 0, 1, 0, -0.024092283, 0, 0.9997097, 13.4375, 3.2, 4.2)
 
-[node name="HangingLightBroken4" type="Node3D" parent="Props" unique_id=982308747 instance=ExtResource("11_o1vl3")]
+[node name="HangingLightBroken4" type="Node3D" parent="Props" unique_id=631874942 instance=ExtResource("11_3s3h4")]
 transform = Transform3D(0.96936566, 0, 0.2456221, 0, 1, 0, -0.2456221, 0, 0.96936566, 16.8625, 3.2, 1.2)
 
-[node name="Cubicle" type="Node3D" parent="Props" unique_id=510864578 instance=ExtResource("32_mxn03")]
+[node name="Cubicle" type="Node3D" parent="Props" unique_id=1850234523 instance=ExtResource("32_37geg")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11.5, 0, 3.6)
 
-[node name="OfficeChair4" type="Node3D" parent="Props" unique_id=2085826916 instance=ExtResource("15_3s3h4")]
+[node name="OfficeChair4" type="Node3D" parent="Props" unique_id=52359316 instance=ExtResource("15_1wowk")]
 transform = Transform3D(-0.99750483, 0, 0.07059767, 0, 1, 0, -0.07059767, 0, -0.99750483, 11.195296, 0, 3)
 
-[node name="Cubicle2" type="Node3D" parent="Props" unique_id=1824950078 instance=ExtResource("32_mxn03")]
+[node name="Cubicle2" type="Node3D" parent="Props" unique_id=256149086 instance=ExtResource("32_37geg")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15.1, 0, 3.6)
 
-[node name="OfficeChair5" type="Node3D" parent="Props" unique_id=575548300 instance=ExtResource("15_3s3h4")]
+[node name="OfficeChair5" type="Node3D" parent="Props" unique_id=710710924 instance=ExtResource("15_1wowk")]
 transform = Transform3D(-0.8940048, 0, -0.4480575, 0, 1, 0, 0.4480575, 0, -0.8940048, 14.782109, 0.25, 3)
 
-[node name="Cubicle3" type="Node3D" parent="Props" unique_id=556399447 instance=ExtResource("32_mxn03")]
+[node name="Cubicle3" type="Node3D" parent="Props" unique_id=986195756 instance=ExtResource("32_37geg")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18.7, 0, 3.6)
 
-[node name="OfficeChair6" type="Node3D" parent="Props" unique_id=1943707036 instance=ExtResource("15_3s3h4")]
+[node name="OfficeChair6" type="Node3D" parent="Props" unique_id=775156700 instance=ExtResource("15_1wowk")]
 transform = Transform3D(-0.3232435, 0, -0.9463158, 0, 1, 0, 0.9463158, 0, -0.3232435, 18.926699, 0, 3)
 
-[node name="Cubicle4" type="Node3D" parent="Props" unique_id=1753304376 instance=ExtResource("32_mxn03")]
+[node name="Cubicle4" type="Node3D" parent="Props" unique_id=2041609399 instance=ExtResource("32_37geg")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 11.5, 0, -0.8)
 
-[node name="OfficeChair7" type="Node3D" parent="Props" unique_id=713120404 instance=ExtResource("15_3s3h4")]
+[node name="OfficeChair7" type="Node3D" parent="Props" unique_id=2125495073 instance=ExtResource("15_1wowk")]
 transform = Transform3D(0.13081574, 0, 0.9914067, 0, 1, 0, -0.9914067, 0, 0.13081574, 11.700821, 0, -0.2)
 
-[node name="Cubicle5" type="Node3D" parent="Props" unique_id=1144735096 instance=ExtResource("32_mxn03")]
+[node name="Cubicle5" type="Node3D" parent="Props" unique_id=610390028 instance=ExtResource("32_37geg")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 15.1, 0, -0.8)
 
-[node name="OfficeChair8" type="Node3D" parent="Props" unique_id=1078687245 instance=ExtResource("15_3s3h4")]
+[node name="OfficeChair8" type="Node3D" parent="Props" unique_id=19797515 instance=ExtResource("15_1wowk")]
 transform = Transform3D(-0.9031851, 0, 0.42925134, 0, 1, 0, -0.42925134, 0, -0.9031851, 14.7885895, 0, -0.2)
 
-[node name="Cubicle6" type="Node3D" parent="Props" unique_id=971716216 instance=ExtResource("32_mxn03")]
+[node name="Cubicle6" type="Node3D" parent="Props" unique_id=692472547 instance=ExtResource("32_37geg")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 18.7, 0, -0.8)
 
-[node name="OfficeChair9" type="Node3D" parent="Props" unique_id=2119253375 instance=ExtResource("15_3s3h4")]
+[node name="OfficeChair9" type="Node3D" parent="Props" unique_id=243154203 instance=ExtResource("15_1wowk")]
 transform = Transform3D(0.30453312, 0.9525015, 0.0007584691, 0, 0.00079619884, -0.9999997, -0.9525018, 0.30453306, 0.0002424717, 18.848143, 0, -0.2)
 
-[node name="FilingCabinet4" type="Node3D" parent="Props" unique_id=671121453 instance=ExtResource("20_dnt85")]
+[node name="FilingCabinet4" type="Node3D" parent="Props" unique_id=2121422408 instance=ExtResource("20_frpjb")]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 21.6, 0, -4.5)
 
-[node name="FilingCabinet5" type="Node3D" parent="Props" unique_id=314977282 instance=ExtResource("20_dnt85")]
+[node name="FilingCabinet5" type="Node3D" parent="Props" unique_id=1227807682 instance=ExtResource("20_frpjb")]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 21.6, 0, -3.8)
 
-[node name="CardboardBoxes" type="Node3D" parent="Props" unique_id=1123026930 instance=ExtResource("33_r13wy")]
+[node name="CardboardBoxes" type="Node3D" parent="Props" unique_id=1349369410 instance=ExtResource("33_bqbke")]
 transform = Transform3D(0.95533645, 0, 0.29552022, 0, 1, 0, -0.29552022, 0, 0.95533645, 20.5, 0, 5.2)
 
-[node name="PapersScattered5" type="Node3D" parent="Props" unique_id=635777463 instance=ExtResource("9_y4w4e")]
+[node name="PapersScattered5" type="Node3D" parent="Props" unique_id=418141880 instance=ExtResource("9_mtihq")]
 transform = Transform3D(0.16996717, 0, 0.98544973, 0, 1, 0, -0.98544973, 0, 0.16996717, 15, 0, -0.5)
 
-[node name="PapersScattered6" type="Node3D" parent="Props" unique_id=227976718 instance=ExtResource("9_y4w4e")]
+[node name="PapersScattered6" type="Node3D" parent="Props" unique_id=1379249641 instance=ExtResource("9_mtihq")]
 transform = Transform3D(0.9800666, 0, 0.19866931, 0, 1, 0, -0.19866931, 0, 0.9800666, 18.5, 0, -1.5)
 
-[node name="VendingMachine" type="Node3D" parent="Props" unique_id=1548663512 instance=ExtResource("34_r6smg")]
+[node name="VendingMachine" type="Node3D" parent="Props" unique_id=269619728 instance=ExtResource("34_qxm6o")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 8.9, 0, -5.4)
 
-[node name="WallClock2" type="Node3D" parent="Props" unique_id=1086674279 instance=ExtResource("13_mtihq")]
+[node name="WallClock2" type="Node3D" parent="Props" unique_id=1905831606 instance=ExtResource("13_8sfex")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 15, 2.3, -5.95)
 
-[node name="BloodTrail2" type="Node3D" parent="Props" unique_id=1148414048 instance=ExtResource("22_bun1t")]
+[node name="BloodTrail2" type="Node3D" parent="Props" unique_id=1921266882 instance=ExtResource("22_tr5vj")]
 transform = Transform3D(0.36235774, 0, 0.93203914, 0, 1, 0, -0.93203914, 0, 0.36235774, 12, 0, -1)
 
-[node name="ReflectionProbes" type="Node3D" parent="." unique_id=944819840]
+[node name="ReflectionProbes" type="Node3D" parent="." unique_id=272329449]
 
-[node name="A_lobby_probe" type="ReflectionProbe" parent="ReflectionProbes" unique_id=2073415570]
+[node name="A_lobby_probe" type="ReflectionProbe" parent="ReflectionProbes" unique_id=1704449316]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.25, 0)
 size = Vector3(16.2, 4.7, 12.2)
 box_projection = true
@@ -701,7 +828,7 @@ ambient_mode = 2
 ambient_color = Color(0.05, 0.06, 0.07, 1)
 ambient_color_energy = 0.4
 
-[node name="A_security_probe" type="ReflectionProbe" parent="ReflectionProbes" unique_id=573825337]
+[node name="A_security_probe" type="ReflectionProbe" parent="ReflectionProbes" unique_id=276426076]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12.15, 1.6, 1.5)
 size = Vector3(7.8999996, 3.4, 9.2)
 box_projection = true
@@ -710,7 +837,7 @@ ambient_mode = 2
 ambient_color = Color(0.05, 0.06, 0.07, 1)
 ambient_color_energy = 0.4
 
-[node name="A_admin_probe" type="ReflectionProbe" parent="ReflectionProbes" unique_id=1360558227]
+[node name="A_admin_probe" type="ReflectionProbe" parent="ReflectionProbes" unique_id=446573059]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15.15, 1.6, 0)
 size = Vector3(13.9, 3.4, 12.2)
 box_projection = true
@@ -719,11 +846,11 @@ ambient_mode = 2
 ambient_color = Color(0.05, 0.06, 0.07, 1)
 ambient_color_energy = 0.4
 
-[node name="FogVolumes" type="Node3D" parent="." unique_id=902595625]
+[node name="FogVolumes" type="Node3D" parent="." unique_id=1886782179]
 
-[node name="A_outside_ambience" type="AudioStreamPlayer3D" parent="FogVolumes" unique_id=966360601]
+[node name="A_outside_ambience" type="AudioStreamPlayer3D" parent="FogVolumes" unique_id=440749893]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6, 15.15)
-stream = ExtResource("35_sgt5a")
+stream = ExtResource("35_3jx2u")
 volume_db = -4.0
 unit_size = 19.243765
 autoplay = true
@@ -731,14 +858,14 @@ max_distance = 25.243765
 bus = &"Ambience"
 attenuation_filter_cutoff_hz = 6000.0
 
-[node name="A_outside_fog" type="FogVolume" parent="FogVolumes" unique_id=1585581848]
+[node name="A_outside_fog" type="FogVolume" parent="FogVolumes" unique_id=1808314040]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6, 15.15)
 size = Vector3(32, 12, 17.7)
-material = ExtResource("36_37geg")
+material = ExtResource("36_a0ejt")
 
-[node name="A_lobby_ambience" type="AudioStreamPlayer3D" parent="FogVolumes" unique_id=1876385737]
+[node name="A_lobby_ambience" type="AudioStreamPlayer3D" parent="FogVolumes" unique_id=280975363]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.25, 0)
-stream = ExtResource("37_bqbke")
+stream = ExtResource("37_3e55o")
 volume_db = -4.0
 unit_size = 10.25
 autoplay = true
@@ -746,9 +873,27 @@ max_distance = 16.25
 bus = &"Ambience"
 attenuation_filter_cutoff_hz = 6000.0
 
-[node name="A_security_ambience" type="AudioStreamPlayer3D" parent="FogVolumes" unique_id=464477679]
+[node name="A_lobby_dust" type="GPUParticles3D" parent="FogVolumes" unique_id=1474150582]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.25, 0)
+cast_shadow = 0
+amount = 110
+lifetime = 18.0
+preprocess = 18.0
+randomness = 1.0
+fixed_fps = 15
+visibility_aabb = AABB(-8, -2.25, -6, 16, 4.5, 12)
+process_material = SubResource("ParticleProcessMaterial_hiwq0")
+draw_pass_1 = ExtResource("38_rujgf")
+script = ExtResource("39_ore8y")
+
+[node name="A_lobby_fog" type="FogVolume" parent="FogVolumes" unique_id=1606170506]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.2625, 0)
+size = Vector3(16, 2.475, 12)
+material = ExtResource("40_81m7y")
+
+[node name="A_security_ambience" type="AudioStreamPlayer3D" parent="FogVolumes" unique_id=1044178803]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12.15, 1.6, 1.5)
-stream = ExtResource("38_qxm6o")
+stream = ExtResource("41_qnrjv")
 volume_db = -4.0
 unit_size = 6.1345334
 autoplay = true
@@ -756,12 +901,48 @@ max_distance = 12.134533
 bus = &"Ambience"
 attenuation_filter_cutoff_hz = 6000.0
 
-[node name="A_admin_ambience" type="AudioStreamPlayer3D" parent="FogVolumes" unique_id=1628052019]
+[node name="A_security_dust" type="GPUParticles3D" parent="FogVolumes" unique_id=655235530]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12.15, 1.6, 1.5)
+cast_shadow = 0
+amount = 62
+lifetime = 18.0
+preprocess = 18.0
+randomness = 1.0
+fixed_fps = 15
+visibility_aabb = AABB(-3.85, -1.6, -4.5, 7.7, 3.2, 9)
+process_material = SubResource("ParticleProcessMaterial_4ji2i")
+draw_pass_1 = ExtResource("38_rujgf")
+script = ExtResource("39_ore8y")
+
+[node name="A_security_fog" type="FogVolume" parent="FogVolumes" unique_id=2075855959]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12.15, 2.3200002, 1.5)
+size = Vector3(7.7, 1.76, 9)
+material = ExtResource("42_x6xnr")
+
+[node name="A_admin_ambience" type="AudioStreamPlayer3D" parent="FogVolumes" unique_id=535744095]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15.15, 1.6, 0)
-stream = ExtResource("37_bqbke")
+stream = ExtResource("37_3e55o")
 volume_db = -4.0
 unit_size = 9.245674
 autoplay = true
 max_distance = 15.245674
 bus = &"Ambience"
 attenuation_filter_cutoff_hz = 6000.0
+
+[node name="A_admin_dust" type="GPUParticles3D" parent="FogVolumes" unique_id=1320164007]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15.15, 1.6, 0)
+cast_shadow = 0
+amount = 110
+lifetime = 18.0
+preprocess = 18.0
+randomness = 1.0
+fixed_fps = 15
+visibility_aabb = AABB(-6.85, -1.6, -6, 13.7, 3.2, 12)
+process_material = SubResource("ParticleProcessMaterial_wujx8")
+draw_pass_1 = ExtResource("38_rujgf")
+script = ExtResource("39_ore8y")
+
+[node name="A_admin_fog" type="FogVolume" parent="FogVolumes" unique_id=958553]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15.15, 2.3200002, 0)
+size = Vector3(13.7, 1.76, 12)
+material = ExtResource("40_81m7y")

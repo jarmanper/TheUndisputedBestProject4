@@ -349,6 +349,99 @@ def wall_trim(R, axis, line, a0, a1, inward):
         strip(1.6, 1.75, 0.03, "hazard")
     elif R.style == "chamber":
         strip(0.0, 2.4, t, band_mat)
+    wall_services(R, axis, line, a0, a1, inward)
+
+
+def wall_services(R, axis, line, a0, a1, inward):
+    """Conduit, ribs, junction boxes and vents on a finished wall face.
+
+    The big wall planes used to be bare between the dado rail and the ceiling.
+    A real facility interior is dense with silhouette detail along the
+    wall/ceiling junction and at regular vertical intervals, and that reads far
+    more strongly than any texture can.
+
+    Everything built here is DETAIL (structural=False), so it carries no
+    collision at all -- nothing here can become an invisible obstacle. The
+    deepest thing that sticks out is a 9 cm rib, flush enough to slide along.
+
+    Positions are on a facility-wide grid rather than relative to each wall run,
+    so ribs line up across doorways and around corners instead of bunching up.
+    """
+    if R.stairs or R.style not in ("lab", "lobby", "industrial", "chamber"):
+        return
+    length = a1 - a0
+    if length < 1.3:
+        return
+    ceil = R.floor + R.h
+    rnd = random.Random((R.id * 7919) ^ (int(line * 10) * 31) ^ int(a0 * 10) ^ (0 if axis == "x" else 7))
+
+    def pt(along, out, z):
+        if axis == "x":
+            return (line + inward * out, along, z)
+        return (along, line + inward * out, z)
+
+    def blk(along, out, z, s_along, s_out, s_z, mat, name="svc", bev=0.0):
+        size = (s_out, s_along, s_z) if axis == "x" else (s_along, s_out, s_z)
+        put(R.area, box(name, size, pt(along, out, z), mat, bevel=bev), structural=False)
+
+    def conduit(out, z, r, mat, pad=0.03):
+        put(R.area, tube("conduit", [pt(a0 + pad, out, z), pt(a1 - pad, out, z)], r, mat, 6),
+            structural=False)
+
+    def grid(spacing, pad):
+        """World-grid positions along this wall run."""
+        k = math.ceil((a0 + pad) / spacing)
+        while k * spacing <= a1 - pad:
+            yield k * spacing
+            k += 1
+
+    if R.style in ("lab", "lobby"):
+        # --- angle trim where the wall meets the ceiling
+        blk((a0 + a1) / 2, 0.055, ceil - 0.06, length, 0.11, 0.12, "painted_metal", "cornice")
+        blk((a0 + a1) / 2, 0.02, ceil - 0.16, length, 0.04, 0.08, "steel", "cornice_lip")
+        # --- surface conduit pair just under it, with saddle clips
+        z_big, z_small = ceil - 0.34, ceil - 0.46
+        conduit(0.05, z_big, 0.035, "painted_metal")
+        conduit(0.04, z_small, 0.022, "steel")
+        for a in grid(2.2, 0.35):
+            blk(a, 0.05, z_big, 0.06, 0.12, 0.1, "steel", "clip")
+        # --- shallow pilasters: the main silhouette break
+        for a in grid(3.6, 0.55):
+            blk(a, 0.045, R.floor + R.h / 2, 0.34, 0.09, R.h, "wall_panel", "pilaster")
+            blk(a, 0.055, R.floor + 0.09, 0.38, 0.11, 0.18, "painted_metal", "pilaster_shoe")
+        # --- junction boxes with a drop from the conduit, and the odd vent
+        for a in grid(5.4, 0.8):
+            if rnd.random() < 0.75:
+                blk(a, 0.06, 1.95, 0.2, 0.12, 0.26, "painted_metal", "jbox")
+                put(R.area, tube("drop", [pt(a, 0.05, z_big), pt(a, 0.05, 2.08)], 0.018, "steel", 6),
+                    structural=False)
+            else:
+                wall_vent(blk, a, min(ceil - 0.95, 2.45))
+
+    elif R.style in ("industrial", "chamber"):
+        band_top = 1.75 if R.style == "industrial" else 2.4
+        # --- structural ribs, full height
+        for a in grid(4.2, 0.7):
+            blk(a, 0.07, R.floor + R.h / 2, 0.5, 0.14, R.h, "concrete", "rib")
+        # --- cable tray + conduit bundle above head height
+        z_tray = min(R.floor + 3.3, ceil - 0.5)
+        blk((a0 + a1) / 2, 0.18, z_tray - 0.06, length, 0.36, 0.03, "steel", "tray")
+        blk((a0 + a1) / 2, 0.355, z_tray + 0.02, length, 0.03, 0.14, "steel", "tray_side")
+        blk((a0 + a1) / 2, 0.015, z_tray + 0.02, length, 0.03, 0.14, "steel", "tray_side")
+        for a in grid(2.4, 0.4):
+            blk(a, 0.19, z_tray + 0.14, 0.05, 0.4, 0.05, "steel", "tray_rung")
+        conduit(0.06, band_top + 0.55, 0.05, "rust")
+        conduit(0.05, band_top + 0.42, 0.03, "painted_metal")
+        for a in grid(6.0, 1.0):
+            if rnd.random() < 0.6:
+                blk(a, 0.08, band_top + 0.9, 0.26, 0.16, 0.34, "painted_metal", "jbox")
+
+
+def wall_vent(blk, along, z):
+    """Louvered extract grille, flush to the wall."""
+    blk(along, 0.03, z, 0.52, 0.06, 0.36, "steel", "vent_frame")
+    for k in range(4):
+        blk(along, 0.055, z - 0.12 + k * 0.08, 0.44, 0.035, 0.035, "painted_white", "vent_slat")
 
 
 def greedy_rects(mask):
@@ -602,7 +695,10 @@ def ceiling_lights(area, rect, z_ceiling, spacing=(3.0, 2.4), seed=0, broken=0.2
                 structural=False)
             if lit:
                 flick = 0.0 if rnd.random() > broken else rnd.uniform(0.3, 0.9)
-                L(area, "fluor", (x, y, z_ceiling - 0.35), flicker=flick)
+                # Sits just under the diffuser, not 35 cm below it: the light is
+                # now a downward spot, and the cone has to start at the fixture
+                # or the shaft looks detached from it in the fog.
+                L(area, "fluor", (x, y, z_ceiling - 0.14), flicker=flick)
 
 
 def ceiling_vent(area, x, y, z):
