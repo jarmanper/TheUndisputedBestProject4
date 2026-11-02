@@ -11,15 +11,18 @@ extends Control
 const SETTINGS_PATH := "user://settings.cfg"
 const BASE_SENSITIVITY := 0.0022  # player.gd default mouse_sensitivity
 
-## The whole control set. The HUD meters sit in this same order, top to
-## bottom, so the colours on screen never need a label to explain them.
+## Key bindings only. The assignment exempts "a controls screen listing key
+## bindings" from the 150-word cap, so this stays a list of bindings and nothing
+## else - each mechanic's rules and numbers live in the design docs, not on
+## screen. The HUD meters sit in this same order, top to bottom, so the colours
+## never need a label either.
 const CONTROLS := [
 	["WASD", "Move"],
 	["Mouse", "Look"],
-	["Left mouse", "Combat  -  20 damage within 3 m"],
-	["Q", "Marking  -  mark one target within 15 m"],
-	["E", "Suspend  -  freeze it, longer if marked"],
-	["R", "Explosion  -  detonate the marked target"],
+	["Left mouse", "Combat"],
+	["Q", "Marking"],
+	["E", "Suspend"],
+	["R", "Explosion"],
 	["Esc", "Pause"],
 ]
 

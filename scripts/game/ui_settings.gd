@@ -87,18 +87,24 @@ static func apply_quality(tree: SceneTree, level: int) -> void:
 				vp.use_debanding = false
 			Quality.MEDIUM:
 				vp.msaa_3d = Viewport.MSAA_2X
-				vp.use_taa = true
+				vp.use_taa = not TimbukCompat.is_compatibility()
 				vp.screen_space_aa = Viewport.SCREEN_SPACE_AA_DISABLED
 				vp.anisotropic_filtering_level = Viewport.ANISOTROPY_8X
 				vp.positional_shadow_atlas_size = 4096
 				vp.use_debanding = true
 			_:
 				vp.msaa_3d = Viewport.MSAA_4X
-				vp.use_taa = true
+				vp.use_taa = not TimbukCompat.is_compatibility()
 				vp.screen_space_aa = Viewport.SCREEN_SPACE_AA_DISABLED
 				vp.anisotropic_filtering_level = Viewport.ANISOTROPY_16X
 				vp.positional_shadow_atlas_size = 8192
 				vp.use_debanding = true
+
+	# Everything below this point is Forward+ only. On Compatibility - which is
+	# what this project and the web build now run - these calls do nothing except
+	# print an unsupported-feature warning on every settings change.
+	if TimbukCompat.is_compatibility():
+		return
 
 	var shadow: int = [RenderingServer.SHADOW_QUALITY_HARD,
 		RenderingServer.SHADOW_QUALITY_SOFT_LOW,

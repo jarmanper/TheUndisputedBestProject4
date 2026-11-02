@@ -1,2 +1,9 @@
 # Normalize EOL for all files that Git considers text files.
 * text=auto eol=lf
+
+# The web export is committed to docs/ because Pages serves main /docs, and
+# these must never go through newline conversion - it would corrupt them
+# outright. Godot's .blend sources are binary for the same reason.
+*.pck   binary
+*.wasm  binary
+*.blend binary

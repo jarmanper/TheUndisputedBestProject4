@@ -43,7 +43,7 @@ monitorable = false
 script = ExtResource("1_story")
 trigger_id = "intro"
 lines = Array[String](["Mom: If you're hearing this, we never left Timbuk.", "Me: Mom? Twelve years. I'm coming down."])
-objective = "Find Mom's keycard"
+objective = "Go deeper"
 requires_flag = ""
 sets_flag = ""
 
@@ -55,7 +55,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12.15, 1.5, 1.5)
 monitorable = false
 script = ExtResource("1_story")
 trigger_id = "security"
-objective = "Restore power"
+objective = "Find them"
 requires_flag = ""
 sets_flag = ""
 
@@ -143,7 +143,7 @@ monitorable = false
 script = ExtResource("1_story")
 trigger_id = "generator"
 lines = Array[String](["Mom: We kept him in the chamber below. Forgive us."])
-objective = "Open the chamber"
+objective = "Reach the chamber"
 requires_flag = "has_keycard"
 sets_flag = ""
 

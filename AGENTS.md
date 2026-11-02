@@ -95,6 +95,14 @@ recordings she left for her child, which also serves the "Found" theme; the
 Twin's chamber carries the twist and the ending screen the reconciliation.
 Section 4 is deliberately unchanged — it is the record of what was emailed.
 
+**The assignment's own rule (Nov 2, quoted).** "The whole game shows at most 150
+words of text. Words on signs and objects in the world count, and so do spoken
+words, labels on the screen, and win or lose screens. The game's name, menu
+buttons, and a controls screen listing key bindings do not count. Over 150 words
+caps game execution at 10 of 20." So **on-screen labels and the win/lose screens
+count** - the earlier reading in this section, which treated all HUD and screen
+text as exempt "chrome", was wrong and is corrected below.
+
 **Counting rule.** One word per whitespace-separated token that contains a letter
 or digit. Hyphenated compounds, numbers and "TIMBUK" are one word each. Bare
 punctuation ("...", "???") is zero. A string shown in more than one place is
@@ -106,14 +114,14 @@ counted once. Speaker nameplates are counted once per distinct speaker.
 | --- | --- | --- | --- |
 | Mom: "If you're hearing this, we never left Timbuk." | Trigger dialogue (premise) | `scenes/game/story_layer.tscn:45` | 8 |
 | Me: "Mom? Twelve years. I'm coming down." | Trigger dialogue (premise) | `story_layer.tscn:45` | 6 |
-| "Find Mom's keycard" | Objective | `story_layer.tscn:46` | 3 |
-| "Restore power" | Objective | `story_layer.tscn:58` | 2 |
+| "Go deeper" | Objective | `story_layer.tscn:46` | 2 |
+| "Find them" | Objective | `story_layer.tscn:58` | 2 |
 | Mom: "Subject Two's heart is a clock. He asks for his brother." | Trigger dialogue (development) | `story_layer.tscn:82` | 11 |
 | Me: "What brother?" | Trigger dialogue | `story_layer.tscn:82` | 2 |
 | ???: "Tick... tock... where are you, brother?" | Trigger dialogue | `story_layer.tscn:95` | 6 |
 | Mom: "Containment failed. Your father went down to him." | Trigger dialogue (development) | `story_layer.tscn:120` | 8 |
 | Mom: "We kept him in the chamber below. Forgive us." | Trigger dialogue (development) | `story_layer.tscn:145` | 9 |
-| "Open the chamber" | Objective | `story_layer.tscn:146` | 3 |
+| "Reach the chamber" | Objective | `story_layer.tscn:146` | 3 |
 | Me: "They raised him in here." | Trigger dialogue | `story_layer.tscn:158` | 5 |
 | Twin: "They made me. They kept me. You they let live." | Final encounter (the twist) | `story_layer.tscn:171` | 10 |
 | Me: "Where are our parents?" | Final encounter | `story_layer.tscn:171` | 4 |
@@ -128,10 +136,14 @@ counted once. Speaker nameplates are counted once per distinct speaker.
 | "THE CLOCK IS QUIET" / "Mom. Dad. My brother." | Ending screen (reconciliation) | `scripts/ui/dialogue_box.gd:136-137` | 8 |
 | "where are you", "mother" | Creature speech (failed patients) | `source/audio/voice_lines.txt:19-20` | 4 |
 | "brother", "tick tock", "you left me here" | Creature speech (the Twin) | `source/audio/voice_lines.txt:21-23` | 7 |
-| **Total as built** | | | **115** |
+| "OBJECTIVE" header, "[Space]" hint | On-screen labels (the assignment counts these) | `scripts/ui/dialogue_box.gd` | 2 |
+| **Total as built** | | | **116** |
 
-**115 / 150. 35 words of headroom.** Verified by parsing the files above, not by
-re-reading this table.
+**116 / 150. 34 words of headroom.** Verified by parsing the files above, not by
+re-reading this table. The three objectives changed on Nov 2 because two of them
+asked for things the player can no longer do - "Find Mom's keycard" and "Restore
+power" were impossible once the interact action went, and the chamber they used
+to unlock is open from the start.
 
 **Why it dropped from 129 (Nov 2).** Team 3's rules allow no interact action, so
 the prompt the HUD used to draw over a prop is gone and with it the only way
@@ -161,13 +173,16 @@ and `ui_settings.gd:20`, 11); and the `OBJECTIVE` header, the `[Space]` hint and
 the end-screen buttons (`Retry`, `Play again`, `Return to title` —
 `scripts/ui/dialogue_box.gd`, 8). The title screen is exempt by rule 4.
 
-**The strict reading now passes too: 115 + 25 = 140 / 150.** It used to be 182,
-which would have failed if a grader counted chrome, and section 4.5 flagged that
-as needing cuts in `hud.gd`. Those cuts happened on Nov 2 for a different
-reason - section 6 and Team 3 both require a wordless HUD - so the ammo counter,
-`HEALTH` label and the `MARKS`/`SUSPEND`/`CHARGES` status lines were replaced by
-four unlabelled cooldown meters, and the `[E]` prompts went with the interact
-action. Nothing on the HUD is a word any more.
+**Worst case, if a grader also counts every menu word: 116 + 23 = 139 / 150.**
+It used to be 182, which would have failed. Two things fixed that, both on Nov 2:
+the HUD became wordless (the ammo counter, `HEALTH` label and the
+`MARKS`/`SUSPEND`/`CHARGES` status lines are now four unlabelled cooldown
+meters, and the `[E]` prompts went with the interact action), and the controls
+screen was trimmed back to **key bindings only**. That second one matters: it had
+briefly carried each mechanic's rules and numbers, roughly 20 extra words, which
+would have put the worst case at about 160 and forfeited the exemption for "a
+controls screen listing key bindings". Nothing on the HUD is a word any more -
+including the new row of target marks, which is deliberately wordless.
 
 **Not words, by our reading:** the only text baked into a texture is the Roman
 numeral ring on clock faces, the Twin's head and the suspend effect

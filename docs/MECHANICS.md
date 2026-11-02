@@ -62,11 +62,16 @@ orange blast and scorch decal, camera shake, footsteps and head bob.
 ## The web build
 
 The browser build never loaded for either Oct 28 playtester. The cause was the
-renderer: the project runs **Forward+**, and WebGL 2 can only run
+renderer: the project ran **Forward+**, and WebGL 2 can only run
 **Compatibility**. Nothing in the export settings could have fixed that.
 
-- `project.godot` now carries `renderer/rendering_method.web="gl_compatibility"`,
-  plus web overrides that switch off TAA and MSAA and shrink the shadow atlas.
+- `project.godot` now runs **`gl_compatibility` everywhere**, not just on the
+  web. The assignment says to set the renderer to Compatibility before building
+  anything, and the graded artifact *is* the web build - so a Forward+ desktop
+  look is one no grader ever sees, and tuning the art against it would be wasted
+  work. Same renderer locally means what we tune is what ships. TAA is off
+  (it does not exist in Compatibility) and `ui_settings.gd` skips its Forward+
+  only calls instead of warning on every settings change.
 - `scripts/visual/compat.gd` (`TimbukCompat.adapt`) runs before the first frame
   and detaches what Compatibility cannot draw: all **52 FogVolumes** across the
   eight area scenes (Compatibility cannot compile `FogMaterial` at all - it is a
@@ -115,11 +120,20 @@ These are automated checks and a produced build, not human playtest results.
 "the web build loads" is not yet proven - only that the cause of the hang is
 removed and the game runs on the renderer the browser uses.
 
-**The deployed Pages build does not have this fix yet.** The workflow in
-`.github/workflows/deploy-pages.yml` only runs on a push to `main`, and this
-work is on `visual-rehaul`, so what a grader loads today is still the Forward+
-build that would not start. Either merge to `main` or run the workflow manually
-against this branch (`gh workflow run deploy-pages.yml --ref visual-rehaul`).
+**Where the live link comes from.** The assignment requires the export to be
+committed at `docs/index.html`, with an empty `docs/.gdignore` beside it, and
+Pages served from `main` / `/docs`. The Web preset now exports there, and
+`tools/web_export.sh docs/index.html` is what builds it (512 px textures, no
+mesh LODs - the desktop asset set is far too big for a browser and would also
+blow past GitHub's 100 MB per-file limit). `.github/workflows/deploy-pages.yml`
+no longer deploys on push: a Pages site has one source, and it would fight the
+`/docs` source for it.
+
+Two consequences to act on:
+- **Re-export after every change.** The live link plays the last committed
+  export, not the latest code.
+- **This work is on `visual-rehaul`.** Pages serves `main`, so none of it is
+  live until the branch is merged.
 
 Still needing a human: loading the deployed build in a browser, and walking the
 route from the entrance to the Twin. No automated check here proves the facility

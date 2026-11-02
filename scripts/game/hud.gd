@@ -35,6 +35,9 @@ var _health_bar: ProgressBar
 var _health_lag: ProgressBar
 var _health_label: Label
 var _ability_bars := {}
+var _pips: Array[ColorRect] = []
+var _pip_row: HBoxContainer
+var _pips_total := 0
 var _vignette: TextureRect
 var _hurt := 0.0
 var _shown_health := -1.0
@@ -174,6 +177,11 @@ func _build_abilities() -> void:
 	box.add_theme_constant_override("separation", 6)
 	box.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_root.add_child(box)
+	_pip_row = HBoxContainer.new()
+	_pip_row.alignment = BoxContainer.ALIGNMENT_END
+	_pip_row.add_theme_constant_override("separation", 4)
+	_pip_row.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	box.add_child(_pip_row)
 	for name in ABILITY_ORDER:
 		var stack := Control.new()
 		stack.custom_minimum_size = Vector2(192, 10)
@@ -315,6 +323,7 @@ func _process(delta: float) -> void:
 	_root.visible = not _pause.visible and not (over and player.dead)
 	_update_health(delta)
 	_update_abilities()
+	_update_pips()
 	_cross.highlight = _has_target()
 	_cross.visible = not over
 
@@ -354,6 +363,30 @@ func _update_health(delta: float) -> void:
 	if frac < 0.35 and hp > 0.0:
 		low = (0.35 - frac) / 0.35 * (0.45 + 0.15 * sin(Time.get_ticks_msec() * 0.006))
 	_vignette.modulate.a = clampf(maxf(_hurt * 0.85, low), 0.0, 1.0)
+
+
+## One mark per required target, so the player can see that the level ends when
+## the last of them is gone and not when the Twin alone is. Wordless on purpose:
+## the 150-word cap counts labels on the screen, and this needs no label.
+func _update_pips() -> void:
+	var targets := get_tree().get_nodes_in_group("enemy")
+	if _pips_total == 0:
+		if targets.is_empty():
+			return  # the enemies join the group after the HUD is ready
+		_pips_total = targets.size()
+		for i in _pips_total:
+			var pip := ColorRect.new()
+			pip.custom_minimum_size = Vector2(10, 10)
+			pip.mouse_filter = Control.MOUSE_FILTER_IGNORE
+			_pip_row.add_child(pip)
+			_pips.append(pip)
+	var alive := 0
+	for t in targets:
+		if is_instance_valid(t) and not t.is_dead():
+			alive += 1
+	for i in _pips.size():
+		var lit := i < alive
+		_pips[i].color = Color(0.82, 0.22, 0.18, 0.95) if lit else Color(1, 1, 1, 0.12)
 
 
 ## Each meter reads 1.0 when the ability is ready. Marking also shows how much

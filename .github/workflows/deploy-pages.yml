@@ -1,8 +1,11 @@
 name: Deploy to GitHub Pages
 
+# The assignment requires Pages to be served from `main` / `/docs`, and a Pages
+# site has exactly one source - so this workflow must NOT also deploy on every
+# push, or it fights the /docs source for it. The graded export is committed to
+# docs/ by hand (tools/web_export.sh docs/index.html). Kept runnable by hand so
+# the build can still be checked in CI without touching the live site.
 on:
-  push:
-    branches: [main]
   workflow_dispatch:
     inputs:
       texture_limit:
