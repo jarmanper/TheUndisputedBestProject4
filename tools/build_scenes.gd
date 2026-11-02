@@ -675,7 +675,9 @@ func build_reveal(twin_scene: String) -> void:
 	twin.set("desync", false)
 	root.add_child(twin)
 	# face key light + soft fill so the face always reads (never lost in darkness)
-	var face_c := bpos(Vector3(14.7, 106.65, -3.22))
+	# The Twin's head sits 13 cm higher since the v3 rebuild; the old -3.22
+	# cropped his clock face out of the top of the reveal shots.
+	var face_c := bpos(Vector3(14.7, 106.65, -3.10))
 	var key := SpotLight3D.new()
 	key.name = "FaceKey"
 	key.light_color = Color(1.0, 0.88, 0.75)
