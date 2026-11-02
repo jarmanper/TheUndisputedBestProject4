@@ -1,4 +1,4 @@
-[gd_scene load_steps=4 format=3]
+[gd_scene load_steps=7 format=3]
 
 ; Wordless story dressing for the opening area (Area A entrance).
 ;
@@ -17,6 +17,9 @@
 [ext_resource type="PackedScene" path="res://scenes/props/locker_row.tscn" id="locker"]
 [ext_resource type="PackedScene" path="res://scenes/props/teddy_bear.tscn" id="teddy"]
 [ext_resource type="PackedScene" path="res://scenes/props/grandfather_clock.tscn" id="clock"]
+[ext_resource type="PackedScene" path="res://scenes/props/photo_frame.tscn" id="photo"]
+[ext_resource type="Script" path="res://scripts/visual/prop_retint.gd" id="retint"]
+[ext_resource type="Material" path="res://assets/materials/photo_family.tres" id="photo_family_mat"]
 
 [node name="EntranceDressing" type="Node3D"]
 
@@ -43,6 +46,30 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.44, 0.47, -4.9)
 
 [node name="BearRight" parent="StaffLockers" instance=ExtResource("teddy")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.1, 0.47, -4.9)
+
+; --- Whose children they were ---------------------------------------------
+; A desk photograph standing on the same bench, beside the two bears: two
+; adults and two identical boys. The bears say "two children lived here";
+; the photograph says who they belonged to, and that there were two of them,
+; without a word. It sits in the same warm pool of light, turned about 29
+; degrees toward the walking route so a player coming from the security desk
+; sees its face rather than its edge. Scaled 1.5 (0.30 x 0.38 m, a big desk
+; portrait) because at the prop's authored 0.20 m it was 22 pixels wide from
+; the bench marker and the four figures could not be made out. Scenery only:
+; no collision (the prop is built collide=False), no interact prompt, no
+; pickup -- testers already pressed E on scenery and got nothing.
+;
+; THIS frame is the only one in the game that shows the family. The prop
+; itself ships with an anonymous two-colleague print (photo_staff), because
+; build_facility stands the same frame on seven desks across the facility and
+; the player's own family cannot be sitting on all of them. prop_retint swaps
+; surface 1 -- the print; surface 0 is the wooden frame and stand -- on this
+; instance only, without touching the generated prop scene.
+[node name="FamilyPhoto" parent="StaffLockers" instance=ExtResource("photo")]
+transform = Transform3D(1.31637, 0, 0.719145, 0, 1.5, 0, -0.719145, 0, 1.31637, -4.78, 0.47, -4.89)
+script = ExtResource("retint")
+surfaces = PackedInt32Array(1)
+material = ExtResource("photo_family_mat")
 
 ; --- The clock motif -----------------------------------------------------
 ; A domestic heirloom clock standing in a corporate lobby: an anomaly, a tall

@@ -4,27 +4,27 @@
 [ext_resource type="Script" path="res://scripts/visual/light_flicker.gd" id="2_0u8up"]
 [ext_resource type="AudioStream" path="res://assets/audio/sfx/alarm_beacon_loop.wav" id="3_11eyh"]
 
-[node name="BlastDoor" type="Node3D" unique_id=1788429583]
+[node name="BlastDoor" type="Node3D" unique_id=1628502826]
 
-[node name="Model" type="Node3D" parent="." unique_id=1386736192 instance=ExtResource("1_gg51j")]
+[node name="Model" type="Node3D" parent="." unique_id=1339628210 instance=ExtResource("1_gg51j")]
 
-[node name="Lights" type="Node3D" parent="." unique_id=899318527]
+[node name="Lights" type="Node3D" parent="." unique_id=2104721730]
 
-[node name="beacon_light" type="OmniLight3D" parent="Lights" unique_id=702134054]
+[node name="beacon_light" type="OmniLight3D" parent="Lights" unique_id=302618749]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.9, 0.9)
 light_color = Color(1, 0.08, 0.04, 1)
-light_energy = 2.5
-light_volumetric_fog_energy = 1.5
+light_energy = 2.25
+light_volumetric_fog_energy = 1.6
 shadow_blur = 1.5
 distance_fade_enabled = true
 distance_fade_begin = 30.0
 distance_fade_shadow = 18.0
-omni_range = 9.0
+omni_range = 7.02
 omni_attenuation = 1.2
 script = ExtResource("2_0u8up")
 pulse = 1.2
 
-[node name="Audio_alarm_beacon_loop" type="AudioStreamPlayer3D" parent="." unique_id=1702205156]
+[node name="Audio_alarm_beacon_loop" type="AudioStreamPlayer3D" parent="." unique_id=224032704]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 stream = ExtResource("3_11eyh")
 volume_db = -8.0

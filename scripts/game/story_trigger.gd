@@ -2,6 +2,13 @@ class_name StoryTrigger
 extends Area3D
 ## Invisible box that plays story lines when the player walks into it.
 ## Lines are written as "Speaker: text". A line with no colon has no speaker.
+##
+## WORD BUDGET: every word in `lines` and `objective` is on-screen text and
+## counts against the 150-word cap (AGENTS.md rule 4). Update the budget table
+## in AGENTS.md section 4.5 in the same commit as any text change here.
+## Triggers in scenes/game/story_layer.tscn with empty `lines` are deliberately
+## wordless (the room tells its story with props and sound); they still set
+## their "seen_<trigger_id>" flag so other systems can hook them.
 
 @export var trigger_id: String = ""
 @export var lines: Array[String] = []

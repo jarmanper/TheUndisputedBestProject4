@@ -1,0 +1,34 @@
+[gd_scene load_steps=3 format=3]
+
+; Capture harness for the family photograph on the entrance bench.
+; Companion to tools/entrance_views.tscn (which frames the whole group); these
+; three VIEW__ markers all sit at player eye height, 1.6 m, on the lobby floor
+; a player can actually stand on, and look at the photo the way someone who
+; noticed the bears would.
+; Run: tools/godot.sh --resolution 1280x720 --script res://tools/capture.gd -- res://tools/photo_views.tscn
+
+[ext_resource type="PackedScene" path="res://scenes/environments/area_a_entrance.tscn" id="area"]
+[ext_resource type="PackedScene" path="res://scenes/game/entrance_dressing.tscn" id="dress"]
+
+[node name="PhotoViews" type="Node3D"]
+
+[node name="AreaAEntrance" parent="." instance=ExtResource("area")]
+
+[node name="EntranceDressing" parent="." instance=ExtResource("dress")]
+
+; passing the group on the way to the gate, 2.1 m out
+[node name="VIEW__p1_walkby" type="Node3D" parent="."]
+transform = Transform3D(0.74972, -0.25565, 0.61038, 0, 0.92237, 0.38632, -0.66176, -0.28963, 0.69151, -3.2, 1.6, -3.1)
+
+; turning toward the bench, 1.5 m out
+[node name="VIEW__p2_approach" type="Node3D" parent="."]
+transform = Transform3D(0.85013, -0.28209, 0.44464, 0, 0.8444, 0.53571, -0.52657, -0.45542, 0.71785, -3.95, 1.6, -3.55)
+
+; standing at the bench looking down at it, 0.85 m out
+[node name="VIEW__p3_stop" type="Node3D" parent="."]
+transform = Transform3D(0.9645, -0.19915, 0.17344, 0, 0.65676, 0.7541, -0.26409, -0.72733, 0.63344, -4.55, 1.6, -4.05)
+
+; one of the seven frames build_facility stands on desks (area A, the security
+; office desk). It must show the anonymous photo_staff print, not the family.
+[node name="VIEW__p4_desk_frame" type="Node3D" parent="."]
+transform = Transform3D(-0.95534, 0.18945, -0.22681, 0, 0.76748, 0.64107, 0.29552, 0.61244, -0.7332, 5.849, 1.6, -4.312)

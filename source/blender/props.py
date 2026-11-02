@@ -641,9 +641,30 @@ def tracker_device():
 
 @prop(collide=False)
 def photo_frame():
+    """Desk photograph. The default print is `photo_staff`: two anonymous
+    colleagues, so the seven frames build_facility puts on desks across the
+    facility only ever say "people worked here".
+
+    The family portrait (`photo_family`) belongs to one frame, the one on the
+    lobby bench, which swaps this surface at runtime with prop_retint in
+    scenes/game/entrance_dressing.tscn. Surface order matters there: the frame
+    and stand share surface 0 (wood_dark) and the print is surface 1, because
+    the frame box is built first.
+
+    The print gets a planar UV so the whole photograph lands on the front
+    face once. It used to be a flat brown box with no picture on it, which
+    made the most direct wordless story prop in the game say nothing.
+    """
     o = [box("frame", (0.2, 0.015, 0.25), (0, 0, 0.125), "wood_dark", rot=(-0.2, 0, 0), bevel=0.003)]
-    o.append(box("photo", (0.16, 0.017, 0.21), (0, -0.002, 0.125), "photo", rot=(-0.2, 0, 0)))
-    o.append(box("stand", (0.02, 0.1, 0.18), (0, 0.06, 0.09), "wood_dark", rot=(0.35, 0, 0)))
+    print_ = box("photo", (0.16, 0.004, 0.21), (0, -0.0065, 0.125), "photo_staff",
+                 rot=(-0.2, 0, 0), uv=False)
+    T.planar_uv(print_, "Y")
+    o.append(print_)
+    # The kickstand leans *backwards* from the top of the frame. It used to be
+    # a 0.1 m deep plank tilted the other way, whose top corner came out
+    # through the front of the print -- which nobody could see while the print
+    # was a flat brown box.
+    o.append(box("stand", (0.02, 0.015, 0.18), (0, 0.055, 0.085), "wood_dark", rot=(0.42, 0, 0)))
     return o
 
 
@@ -863,14 +884,33 @@ def locker_row():
     o = []
     for i in range(4):
         x = -0.6 + i * 0.4
+        if i == 2:
+            continue                        # the open bay, built below
         o.append(box("locker", (0.38, 0.45, 1.85), (x, 0, 0.925), "painted_metal", bevel=0.006))
         for k in range(3):
             o.append(box("vent", (0.22, 0.01, 0.012), (x, -0.226, 1.6 + k * 0.03), "black_cavity"))
         o.append(box("handle", (0.02, 0.02, 0.08), (x + 0.12, -0.235, 1.0), "steel"))
-        if i == 2:
-            o.append(box("door_open", (0.36, 0.02, 1.8), (x + 0.33, -0.36, 0.93), "painted_metal", rot=(0, 0, -1.2), bevel=0.004))
-            o.append(box("inside", (0.34, 0.02, 1.8), (x, -0.21, 0.93), "black_cavity"))
-            o.append(box("coat", (0.28, 0.08, 0.9), (x, -0.12, 1.25), "fabric_bloody", bevel=0.03))
+
+    # The open bay is a carcass, not a solid block. It used to be the same
+    # solid box as its neighbours with a black panel across the *front* of it
+    # (y = -0.21, ahead of the coat at y = -0.12), so the coat inside was
+    # occluded by both and nobody ever saw it. Now the front is genuinely
+    # open, the dark panel is the back wall, and the coat hangs between them.
+    x = 0.2
+    o.append(box("locker", (0.38, 0.03, 1.85), (x, 0.21, 0.925), "painted_metal"))        # back
+    for sx in (-1, 1):
+        o.append(box("locker", (0.02, 0.45, 1.85), (x + sx * 0.18, 0, 0.925), "painted_metal"))
+    o.append(box("locker", (0.38, 0.45, 0.02), (x, 0, 1.84), "painted_metal"))            # top
+    o.append(box("locker", (0.38, 0.45, 0.02), (x, 0, 0.02), "painted_metal"))            # floor
+    o.append(box("inside", (0.34, 0.01, 1.8), (x, 0.185, 0.93), "black_cavity"))          # dark back wall
+    o.append(box("shelf", (0.34, 0.43, 0.015), (x, 0, 1.6), "painted_metal"))
+    o.append(cyl("rail", 0.008, 0.33, (x, 0.03, 1.54), "steel", rot=(0, math.pi / 2, 0), seg=8))
+    o.append(box("coat", (0.30, 0.07, 0.13), (x, 0.01, 1.45), "fabric_bloody", bevel=0.035))
+    o.append(box("coat", (0.25, 0.07, 0.66), (x, 0.01, 1.11), "fabric_bloody", bevel=0.02))
+    o.append(box("coat", (0.29, 0.08, 0.3), (x, 0.015, 0.73), "fabric_bloody", bevel=0.035))
+    o.append(box("collar", (0.11, 0.05, 0.07), (x, -0.012, 1.51), "fabric", bevel=0.025))
+    o.append(box("door_open", (0.36, 0.02, 1.8), (x + 0.33, -0.36, 0.93), "painted_metal", rot=(0, 0, -1.2), bevel=0.004))
+    o.append(box("handle", (0.02, 0.02, 0.08), (x + 0.375, -0.48, 1.0), "steel", rot=(0, 0, -1.2)))
     o.append(box("bench", (1.6, 0.3, 0.04), (0, -0.6, 0.45), "wood_dark", bevel=0.005))
     o += legs(0.7, 0.1, 0.43, 0.015, "steel")
     for leg in o[-4:]:

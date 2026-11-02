@@ -1390,6 +1390,234 @@ def porcelain_crack():
     write("porcelain_crack", base, np.clip(rough, 0, 1), h, 2.5)
 
 
+# ====================================================================
+# Story props
+# ====================================================================
+
+# The printed photo inside photo_frame is 0.16 m wide and 0.21 m tall, and
+# this texture is square, so the square gets stretched vertically onto it.
+# Every vertical radius below is therefore multiplied by PHOTO_SQUASH: a
+# circle on the paper has to be a squashed circle here.
+PHOTO_SQUASH = 0.16 / 0.21
+
+
+def _portrait_figure(xx, yy, cx, hy, hw, long_hair=False, child=False):
+    """Masks for one standing figure in a photo.
+
+    Returns (body, skin, hair, feat, arms, shoulder y, shoulder half width).
+    Everything is derived from `hw`, the head's half width, so the same call
+    makes an adult or a child and the two children can be built from one set
+    of numbers (they have to read as identical, not merely as two).
+    `cx, hy` are the head's centre in 0..1 texture coordinates. `arms` is the
+    seam where the arms hang against the torso: without it a figure is a blob.
+    """
+    q = PHOTO_SQUASH
+
+    def ell(ex, ey, rx, ry):
+        return (((xx - ex) / rx) ** 2 + ((yy - ey) / ry) ** 2 < 1.0).astype(np.float32)
+
+    sy = hy + hw * (2.05 if child else 2.4) * q          # shoulder line
+    shw = hw * (1.7 if child else (2.1 if long_hair else 2.3))
+    cap = shw * (0.42 if child else 0.75) * q
+    t = np.clip((sy - yy) / cap, 0.0, 1.0)
+    w_top = shw * np.sqrt(np.clip(1.0 - t * t, 0.0, 1.0))
+    w_low = shw * (1.0 - 0.12 * np.clip((yy - sy) / 0.35, 0.0, 1.0))
+    w = np.where(yy < sy, w_top, w_low)
+    body = ((yy > sy - cap) & (np.abs(xx - cx) < w)).astype(np.float32)
+    arms = (body > 0) & (np.abs(np.abs(xx - cx) - shw * 0.66) < shw * 0.055) & (yy > sy + cap * 0.3)
+
+    # skull and neck as bare skin first, then the hair laid over the top of
+    # it: hair drawn as the whole head silhouette turns every face into a
+    # hood, which is the one thing that stops a blurred oval reading as a head
+    skin = ell(cx, hy, hw * 0.94, hw * 1.14 * q)
+    skin = np.maximum(skin, ((yy > hy) & (yy < sy - cap * 0.7)
+                             & (np.abs(xx - cx) < hw * 0.34)).astype(np.float32))
+    opening = np.maximum(ell(cx, hy + hw * 0.34 * q, hw * 0.82, hw * 0.95 * q),
+                         ((yy > hy) & (np.abs(xx - cx) < hw * 0.55)).astype(np.float32))
+    if long_hair:
+        # a hair mass wider than the skull, falling past the jaw: the one
+        # silhouette cue that separates the two adults from each other
+        hair = np.maximum(ell(cx, hy - hw * 0.1 * q, hw * 1.1, hw * 1.2 * q),
+                          ell(cx, hy + hw * 0.75 * q, hw * 1.2, hw * 1.55 * q))
+    else:
+        hair = ell(cx, hy - hw * 0.2 * q, hw * 1.06, hw * 1.1 * q)
+    hair = np.clip(hair - opening, 0.0, 1.0)
+
+    fy = hy + hw * 0.22 * q
+    # Four features, blurred almost away. A pale oval alone reads as an egg;
+    # a two-dot-and-a-dash arrangement reads as a face even when it is six
+    # pixels across, which is all the resolution a 0.16 m print ever gets.
+    feat = np.zeros_like(skin)
+    for s in (-1, 1):
+        feat = np.maximum(feat, ell(cx + s * hw * 0.3, fy - hw * 0.2 * q, hw * 0.18, hw * 0.12 * q))
+    feat = np.maximum(feat, ell(cx, fy + hw * 0.2 * q, hw * 0.08, hw * 0.2 * q) * 0.5)
+    feat = np.maximum(feat, ell(cx, fy + hw * 0.56 * q, hw * 0.23, hw * 0.07 * q) * 0.75)
+    return body, skin, hair, feat, arms.astype(np.float32), sy, shw
+
+
+@tex
+def photo_family():
+    """The photograph in photo_frame: two adults and two identical boys.
+
+    A procedural family portrait cannot carry faces, so it carries
+    *silhouettes*: two tall figures behind, two small identical ones in front,
+    the children in pale shirts against the adults' dark clothing so the small
+    pair reads even when the print is faded. That tonal order (light wall,
+    dark adults, light children) is what survives the fade, the grain and the
+    512 px web texture budget.
+
+    Nothing here is writing. An old photo is soft, warm and low contrast, so
+    the limits of the method are also the look.
+    """
+    T.seed(340)
+    n = PROP
+    S = px(n, 512)
+    q = PHOTO_SQUASH
+    yy, xx = np.mgrid[0:n, 0:n] / n
+    big, mid, fine = grime_layers(n)
+    mic = micro_detail(n)
+
+    # --- the room behind them: a bright wall falling off to a darker floor
+    base = lerp(srgb("d6cdb9"), srgb("aea48e"), smooth(remap(yy, 0.1, 1.0)))
+    base = lerp(base, srgb("bdb39c"), smooth(remap(np.abs(xx - 0.5), 0.26, 0.52)) * 0.5)
+    base = lerp(base, srgb("8d8472"), smooth(remap(yy, 0.8, 0.95)) * 0.5)
+
+    # --- the four of them, back row first
+    #     (cx, head y, head half width, long hair, pale clothes)
+    group = [(0.283, 0.336, 0.072, True, False),      # her
+             (0.714, 0.300, 0.078, False, False),     # him
+             (0.396, 0.572, 0.057, False, True),      # the boys: one set of
+             (0.604, 0.572, 0.057, False, True)]      # numbers, mirrored
+    folds = 0.92 + 0.16 * smooth(remap(fbm(n, 2.4, lo=5, stretch=(3.0, 1.0)), 0.3, 0.78))
+    shoulders = []
+    for i, (cx, hy, hw, lh, pale) in enumerate(group):
+        child = pale
+        body, skin, hair, feat, arms, sy, shw = _portrait_figure(xx, yy, cx, hy, hw, lh, child)
+        shoulders.append((cx, sy, shw))
+        soft = (0.9 if child else 1.1) * S
+        # contact shadow: without it the two pale boys merge into one shape
+        halo = blur(np.maximum(body, np.maximum(skin, hair)), 3.5 * S)
+        base = lerp(base, srgb("6d6453"), np.clip(halo, 0, 1) * 0.45)
+        if pale:
+            lit, shade = srgb("d3c8af"), srgb("a79b83")
+        elif lh:
+            lit, shade = srgb("544940"), srgb("332c25")
+        else:
+            lit, shade = srgb("42392f"), srgb("27211b")
+        cloth = lerp(lit, shade, smooth(np.clip((xx - cx) / (shw * 1.9) + 0.45, 0, 1)))
+        if not pale:                            # cloth, not painted cardboard
+            cloth = cloth * folds[:, :, None]
+        base = lerp(base, cloth, blur(body, soft))
+        base = lerp(base, shade, blur(arms, 1.2 * S) * 0.8)
+        flesh = srgb("d8c1a0") if pale else srgb("cdb492")
+        base = lerp(base, flesh, blur(skin, soft * 0.8))
+        base = lerp(base, srgb("332a21") if pale else (srgb("4a3a28") if lh else srgb("261e17")),
+                    blur(hair, soft * 0.8))
+        base = lerp(base, srgb("6f5a44"), blur(feat, 1.4 * S) * 0.85)
+
+    # --- a parent's hand on each boy's outside shoulder
+    for (kcx, ksy, kshw), sign in zip(shoulders[2:], (-1, 1)):
+        hand = (((xx - (kcx + sign * kshw * 0.82)) / 0.019) ** 2
+                + ((yy - (ksy + 0.012)) / (0.026 * q)) ** 2 < 1.0).astype(np.float32)
+        base = lerp(base, srgb("c6ad8b"), blur(hand, 1.0 * S))
+
+    _photo_print("photo_family", n, base, xx, yy, big, fine, mic)
+
+
+def _photo_print(name, n, base, xx, yy, big, fine, mic, fade=0.40,
+                 tint=(1.07, 1.0, 0.85), bleach_amt=0.45, wear=0.3, down=0.84,
+                 crease_seg=(0.0, 0.22, 0.42, 0.0)):
+    """Turn a drawn image into a printed photograph and write the texture set.
+
+    Soft focus, contrast collapsing toward a warm mid, a colour cast, emulsion
+    grain, a few scratches, a crease and a white paper border. Shared by every
+    photograph in the game so prints found in different rooms look like prints
+    out of the same drawer; `fade`/`tint` are how far each one has gone.
+    """
+    S = px(n, 512)
+    q = PHOTO_SQUASH
+
+    # --- camera: shallow focus and a slight overall softness
+    base = blur(base, 1.1 * S)
+
+    # --- age: contrast collapses toward a warm mid, then yellows
+    base = lerp(base, srgb("a2927a"), fade)
+    base = base * np.array(tint)[None, None, :]
+    r = np.sqrt((xx - 0.5) ** 2 + (yy - 0.5) ** 2) * 2
+    bleach = smooth(remap(r, 0.55, 1.25))
+    base = lerp(base, srgb("cdbb9a"), bleach * bleach_amt)          # edges fade pale
+    base = lerp(base, srgb("8f7f64"), smooth(remap(big, 0.62, 0.95)) * wear)
+    base = base * (0.955 + 0.09 * fine[:, :, None])                 # emulsion grain
+    base = base * (0.97 + 0.06 * mic[:, :, None])
+
+    scratch = hairlines(n, lo=6, aniso=11, rot=1.25, width=1.0, density=2, broken=0.9)
+    crease = draw_segments(n, [crease_seg], 2.4 * S, 1.8 * S)
+    base = lerp(base, srgb("ded0b4"), np.clip(scratch * 0.16 + crease * 0.4, 0, 1))
+
+    # --- white print border (the cue that says "photograph" from across a room)
+    b = 0.055 + (fbm(n, 2.2, lo=3) - 0.5) * 0.004
+    border = ((xx < b) | (xx > 1 - b) | (yy < b * q) | (yy > 1 - b * q)).astype(np.float32)
+    border = blur(border, 0.7 * S)
+    paper = lerp(srgb("e7dfcb"), srgb("d2c6ab"), smooth(remap(big, 0.4, 0.85)))
+    paper = paper * (0.96 + 0.08 * fine[:, :, None])
+    corner = disc(n, 0.97, 0.03, 0.055, 2.0 * S) + disc(n, 0.02, 0.98, 0.04, 2.0 * S)
+    base = lerp(base, paper, np.clip(border + np.clip(corner, 0, 1) * 0.85, 0, 1))
+    # The lobby print sits under the only warm key light in the room. At full
+    # brightness the pale shirts and the border clipped to white there and the
+    # two boys disappeared into the glare, so prints are printed down.
+    base = base * down
+
+    rough = 0.52 + border * 0.22 + bleach * 0.1 + scratch * 0.15 + mic * 0.05
+    h = (mic - 0.5) * 0.25 + crease * 0.8 - scratch * 0.2 + border * 0.15
+    write(name, np.clip(base, 0, 1), np.clip(rough, 0, 1), h, 1.2)
+
+
+@tex
+def photo_staff():
+    """The print the photo_frame prop ships with: two colleagues, no children.
+
+    build_facility puts photo_frame on seven desks across the facility, so the
+    prop's own picture has to be anonymous -- it says "people worked here" and
+    nothing more. The family portrait belongs to exactly one frame, the one on
+    the lobby bench, which swaps this surface for photo_family at runtime
+    (prop_retint in scenes/game/entrance_dressing.tscn).
+
+    Deliberately unlike that portrait at a glance: two half-length adults
+    instead of four small full-length figures, and a greyer, newer print
+    instead of a deep sepia one. No writing anywhere.
+    """
+    T.seed(341)
+    n = PROP
+    S = px(n, 512)
+    yy, xx = np.mgrid[0:n, 0:n] / n
+    big, mid, fine = grime_layers(n)
+    mic = micro_detail(n)
+
+    # --- a plain office wall, lit from the left
+    base = lerp(srgb("adb0ab"), srgb("868a85"), smooth(remap(yy, 0.0, 1.0)))
+    base = lerp(base, srgb("9b9e99"), smooth(remap(xx, 0.35, 1.0)) * 0.5)
+
+    #    (cx, head y, head half width, long hair, light clothes)
+    pair = [(0.335, 0.345, 0.105, False, True),
+            (0.676, 0.375, 0.1, True, False)]
+    folds = 0.92 + 0.16 * smooth(remap(fbm(n, 2.4, lo=5, stretch=(3.0, 1.0)), 0.3, 0.78))
+    for cx, hy, hw, lh, light in pair:
+        body, skin, hair, feat, arms, sy, shw = _portrait_figure(xx, yy, cx, hy, hw, lh)
+        halo = blur(np.maximum(body, np.maximum(skin, hair)), 3.5 * S)
+        base = lerp(base, srgb("5f625d"), np.clip(halo, 0, 1) * 0.4)
+        lit, shade = (srgb("bab6ab"), srgb("827f77")) if light else (srgb("66675f"), srgb("3c3d37"))
+        cloth = lerp(lit, shade, smooth(np.clip((xx - cx) / (shw * 1.9) + 0.45, 0, 1)))
+        base = lerp(base, cloth * folds[:, :, None], blur(body, 1.1 * S))
+        base = lerp(base, shade, blur(arms, 2.4 * S) * 0.45)
+        base = lerp(base, srgb("d2b596"), blur(skin, 0.9 * S))
+        base = lerp(base, srgb("4e3f2e") if lh else srgb("3b322a"), blur(hair, 0.9 * S))
+        base = lerp(base, srgb("6b5a48"), blur(feat, 1.4 * S) * 0.85)
+
+    _photo_print("photo_staff", n, base, xx, yy, big, fine, mic, fade=0.26,
+                 tint=(1.03, 1.0, 0.95), bleach_amt=0.22, wear=0.22, down=0.86,
+                 crease_seg=(0.62, 0.0, 1.0, 0.3))
+
+
 def contact_sheet():
     """Small preview of every albedo so a human can eyeball them at once."""
     names = sorted(f[:-11] for f in os.listdir(OUT) if f.endswith("_albedo.png"))
