@@ -13,70 +13,99 @@
 [ext_resource type="AudioStream" path="res://assets/audio/voices/twin_you_found_me.wav" id="11_n1rqx"]
 [ext_resource type="AudioStream" path="res://assets/audio/voices/twin_you_left_me_here.wav" id="12_hejti"]
 
-[node name="TwinMonster" type="Node3D" unique_id=182085352]
+[node name="TwinMonster" type="Node3D" unique_id=183959319]
 script = ExtResource("1_fy8f0")
 
-[node name="Model" type="Node3D" parent="." unique_id=962885122 instance=ExtResource("2_m6m72")]
+[node name="Model" type="Node3D" parent="." unique_id=1214699183 instance=ExtResource("2_m6m72")]
 
-[node name="Lights" type="Node3D" parent="." unique_id=490459695]
+[node name="Lights" type="Node3D" parent="." unique_id=1665985232]
 
-[node name="eye_light" type="OmniLight3D" parent="Lights" unique_id=1759760909]
-transform = Transform3D(1, 1.9248532e-08, -2.2351767e-08, -1.9248542e-08, 0.9999993, -2.5331974e-07, 2.2351621e-08, 2.0861626e-07, 0.99999934, 2.980329e-08, 1.0728836e-06, -5.066395e-07)
+[node name="eye_light" type="SpotLight3D" parent="Lights" unique_id=1538696426]
+transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 7.4505806e-08, 4.7683716e-07, -4.7683716e-07)
 light_color = Color(1, 0.25, 0.06, 1)
 light_energy = 0.6
 light_volumetric_fog_energy = 1.5
+shadow_enabled = true
 shadow_blur = 1.5
 distance_fade_enabled = true
 distance_fade_begin = 30.0
 distance_fade_shadow = 18.0
-omni_range = 1.6
-omni_attenuation = 1.2
+spot_range = 1.6
+spot_attenuation = 0.8
+spot_angle = 46.0
+spot_angle_attenuation = 1.6
 script = ExtResource("3_r066k")
 flicker = 0.05
 
-[node name="gauge_light" type="OmniLight3D" parent="Lights" unique_id=1878042466]
-transform = Transform3D(1, -6.8156973e-09, -1.6723284e-08, 6.8156902e-09, 0.99999946, 9.126961e-08, 1.6723149e-08, -1.17346644e-07, 0.99999946, 1.18862474e-07, 4.7683716e-07, -9.872019e-08)
-light_color = Color(1, 0.55, 0.15, 1)
-light_energy = 0.12
+[node name="gauge_light" type="SpotLight3D" parent="Lights" unique_id=1188682620]
+transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, -1.8626451e-08, 1.1920929e-07, -5.662441e-07)
+light_color = Color(1, 0.5, 0.12, 1)
+light_energy = 0.35
 light_volumetric_fog_energy = 1.5
+shadow_enabled = true
 shadow_blur = 1.5
 distance_fade_enabled = true
 distance_fade_begin = 30.0
 distance_fade_shadow = 18.0
-omni_range = 0.5
-omni_attenuation = 1.2
+spot_range = 0.7
+spot_attenuation = 0.8
+spot_angle = 46.0
+spot_angle_attenuation = 1.6
 script = ExtResource("3_r066k")
 pulse = 0.6
 
-[node name="gauge_light2" type="OmniLight3D" parent="Lights" unique_id=444967617]
-transform = Transform3D(1, -6.8156973e-09, -1.6723284e-08, 6.8156902e-09, 0.99999946, 9.126961e-08, 1.6723149e-08, -1.17346644e-07, 0.99999946, 1.18862474e-07, 4.7683716e-07, -9.872019e-08)
-light_color = Color(1, 0.55, 0.15, 1)
-light_energy = 0.12
+[node name="gauge_light2" type="SpotLight3D" parent="Lights" unique_id=1816004679]
+transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, -1.8626451e-08, 1.1920929e-07, -5.662441e-07)
+light_color = Color(0.25, 0.8, 1, 1)
+light_energy = 0.35
 light_volumetric_fog_energy = 1.5
+shadow_enabled = true
 shadow_blur = 1.5
 distance_fade_enabled = true
 distance_fade_begin = 30.0
 distance_fade_shadow = 18.0
-omni_range = 0.5
-omni_attenuation = 1.2
+spot_range = 0.7
+spot_attenuation = 0.8
+spot_angle = 46.0
+spot_angle_attenuation = 1.6
 script = ExtResource("3_r066k")
 pulse = 0.6
 
-[node name="tower_light" type="OmniLight3D" parent="Lights" unique_id=1992047786]
-transform = Transform3D(1, 2.4744828e-10, -9.609323e-09, -2.474554e-10, 0.99999964, -7.4505806e-08, 9.609309e-09, 5.9604645e-08, 0.9999996, -7.1253807e-09, 3.5762787e-07, 5.029142e-08)
+[node name="tower_light" type="SpotLight3D" parent="Lights" unique_id=2028378230]
+transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, -1.1175871e-08, 5.9604645e-07, -7.4505806e-08)
 light_color = Color(1, 0.4, 0.12, 1)
 light_energy = 0.25
 light_volumetric_fog_energy = 1.5
+shadow_enabled = true
 shadow_blur = 1.5
 distance_fade_enabled = true
 distance_fade_begin = 30.0
 distance_fade_shadow = 18.0
-omni_range = 1.0
-omni_attenuation = 1.2
+spot_range = 1.0
+spot_attenuation = 0.8
+spot_angle = 46.0
+spot_angle_attenuation = 1.6
 script = ExtResource("3_r066k")
 pulse = 0.4
 
-[node name="CreatureAudio" type="Node3D" parent="." unique_id=1662583298]
+[node name="heart_light" type="SpotLight3D" parent="Lights" unique_id=455525824]
+transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 7.450581e-09, 0, -3.427267e-07)
+light_color = Color(1, 0.42, 0.12, 1)
+light_energy = 0.35
+light_volumetric_fog_energy = 1.5
+shadow_enabled = true
+shadow_blur = 1.5
+distance_fade_enabled = true
+distance_fade_begin = 30.0
+distance_fade_shadow = 18.0
+spot_range = 1.1
+spot_attenuation = 0.8
+spot_angle = 46.0
+spot_angle_attenuation = 1.6
+script = ExtResource("3_r066k")
+pulse = 0.35
+
+[node name="CreatureAudio" type="Node3D" parent="." unique_id=613427679]
 script = ExtResource("4_0vqct")
 loop_sound = ExtResource("5_y4f17")
 noises = Array[AudioStream]([ExtResource("6_xjcmi")])

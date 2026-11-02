@@ -11,12 +11,12 @@
 [ext_resource type="AudioStream" path="res://assets/audio/voices/augmented_procedure_incomplete.wav" id="9_m1tsx"]
 [ext_resource type="AudioStream" path="res://assets/audio/voices/augmented_subject_accepted.wav" id="10_s86xj"]
 
-[node name="TallPatientB" type="Node3D" unique_id=293558783]
+[node name="TallPatientB" type="Node3D" unique_id=925802408]
 script = ExtResource("1_6kw5a")
 
 [node name="Model" type="Node3D" parent="." unique_id=1882290364 instance=ExtResource("2_tmvx0")]
 
-[node name="CreatureAudio" type="Node3D" parent="." unique_id=1498982536]
+[node name="CreatureAudio" type="Node3D" parent="." unique_id=643508122]
 script = ExtResource("3_f381r")
 loop_sound = ExtResource("4_g4yxr")
 noises = Array[AudioStream]([ExtResource("5_tuu2t"), ExtResource("6_jj7qx")])
