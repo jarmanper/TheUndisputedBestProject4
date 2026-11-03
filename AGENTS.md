@@ -394,6 +394,9 @@ script constant (`Object.get()` cannot read GDScript constants).
 - **Numbers live in named constants** at the top of the owning script (`const DAMAGE := 20`). The post-build PDF asks for the exact file, value and edit that would double the difficulty.
 - **Main scene** is still `scenes/visual_inspection.tscn` (the flycam). Switch `run/main_scene` to the first game level in one coordinated commit.
 - The flycam's Q/E fly up and down. That only applies to the inspection scene.
+- **Renderers: leave the project on Forward+. The web build is Compatibility on its own.** Godot registers `rendering/renderer/rendering_method.web = "gl_compatibility"` as a built-in default, so the browser build already runs Compatibility without any override - checked by querying `ProjectSettings` directly. (Setting `renderer/rendering_method.web` by hand is redundant; Godot strips it on save for matching the default, which is also why `;` comments and defaulted keys never survive in `project.godot`.)
+- **Do not set the project renderer to `gl_compatibility`.** It was tried on 2026-11-02 and the *editor* dies with `CrashHandlerException: signal 11` during startup on an AMD Radeon RX 7700S, every launch, before it loads a scene. Ruled out in turn: the fog scenes (it crashes with no scene open), a stale D3D12 shader cache (it crashes on a cache OpenGL itself wrote) and the shader cache entirely (it crashes with `shader_compiler/shader_cache/enabled=false`). The *game* runs fine in Compatibility - only the editor is affected.
+- **To see what the browser will actually render**, force the renderer per run instead of changing the project setting: `godot --path . --rendering-method gl_compatibility`. `tests/compat_smoke.gd` does exactly this, and `TimbukCompat.adapt()` strips the passes Compatibility cannot draw at load time - which matters, because `FogMaterial` is a hard error there and the facility ships 52 FogVolumes.
 
 ## 8. Art and audio to use
 

@@ -61,23 +61,49 @@ orange blast and scorch decal, camera shake, footsteps and head bob.
 
 ## The web build
 
-The browser build never loaded for either Oct 28 playtester. The cause was the
-renderer: the project ran **Forward+**, and WebGL 2 can only run
-**Compatibility**. Nothing in the export settings could have fixed that.
+The browser build never loaded for either Oct 28 playtester. **The renderer was
+not the reason**, contrary to what this document said on Nov 2. Godot registers
+`rendering/renderer/rendering_method.web = "gl_compatibility"` as a built-in
+default, so a project left on Forward+ still exports a Compatibility web build -
+verified by querying `ProjectSettings` directly:
 
-- `project.godot` now runs **`gl_compatibility` everywhere**, not just on the
-  web. The assignment says to set the renderer to Compatibility before building
-  anything, and the graded artifact *is* the web build - so a Forward+ desktop
-  look is one no grader ever sees, and tuning the art against it would be wasted
-  work. Same renderer locally means what we tune is what ships. TAA is off
-  (it does not exist in Compatibility) and `ui_settings.gd` skips its Forward+
-  only calls instead of warning on every settings change.
-- `scripts/visual/compat.gd` (`TimbukCompat.adapt`) runs before the first frame
-  and detaches what Compatibility cannot draw: all **52 FogVolumes** across the
-  eight area scenes (Compatibility cannot compile `FogMaterial` at all - it is a
-  hard error, not a warning), plus SSR, SSAO, SSIL, SDFGI, volumetric fog and
-  auto-exposure, lifting ambient light to compensate. The desktop build still
-  gets the full Forward+ look; nothing was stripped out of the shared scenes.
+```
+rendering/renderer/rendering_method          = forward_plus
+rendering/renderer/rendering_method.web      = gl_compatibility   <- engine default
+rendering/renderer/rendering_method.mobile   = mobile
+```
+
+The web build was therefore always running Compatibility. What actually broke it:
+
+- **Payload size.** 271 MB with desktop-sized textures. Fixed earlier by
+  `tools/web_export.sh` (512 px, no mesh LODs): now 106 MB.
+- **A blocking load.** One `change_scene_to_file()` froze the single-threaded
+  tab. Fixed earlier by `scenes/web/loading_screen.tscn`, which warms the asset
+  library in 24 ms slices.
+- **Things Compatibility cannot draw.** This one was real and is fixed here.
+  Because the web build was already Compatibility, the 52 FogVolumes across the
+  eight area scenes were erroring in the browser the whole time -
+  Compatibility cannot compile `FogMaterial` at all, which is a hard error, not
+  a warning. `TimbukCompat.adapt()` (`scripts/visual/compat.gd`) now detaches
+  them before the first frame, along with SSR, SSAO, SSIL, SDFGI, volumetric fog
+  and auto-exposure, lifting ambient light to compensate. `ui_settings.gd` also
+  skips its Forward+ only calls there.
+
+**The project renderer stays Forward+, and must.** Setting it to
+`gl_compatibility` project-wide was tried on Nov 2 and the *editor* segfaults
+with it (`CrashHandlerException: signal 11`) during startup on an AMD Radeon
+RX 7700S - every launch, before it loads a scene. Ruled out in turn: the fog
+scenes (it crashes with no scene open), a stale D3D12 shader cache (it crashes
+on a cache OpenGL itself wrote) and the shader cache entirely (it crashes with
+`shader_compiler/shader_cache/enabled=false`). The *game* runs fine in
+Compatibility; only the editor is affected. To preview what the browser renders,
+force it per run instead: `godot --path . --rendering-method gl_compatibility`,
+which is what `tests/compat_smoke.gd` does.
+
+`tools/web_export.sh` additionally pins the renderer project-wide for the
+duration of the export and restores it afterwards, so the shipped pack states
+`gl_compatibility` outright rather than depending on a feature tag resolving in
+a browser nobody here can test.
 
 Two console errors remain on Compatibility, both harmless: `shader type fog not
 supported in OpenGL renderer`, logged once per `FogMaterial` as the scene loads

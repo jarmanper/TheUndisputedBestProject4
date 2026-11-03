@@ -42,6 +42,10 @@ fi
 
 BACKUP="$(mktemp -d)"
 restore() {
+	if [ -f "$BACKUP/project.godot" ]; then
+		echo "web_export: restoring project.godot (renderer)"
+		cp "$BACKUP/project.godot" "$ROOT/project.godot"
+	fi
 	if [ -d "$BACKUP/files" ]; then
 		echo "web_export: restoring .import files"
 		( cd "$BACKUP/files" && find . -type f -print0 | while IFS= read -r -d '' f; do
@@ -98,6 +102,17 @@ echo "web_export: re-importing"
 "$GODOT" --headless --path "$GPATH" --import
 
 echo "web_export: exporting Web release to $OUT"
+# Force the renderer project-wide for the export instead of trusting the
+# `renderer/rendering_method.web` platform override. The override should work,
+# but it can only really be proven in a browser, and getting it wrong means the
+# build tries Forward+ and never starts - exactly the bug two playtesters hit
+# on 2026-10-28. Baking it leaves nothing to resolve at runtime. The editor
+# keeps running Forward+, because Compatibility segfaults it on this machine
+# (see AGENTS.md section 7).
+cp "$ROOT/project.godot" "$BACKUP/project.godot"
+sed -i 's|^renderer/rendering_method=.*|renderer/rendering_method="gl_compatibility"|' "$ROOT/project.godot"
+echo "web_export: renderer pinned to gl_compatibility for this export"
+
 "$GODOT" --headless --path "$GPATH" --export-release "Web" "$OUT_ARG"
 
 echo "web_export: payload"
