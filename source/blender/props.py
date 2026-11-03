@@ -685,17 +685,20 @@ def pistol():
 
 @prop(collide=False)
 def viewmodel_hand():
-    """The player's right hand and forearm, gripping pistol() in its own space.
+    """Just enough hand to say the gun is being held, in pistol()'s own space.
 
-    Parented under the Pistol node in scenes/game/player.tscn, so it inherits
-    the viewmodel's sway, bob and recoil and gets the same z-clip material
-    treatment - weapon_viewmodel.gd walks every MeshInstance3D beneath itself.
-    It is a separate prop and not part of pistol() because pistol() is also a
-    world prop sitting on a desk in area A, and that one must stay a bare gun.
+    Deliberately minimal. An earlier version modelled a full palm, thumb and
+    forearm out of boxes and cylinders, and at viewmodel range that reads as
+    pale sausages rather than a hand - primitives cannot carry an anatomical
+    read at that size. So this is only what wraps the grip: four finger backs
+    across the front strap, a thumb lying along the frame, and a sliver of palm
+    behind the backstrap. Everything else is left off screen, which is also how
+    the viewmodel is posed in scenes/game/player.tscn.
 
-    Right-handed hold: the backstrap sits in the palm on the +X side, the
-    fingers wrap the front strap over to -X, the index finger lies on the
-    trigger, and the thumb runs forward along the -X side of the frame.
+    Parented under the Pistol node, so it inherits the sway, bob and recoil and
+    picks up the same z-clip treatment - weapon_viewmodel.gd walks every
+    MeshInstance3D beneath itself and puts them on the viewmodel light layer.
+    It is separate from pistol() because pistol() is also a desk prop in area A.
     """
     RAKE = -0.26         # must match pistol()
     GC = (0.0, 0.055, 0.042)
@@ -706,38 +709,24 @@ def viewmodel_hand():
 
     SKIN = "skin_real"
     o = []
-    # --- forearm, running back and down out of frame ------------------------
-    o.append(cyl("forearm", 0.042, 0.210, gp(0.004, 0.120, -0.052), SKIN,
-                 rot=(RAKE + math.pi / 2, 0, 0), seg=18, r2=0.034))
-    o.append(sphere("wrist", 0.037, gp(0.004, 0.030, -0.046), SKIN, 18, 12, scale=(0.95, 1.0, 0.9)))
 
-    # --- palm wrapping the backstrap ---------------------------------------
-    o.append(box("palm", (0.025, 0.046, 0.076), gp(0.019, 0.010, -0.004), SKIN,
-                 rot=(RAKE, 0, 0), bevel=0.011))
-    o.append(box("thenar", (0.020, 0.026, 0.034), gp(0.011, 0.024, 0.018), SKIN,
-                 rot=(RAKE, 0, 0), bevel=0.009))
+    # --- the four finger backs across the front strap ----------------------
+    # Slightly proud of the grip on both sides so they read as wrapped round
+    # it rather than stuck on, and tapering down the hand like real fingers.
+    for i, lz in enumerate((0.012, -0.008, -0.027, -0.044)):
+        r = 0.0098 - i * 0.0007
+        o.append(cyl("finger_%d" % i, r, 0.036, gp(0.0, -0.0225, lz), SKIN,
+                     rot=(0, math.pi / 2, 0), seg=10))
+        # the knuckle end, a touch larger, on the palm side
+        o.append(sphere("knuckle_%d" % i, r * 1.05, gp(0.016, -0.019, lz), SKIN, 10, 8))
 
-    # --- index finger: lies FORWARD along the frame, tip curled to the trigger
-    o.append(cyl("index_prox", 0.0098, 0.042, (0.0125, 0.018, 0.0825), SKIN,
-                 rot=(math.pi / 2, 0, 0), seg=12))
-    o.append(cyl("index_mid", 0.0092, 0.024, (0.0115, -0.006, 0.0795), SKIN,
-                 rot=(math.pi / 2 - 0.5, 0, 0), seg=12))
-    o.append(cyl("index_tip", 0.0085, 0.016, (0.0075, -0.012, 0.0745), SKIN,
-                 rot=(math.pi / 2 - 1.1, 0, 0.35), seg=12))
+    # --- thumb, lying forward along the left of the frame ------------------
+    o.append(cyl("thumb", 0.0105, 0.040, gp(-0.0135, -0.004, 0.028), SKIN,
+                 rot=(RAKE + 1.25, 0, 0), seg=10))
 
-    # --- three fingers wrapped around the front strap -----------------------
-    for i, lz in enumerate((-0.004, -0.024, -0.043)):
-        r = 0.0105 - i * 0.0008
-        o.append(cyl("finger_%d_prox" % i, r, 0.044, gp(0.004, -0.020, lz), SKIN,
-                     rot=(0, math.pi / 2, 0), seg=12))
-        o.append(cyl("finger_%d_tip" % i, r * 0.92, 0.022, gp(-0.020, -0.030, lz), SKIN,
-                     rot=(0, math.pi / 2, 0.55), seg=12))
-
-    # --- thumb along the left side of the frame -----------------------------
-    o.append(cyl("thumb_prox", 0.0125, 0.046, gp(-0.016, 0.006, 0.030), SKIN,
-                 rot=(RAKE + 1.15, 0, 0), seg=14))
-    o.append(cyl("thumb_tip", 0.0112, 0.034, (-0.016, 0.004, 0.088), SKIN,
-                 rot=(1.45, 0, 0), seg=14))
+    # --- a sliver of palm behind the backstrap -----------------------------
+    o.append(box("palm_edge", (0.016, 0.020, 0.062), gp(0.017, 0.020, -0.010), SKIN,
+                 rot=(RAKE, 0, 0), bevel=0.008))
     return o
 
 

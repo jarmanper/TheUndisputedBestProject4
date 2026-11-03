@@ -49,6 +49,22 @@ section 5, so the difficulty comes from content instead of numbers.
   stock brushed steel rendered almost white and read as a toy. Rebuilt in
   `source/blender/props.py` and checked by rendering it, not by reading the
   numbers - the first attempt had the grip raked the wrong way.
+- **The imported gun pointed at the player.** `props.py` builds the pistol with
+  the muzzle down -Y and +Z up, which is Blender's convention; glTF maps Blender
+  -Y to +Z, and +Z in Godot faces the camera. Both viewmodel meshes are turned
+  180 degrees about Y in `scenes/props/pistol_viewmodel.tscn` - there and not in
+  `pistol()`, because `pistol()` is also the desk prop. The old five-box gun was
+  near enough symmetric to hide this.
+- **The viewmodel has its own light layer.** The flashlight sits on the camera
+  at (0.15, -0.1, 0) and the gun 30 cm in front of it, so bare skin and the
+  slide were blown to flat white. The viewmodel renders on layer 2, the
+  flashlight skips that layer, and two low-energy lights that see only layer 2
+  shape it instead.
+- **The hand is deliberately almost not there.** Boxes and cylinders cannot
+  carry a human read at viewmodel size - a full palm, thumb and forearm looked
+  like pale sausages. It is now only the four finger backs on the front strap, a
+  thumb along the frame and a sliver of palm, posed low and right so the rest is
+  off screen.
 - **The hand is a separate prop** (`viewmodel_hand`), because `pistol` is also a
   world prop on a desk in area A and that one has to stay a bare gun. It lives
   under `scenes/props/pistol_viewmodel.tscn` with the gun.

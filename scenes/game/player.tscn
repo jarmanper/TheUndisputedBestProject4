@@ -30,13 +30,30 @@ near = 0.03
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.15, -0.1, 0)
 light_color = Color(1, 0.95, 0.85, 1)
 light_energy = 3.0
+light_cull_mask = 4294967293
 shadow_enabled = true
 spot_range = 24.0
 spot_angle = 26.0
 spot_attenuation = 0.8
 
+[node name="ViewmodelKey" type="OmniLight3D" parent="Head/Camera3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.12, 0.16, -0.08)
+light_color = Color(1, 0.96, 0.9, 1)
+light_energy = 1.05
+light_cull_mask = 2
+shadow_enabled = false
+omni_range = 1.6
+
+[node name="ViewmodelFill" type="OmniLight3D" parent="Head/Camera3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, -0.12, -0.1)
+light_color = Color(0.62, 0.72, 0.9, 1)
+light_energy = 0.42
+light_cull_mask = 2
+shadow_enabled = false
+omni_range = 1.4
+
 [node name="Pistol" parent="Head/Camera3D" instance=ExtResource("pistol")]
-transform = Transform3D(0.993572, 0, 0.113203, 0, 1, 0, -0.113203, 0, 0.993572, 0.125, -0.085, -0.27)
+transform = Transform3D(0.996195, 0, -0.0871557, -0.00228147, 0.999657, -0.0260773, 0.0871259, 0.0261769, 0.995853, 0.165, -0.145, -0.30)
 
 [node name="Combat" type="Node" parent="."]
 script = ExtResource("combat")
