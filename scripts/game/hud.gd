@@ -219,7 +219,7 @@ func _build_pause() -> void:
 	var settings := UiStyle.button("Settings")
 	settings.pressed.connect(_open_settings)
 	_pause_main.add_child(settings)
-	var quit := UiStyle.button("Quit to title")
+	var quit := UiStyle.button("Quit")
 	quit.pressed.connect(_quit)
 	_pause_main.add_child(quit)
 	_settings = UiSettingsPanel.new()

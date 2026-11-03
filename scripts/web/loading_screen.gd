@@ -132,7 +132,6 @@ func _run() -> void:
 	# Every dependency is warm by now, so this is the cheap part.
 	var scene := ResourceLoader.load(GAME_SCENE)
 	_show(1.0)
-	hint.text = "ENTERING THE FACILITY"
 	await get_tree().process_frame
 	await get_tree().process_frame
 	_keep.clear()

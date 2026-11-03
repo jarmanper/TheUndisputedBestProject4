@@ -1,0 +1,14 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/game/weapon_viewmodel.gd" id="vm"]
+[ext_resource type="PackedScene" path="res://assets/models/props/pistol.glb" id="gun"]
+[ext_resource type="PackedScene" path="res://assets/models/props/viewmodel_hand.glb" id="hand"]
+
+[node name="PistolViewmodel" type="Node3D"]
+script = ExtResource("vm")
+
+[node name="Pivot" type="Node3D" parent="."]
+
+[node name="Model" parent="Pivot" instance=ExtResource("gun")]
+
+[node name="Hand" parent="Pivot" instance=ExtResource("hand")]

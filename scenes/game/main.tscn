@@ -71,6 +71,41 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14.7, -5.9, -84)
 script = ExtResource("enemy")
 model_scene = ExtResource("pb")
 
+[node name="PatientCorridorB" type="CharacterBody3D" parent="Enemies"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.8, 0.1, -20.5)
+script = ExtResource("enemy")
+model_scene = ExtResource("pb")
+
+[node name="PatientWestWingB" type="CharacterBody3D" parent="Enemies"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -17.5, 0.1, -15.8)
+script = ExtResource("enemy")
+model_scene = ExtResource("pc")
+
+[node name="PatientEastWingB" type="CharacterBody3D" parent="Enemies"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.5, 0.1, -23.8)
+script = ExtResource("enemy")
+model_scene = ExtResource("pa")
+
+[node name="PatientContainmentB" type="CharacterBody3D" parent="Enemies"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.5, 0.1, -38.5)
+script = ExtResource("enemy")
+model_scene = ExtResource("pc")
+
+[node name="PatientCellBlockB" type="CharacterBody3D" parent="Enemies"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 33.0, 0.1, -42.5)
+script = ExtResource("enemy")
+model_scene = ExtResource("pa")
+
+[node name="PatientLowerCorridorB" type="CharacterBody3D" parent="Enemies"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, -5.9, -74.0)
+script = ExtResource("enemy")
+model_scene = ExtResource("pb")
+
+[node name="PatientChamberApproachB" type="CharacterBody3D" parent="Enemies"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14.7, -5.9, -87.5)
+script = ExtResource("enemy")
+model_scene = ExtResource("pc")
+
 [node name="TwinBoss" type="CharacterBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14.7, -5.9, -105.3)
 script = ExtResource("boss")

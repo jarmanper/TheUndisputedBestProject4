@@ -1,0 +1,19 @@
+[gd_resource type="StandardMaterial3D" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/textures/brushed_steel_albedo.png" id="1_y24fd"]
+[ext_resource type="Texture2D" path="res://assets/textures/brushed_steel_metal.png" id="2_w2fxy"]
+[ext_resource type="Texture2D" path="res://assets/textures/brushed_steel_normal.png" id="3_on0m1"]
+[ext_resource type="Texture2D" path="res://assets/textures/brushed_steel_rough.png" id="4_27ij7"]
+
+[resource]
+resource_name = "gunmetal"
+albedo_color = Color(0.165, 0.17, 0.185, 1)
+albedo_texture = ExtResource("1_y24fd")
+metallic = 0.85
+metallic_texture = ExtResource("2_w2fxy")
+roughness = 0.38
+roughness_texture = ExtResource("4_27ij7")
+normal_enabled = true
+normal_scale = 0.45
+normal_texture = ExtResource("3_on0m1")
+uv1_scale = Vector3(1.4285715, 1.4285715, 1.4285715)

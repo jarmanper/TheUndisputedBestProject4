@@ -1,717 +1,741 @@
 {
-  "_comment": "One entry per material. 'tex' = texture set in assets/textures, 'repeat' = metres per texture tile (meshes are UV'd in metres). Read by source/blender/tlib.py (preview renders) and tools/build_materials.gd (Godot .tres).",
-  "concrete": {
-    "tex": "concrete",
-    "repeat": 3.0,
-    "normal": 0.6
-  },
-  "concrete_damaged": {
-    "tex": "concrete_damaged",
-    "repeat": 3.0,
-    "normal": 0.55
-  },
-  "lab_floor": {
-    "tex": "lab_floor",
-    "repeat": 2.4,
-    "normal": 0.8
-  },
-  "wall_panel": {
-    "tex": "wall_panel",
-    "repeat": 2.4,
-    "normal": 0.8
-  },
-  "ceiling_tile": {
-    "tex": "ceiling_tile",
-    "repeat": 1.2,
-    "normal": 0.6
-  },
-  "painted_metal": {
-    "tex": "painted_metal",
-    "repeat": 1.5,
-    "normal": 0.8
-  },
-  "painted_white": {
-    "tex": "painted_white_metal",
-    "repeat": 1.0,
-    "normal": 0.5
-  },
-  "rust": {
-    "tex": "rust",
-    "repeat": 1.5,
-    "normal": 1.2
-  },
-  "steel": {
-    "tex": "brushed_steel",
-    "repeat": 0.8,
-    "normal": 0.4
-  },
-  "brass": {
-    "tex": "brass_aged",
-    "repeat": 0.5,
-    "normal": 0.5
-  },
-  "copper": {
-    "tex": "copper_oxidized",
-    "repeat": 0.6,
-    "normal": 0.6
-  },
-  "gold": {
-    "tex": "tarnished_gold",
-    "repeat": 0.4,
-    "normal": 0.4
-  },
-  "teal_metal": {
-    "tex": "teal_metal_dark",
-    "repeat": 0.6,
-    "normal": 0.6
-  },
-  "rubber": {
-    "tex": "rubber_black",
-    "repeat": 0.5,
-    "normal": 0.5
-  },
-  "plastic": {
-    "tex": "plastic_dirty",
-    "repeat": 0.6,
-    "normal": 0.3
-  },
-  "hazard": {
-    "tex": "hazard_stripes",
-    "repeat": 1.0,
-    "normal": 0.4
-  },
-  "fabric": {
-    "tex": "fabric_worn",
-    "repeat": 0.25,
-    "normal": 0.4,
-    "double_sided": true
-  },
-  "fabric_uniform": {
-    "tex": "fabric_worn",
-    "repeat": 0.25,
-    "normal": 0.5,
-    "albedo": [
-      0.46,
-      0.52,
-      0.56
-    ],
-    "double_sided": true
-  },
-  "fabric_white": {
-    "tex": "fabric_worn",
-    "repeat": 0.25,
-    "normal": 0.5,
-    "albedo": [
-      0.95,
-      0.93,
-      0.86
-    ],
-    "double_sided": true
-  },
-  "fabric_dark": {
-    "tex": "fabric_worn",
-    "repeat": 0.25,
-    "normal": 0.5,
-    "albedo": [
-      0.24,
-      0.24,
-      0.26
-    ],
-    "double_sided": true
-  },
-  "twin_face": {
-    "tex": "twin_face",
-    "repeat": 1.0,
-    "normal": 0.7,
-    "clearcoat": 0.35,
-    "sss": 0.15,
-    "sss_color": [
-      0.8,
-      0.45,
-      0.3
-    ]
-  },
-  "gauge_eye": {
-    "tex": "gauge_eye",
-    "repeat": 1.0,
-    "emission_energy": 2.5,
-    "clearcoat": 0.8
-  },
-  "fabric_bloody": {
-    "tex": "fabric_bloody",
-    "repeat": 0.4,
-    "normal": 0.5,
-    "double_sided": true
-  },
-  "porcelain_tile": {
-    "tex": "porcelain_tile",
-    "repeat": 0.6,
-    "normal": 0.7
-  },
-  "brushed_steel_mat": {
-    "tex": "brushed_steel",
-    "repeat": 0.8,
-    "normal": 0.4,
-    "metallic": 0.9
-  },
-  "water": {
-    "albedo": [
-      0.05,
-      0.07,
-      0.06
-    ],
-    "roughness": 0.02,
-    "transparent": true,
-    "alpha": 0.85,
-    "metallic": 0.2,
-    "no_shadow": true,
-    "specular": 0.9
-  },
-  "skin_corpse": {
-    "tex": "skin_corpse",
-    "repeat": 0.18,
-    "normal": 0.45,
-    "sss": 0.2,
-    "sss_color": [
-      0.5,
-      0.3,
-      0.35
-    ]
-  },
-  "wire_gold": {
-    "albedo": [
-      0.85,
-      0.62,
-      0.25
-    ],
-    "roughness": 0.35,
-    "metallic": 0.35,
-    "emission": [
-      0.35,
-      0.22,
-      0.06
-    ],
-    "emission_energy": 0.35
-  },
-  "skin_real": {
-    "tex": "skin_real",
-    "repeat": 0.16,
-    "normal": 0.35,
-    "sss": 0.45,
-    "sss_color": [
-      0.85,
-      0.35,
-      0.25
-    ]
-  },
-  "skin_patient": {
-    "tex": "skin_patient",
-    "repeat": 0.16,
-    "normal": 0.35,
-    "sss": 0.4,
-    "sss_color": [
-      0.8,
-      0.4,
-      0.35
-    ]
-  },
-  "skin_stubble": {
-    "tex": "skin_stubble",
-    "repeat": 0.16,
-    "normal": 0.4,
-    "sss": 0.4,
-    "sss_color": [
-      0.85,
-      0.35,
-      0.25
-    ]
-  },
-  "eye_grey": {
-    "tex": "eye_grey",
-    "repeat": 1.0,
-    "normal": 0.3,
-    "clearcoat": 1.0
-  },
-  "eye_brown": {
-    "tex": "eye_brown",
-    "repeat": 1.0,
-    "normal": 0.3,
-    "clearcoat": 1.0
-  },
-  "marker_ink": {
-    "albedo": [
-      0.24,
-      0.12,
-      0.42
-    ],
-    "roughness": 0.7
-  },
-  "gauze": {
-    "tex": "fabric_worn",
-    "repeat": 0.12,
-    "normal": 0.6,
-    "albedo": [
-      0.95,
-      0.94,
-      0.9
-    ]
-  },
-  "tape": {
-    "albedo": [
-      0.82,
-      0.8,
-      0.74
-    ],
-    "roughness": 0.6
-  },
-  "id_band": {
-    "albedo": [
-      0.92,
-      0.92,
-      0.9
-    ],
-    "roughness": 0.35
-  },
-  "electrode": {
-    "albedo": [
-      0.75,
-      0.76,
-      0.78
-    ],
-    "roughness": 0.3,
-    "metallic": 0.6
-  },
-  "gown_blue": {
-    "tex": "fabric_worn",
-    "repeat": 0.3,
-    "normal": 0.5,
-    "albedo": [
-      0.55,
-      0.66,
-      0.74
-    ],
-    "double_sided": true
-  },
-  "labcoat": {
-    "tex": "fabric_worn",
-    "repeat": 0.3,
-    "normal": 0.5,
-    "albedo": [
-      0.9,
-      0.89,
-      0.85
-    ],
-    "double_sided": true
-  },
-  "porcelain_crack": {
-    "tex": "porcelain_crack",
-    "repeat": 0.18,
-    "normal": 0.7,
-    "clearcoat": 0.5
-  },
-  "skin": {
-    "tex": "skin_pale",
-    "repeat": 0.18,
-    "normal": 0.35,
-    "sss": 0.35,
-    "sss_color": [
-      0.85,
-      0.35,
-      0.3
-    ]
-  },
-  "skin_diseased": {
-    "tex": "skin_diseased",
-    "repeat": 0.25,
-    "normal": 0.6,
-    "sss": 0.25,
-    "sss_color": [
-      0.7,
-      0.4,
-      0.2
-    ]
-  },
-  "porcelain": {
-    "tex": "clock_face",
-    "repeat": 1.0,
-    "normal": 0.6,
-    "clearcoat": 0.6
-  },
-  "gauge": {
-    "tex": "gauge_face",
-    "repeat": 1.0,
-    "emission_energy": 1.5,
-    "clearcoat": 0.8
-  },
-  "eye_iris": {
-    "tex": "eye_iris",
-    "repeat": 1.0,
-    "emission_energy": 3.5,
-    "normal": 0.6
-  },
-  "warning_sign": {
-    "tex": "warning_sign",
-    "repeat": 1.0,
-    "normal": 0.4
-  },
-  "chem_residue": {
-    "tex": "chemical_residue",
-    "repeat": 1.5,
-    "emission_energy": 1.2,
-    "normal": 0.5
-  },
-  "monitor": {
-    "tex": "monitor_screen",
-    "repeat": 1.0,
-    "emission_energy": 2.5
-  },
-  "glass": {
-    "tex": "glass_grime",
-    "repeat": 1.0,
-    "transparent": true,
-    "alpha": 0.1,
-    "metallic": 0.0,
-    "specular": 0.8,
-    "double_sided": true,
-    "no_shadow": true
-  },
-  "glass_tank": {
-    "tex": "glass_grime",
-    "repeat": 1.0,
-    "transparent": true,
-    "alpha": 0.07,
-    "albedo": [
-      0.6,
-      0.85,
-      0.78
-    ],
-    "specular": 0.8,
-    "double_sided": true,
-    "no_shadow": true
-  },
-  "tank_fluid": {
-    "albedo": [
-      0.15,
-      0.55,
-      0.35
-    ],
-    "roughness": 0.05,
-    "transparent": true,
-    "alpha": 0.55,
-    "no_shadow": true,
-    "emission": [
-      0.1,
-      0.6,
-      0.35
-    ],
-    "emission_energy": 0.6
-  },
-  "black_cavity": {
-    "albedo": [
-      0.015,
-      0.015,
-      0.015
-    ],
-    "roughness": 0.9
-  },
-  "wire_black": {
-    "albedo": [
-      0.03,
-      0.03,
-      0.03
-    ],
-    "roughness": 0.45,
-    "tex": "rubber_black",
-    "repeat": 0.3
-  },
-  "wire_red": {
-    "albedo": [
-      0.35,
-      0.04,
-      0.03
-    ],
-    "roughness": 0.5
-  },
-  "wire_copper": {
-    "tex": "copper_oxidized",
-    "repeat": 0.2,
-    "normal": 0.2
-  },
-  "lip": {
-    "albedo": [
-      0.62,
-      0.45,
-      0.43
-    ],
-    "roughness": 0.55,
-    "sss": 0.3,
-    "sss_color": [
-      0.8,
-      0.3,
-      0.3
-    ]
-  },
-  "paper": {
-    "albedo": [
-      0.82,
-      0.79,
-      0.68
-    ],
-    "roughness": 0.92,
-    "double_sided": true
-  },
-  "paper_old": {
-    "albedo": [
-      0.68,
-      0.6,
-      0.44
-    ],
-    "roughness": 0.95,
-    "double_sided": true
-  },
-  "photo": {
-    "albedo": [
-      0.25,
-      0.24,
-      0.22
-    ],
-    "roughness": 0.3,
-    "double_sided": true
-  },
-  "photo_family": {
-    "tex": "photo_family",
-    "repeat": 1.0,
-    "normal": 0.3,
-    "double_sided": true,
-    "specular": 0.25
-  },
-  "photo_staff": {
-    "tex": "photo_staff",
-    "repeat": 1.0,
-    "normal": 0.3,
-    "double_sided": true,
-    "specular": 0.25
-  },
-  "wood_dark": {
-    "albedo": [
-      0.22,
-      0.14,
-      0.08
-    ],
-    "roughness": 0.7
-  },
-  "blood_dry": {
-    "albedo": [
-      0.18,
-      0.03,
-      0.02
-    ],
-    "roughness": 0.4,
-    "transparent": true,
-    "alpha": 0.9
-  },
-  "light_fluor": {
-    "albedo": [
-      0.9,
-      0.95,
-      1.0
-    ],
-    "emission": [
-      0.82,
-      0.92,
-      1.0
-    ],
-    "emission_energy": 6.0,
-    "unshaded": false
-  },
-  "light_fluor_off": {
-    "albedo": [
-      0.6,
-      0.62,
-      0.6
-    ],
-    "roughness": 0.3
-  },
-  "light_red": {
-    "albedo": [
-      1.0,
-      0.1,
-      0.05
-    ],
-    "emission": [
-      1.0,
-      0.08,
-      0.03
-    ],
-    "emission_energy": 8.0
-  },
-  "light_amber": {
-    "albedo": [
-      1.0,
-      0.55,
-      0.1
-    ],
-    "emission": [
-      1.0,
-      0.5,
-      0.08
-    ],
-    "emission_energy": 6.0
-  },
-  "light_green": {
-    "albedo": [
-      0.2,
-      1.0,
-      0.4
-    ],
-    "emission": [
-      0.2,
-      1.0,
-      0.35
-    ],
-    "emission_energy": 5.0
-  },
-  "light_cyan": {
-    "albedo": [
-      0.3,
-      0.9,
-      1.0
-    ],
-    "emission": [
-      0.3,
-      0.85,
-      1.0
-    ],
-    "emission_energy": 5.0
-  },
-  "eye_milky": {
-    "albedo": [
-      0.78,
-      0.8,
-      0.76
-    ],
-    "roughness": 0.05,
-    "clearcoat": 1.0
-  },
-  "eye_glow": {
-    "albedo": [
-      1.0,
-      0.3,
-      0.05
-    ],
-    "emission": [
-      1.0,
-      0.25,
-      0.04
-    ],
-    "emission_energy": 4.0
-  },
-  "twin_flesh": {
-    "tex": "skin_corpse",
-    "repeat": 0.15,
-    "normal": 0.8,
-    "albedo": [
-      0.47,
-      0.46,
-      0.47
-    ],
-    "roughness": 0.85,
-    "sss": 0.07,
-    "sss_color": [
-      0.35,
-      0.18,
-      0.18
-    ]
-  },
-  "twin_flesh_grown": {
-    "tex": "skin_diseased",
-    "repeat": 0.21,
-    "normal": 0.95,
-    "albedo": [
-      0.44,
-      0.42,
-      0.37
-    ],
-    "roughness": 0.9,
-    "sss": 0.05,
-    "sss_color": [
-      0.3,
-      0.16,
-      0.14
-    ]
-  },
-  "twin_bruise": {
-    "tex": "skin_corpse",
-    "repeat": 0.13,
-    "normal": 0.85,
-    "albedo": [
-      0.27,
-      0.23,
-      0.28
-    ],
-    "roughness": 0.92,
-    "sss": 0.04,
-    "sss_color": [
-      0.3,
-      0.12,
-      0.2
-    ]
-  },
-  "twin_skin_face": {
-    "tex": "skin_real",
-    "repeat": 0.13,
-    "normal": 0.6,
-    "albedo": [
-      0.5,
-      0.455,
-      0.435
-    ],
-    "roughness": 0.8,
-    "sss": 0.1,
-    "sss_color": [
-      0.6,
-      0.28,
-      0.22
-    ]
-  },
-  "twin_skin_jaw": {
-    "tex": "skin_stubble",
-    "repeat": 0.13,
-    "normal": 0.65,
-    "albedo": [
-      0.44,
-      0.4,
-      0.39
-    ],
-    "roughness": 0.8,
-    "sss": 0.08,
-    "sss_color": [
-      0.55,
-      0.26,
-      0.2
-    ]
-  },
-  "twin_trouser": {
-    "tex": "fabric_worn",
-    "repeat": 0.3,
-    "normal": 0.9,
-    "albedo": [
-      0.105,
-      0.1,
-      0.115
-    ],
-    "roughness": 1.0,
-    "double_sided": true
-  },
-  "twin_porcelain": {
-    "tex": "porcelain_crack",
-    "repeat": 0.18,
-    "normal": 0.85,
-    "albedo": [
-      0.5,
-      0.47,
-      0.4
-    ],
-    "roughness": 0.7
-  }
+ "_comment": "One entry per material. 'tex' = texture set in assets/textures, 'repeat' = metres per texture tile (meshes are UV'd in metres). Read by source/blender/tlib.py (preview renders) and tools/build_materials.gd (Godot .tres).",
+ "concrete": {
+  "tex": "concrete",
+  "repeat": 3.0,
+  "normal": 0.6
+ },
+ "concrete_damaged": {
+  "tex": "concrete_damaged",
+  "repeat": 3.0,
+  "normal": 0.55
+ },
+ "lab_floor": {
+  "tex": "lab_floor",
+  "repeat": 2.4,
+  "normal": 0.8
+ },
+ "wall_panel": {
+  "tex": "wall_panel",
+  "repeat": 2.4,
+  "normal": 0.8
+ },
+ "ceiling_tile": {
+  "tex": "ceiling_tile",
+  "repeat": 1.2,
+  "normal": 0.6
+ },
+ "painted_metal": {
+  "tex": "painted_metal",
+  "repeat": 1.5,
+  "normal": 0.8
+ },
+ "painted_white": {
+  "tex": "painted_white_metal",
+  "repeat": 1.0,
+  "normal": 0.5
+ },
+ "rust": {
+  "tex": "rust",
+  "repeat": 1.5,
+  "normal": 1.2
+ },
+ "steel": {
+  "tex": "brushed_steel",
+  "repeat": 0.8,
+  "normal": 0.4
+ },
+ "brass": {
+  "tex": "brass_aged",
+  "repeat": 0.5,
+  "normal": 0.5
+ },
+ "copper": {
+  "tex": "copper_oxidized",
+  "repeat": 0.6,
+  "normal": 0.6
+ },
+ "gold": {
+  "tex": "tarnished_gold",
+  "repeat": 0.4,
+  "normal": 0.4
+ },
+ "teal_metal": {
+  "tex": "teal_metal_dark",
+  "repeat": 0.6,
+  "normal": 0.6
+ },
+ "rubber": {
+  "tex": "rubber_black",
+  "repeat": 0.5,
+  "normal": 0.5
+ },
+ "plastic": {
+  "tex": "plastic_dirty",
+  "repeat": 0.6,
+  "normal": 0.3
+ },
+ "hazard": {
+  "tex": "hazard_stripes",
+  "repeat": 1.0,
+  "normal": 0.4
+ },
+ "fabric": {
+  "tex": "fabric_worn",
+  "repeat": 0.25,
+  "normal": 0.4,
+  "double_sided": true
+ },
+ "fabric_uniform": {
+  "tex": "fabric_worn",
+  "repeat": 0.25,
+  "normal": 0.5,
+  "albedo": [
+   0.46,
+   0.52,
+   0.56
+  ],
+  "double_sided": true
+ },
+ "fabric_white": {
+  "tex": "fabric_worn",
+  "repeat": 0.25,
+  "normal": 0.5,
+  "albedo": [
+   0.95,
+   0.93,
+   0.86
+  ],
+  "double_sided": true
+ },
+ "fabric_dark": {
+  "tex": "fabric_worn",
+  "repeat": 0.25,
+  "normal": 0.5,
+  "albedo": [
+   0.24,
+   0.24,
+   0.26
+  ],
+  "double_sided": true
+ },
+ "twin_face": {
+  "tex": "twin_face",
+  "repeat": 1.0,
+  "normal": 0.7,
+  "clearcoat": 0.35,
+  "sss": 0.15,
+  "sss_color": [
+   0.8,
+   0.45,
+   0.3
+  ]
+ },
+ "gauge_eye": {
+  "tex": "gauge_eye",
+  "repeat": 1.0,
+  "emission_energy": 2.5,
+  "clearcoat": 0.8
+ },
+ "fabric_bloody": {
+  "tex": "fabric_bloody",
+  "repeat": 0.4,
+  "normal": 0.5,
+  "double_sided": true
+ },
+ "porcelain_tile": {
+  "tex": "porcelain_tile",
+  "repeat": 0.6,
+  "normal": 0.7
+ },
+ "brushed_steel_mat": {
+  "tex": "brushed_steel",
+  "repeat": 0.8,
+  "normal": 0.4,
+  "metallic": 0.9
+ },
+ "water": {
+  "albedo": [
+   0.05,
+   0.07,
+   0.06
+  ],
+  "roughness": 0.02,
+  "transparent": true,
+  "alpha": 0.85,
+  "metallic": 0.2,
+  "no_shadow": true,
+  "specular": 0.9
+ },
+ "skin_corpse": {
+  "tex": "skin_corpse",
+  "repeat": 0.18,
+  "normal": 0.45,
+  "sss": 0.2,
+  "sss_color": [
+   0.5,
+   0.3,
+   0.35
+  ]
+ },
+ "wire_gold": {
+  "albedo": [
+   0.85,
+   0.62,
+   0.25
+  ],
+  "roughness": 0.35,
+  "metallic": 0.35,
+  "emission": [
+   0.35,
+   0.22,
+   0.06
+  ],
+  "emission_energy": 0.35
+ },
+ "skin_real": {
+  "tex": "skin_real",
+  "repeat": 0.16,
+  "normal": 0.35,
+  "sss": 0.45,
+  "sss_color": [
+   0.85,
+   0.35,
+   0.25
+  ]
+ },
+ "skin_patient": {
+  "tex": "skin_patient",
+  "repeat": 0.16,
+  "normal": 0.35,
+  "sss": 0.4,
+  "sss_color": [
+   0.8,
+   0.4,
+   0.35
+  ]
+ },
+ "skin_stubble": {
+  "tex": "skin_stubble",
+  "repeat": 0.16,
+  "normal": 0.4,
+  "sss": 0.4,
+  "sss_color": [
+   0.85,
+   0.35,
+   0.25
+  ]
+ },
+ "eye_grey": {
+  "tex": "eye_grey",
+  "repeat": 1.0,
+  "normal": 0.3,
+  "clearcoat": 1.0
+ },
+ "eye_brown": {
+  "tex": "eye_brown",
+  "repeat": 1.0,
+  "normal": 0.3,
+  "clearcoat": 1.0
+ },
+ "marker_ink": {
+  "albedo": [
+   0.24,
+   0.12,
+   0.42
+  ],
+  "roughness": 0.7
+ },
+ "gauze": {
+  "tex": "fabric_worn",
+  "repeat": 0.12,
+  "normal": 0.6,
+  "albedo": [
+   0.95,
+   0.94,
+   0.9
+  ]
+ },
+ "tape": {
+  "albedo": [
+   0.82,
+   0.8,
+   0.74
+  ],
+  "roughness": 0.6
+ },
+ "id_band": {
+  "albedo": [
+   0.92,
+   0.92,
+   0.9
+  ],
+  "roughness": 0.35
+ },
+ "electrode": {
+  "albedo": [
+   0.75,
+   0.76,
+   0.78
+  ],
+  "roughness": 0.3,
+  "metallic": 0.6
+ },
+ "gown_blue": {
+  "tex": "fabric_worn",
+  "repeat": 0.3,
+  "normal": 0.5,
+  "albedo": [
+   0.55,
+   0.66,
+   0.74
+  ],
+  "double_sided": true
+ },
+ "labcoat": {
+  "tex": "fabric_worn",
+  "repeat": 0.3,
+  "normal": 0.5,
+  "albedo": [
+   0.9,
+   0.89,
+   0.85
+  ],
+  "double_sided": true
+ },
+ "porcelain_crack": {
+  "tex": "porcelain_crack",
+  "repeat": 0.18,
+  "normal": 0.7,
+  "clearcoat": 0.5
+ },
+ "skin": {
+  "tex": "skin_pale",
+  "repeat": 0.18,
+  "normal": 0.35,
+  "sss": 0.35,
+  "sss_color": [
+   0.85,
+   0.35,
+   0.3
+  ]
+ },
+ "skin_diseased": {
+  "tex": "skin_diseased",
+  "repeat": 0.25,
+  "normal": 0.6,
+  "sss": 0.25,
+  "sss_color": [
+   0.7,
+   0.4,
+   0.2
+  ]
+ },
+ "porcelain": {
+  "tex": "clock_face",
+  "repeat": 1.0,
+  "normal": 0.6,
+  "clearcoat": 0.6
+ },
+ "gauge": {
+  "tex": "gauge_face",
+  "repeat": 1.0,
+  "emission_energy": 1.5,
+  "clearcoat": 0.8
+ },
+ "eye_iris": {
+  "tex": "eye_iris",
+  "repeat": 1.0,
+  "emission_energy": 3.5,
+  "normal": 0.6
+ },
+ "warning_sign": {
+  "tex": "warning_sign",
+  "repeat": 1.0,
+  "normal": 0.4
+ },
+ "chem_residue": {
+  "tex": "chemical_residue",
+  "repeat": 1.5,
+  "emission_energy": 1.2,
+  "normal": 0.5
+ },
+ "monitor": {
+  "tex": "monitor_screen",
+  "repeat": 1.0,
+  "emission_energy": 2.5
+ },
+ "glass": {
+  "tex": "glass_grime",
+  "repeat": 1.0,
+  "transparent": true,
+  "alpha": 0.1,
+  "metallic": 0.0,
+  "specular": 0.8,
+  "double_sided": true,
+  "no_shadow": true
+ },
+ "glass_tank": {
+  "tex": "glass_grime",
+  "repeat": 1.0,
+  "transparent": true,
+  "alpha": 0.07,
+  "albedo": [
+   0.6,
+   0.85,
+   0.78
+  ],
+  "specular": 0.8,
+  "double_sided": true,
+  "no_shadow": true
+ },
+ "tank_fluid": {
+  "albedo": [
+   0.15,
+   0.55,
+   0.35
+  ],
+  "roughness": 0.05,
+  "transparent": true,
+  "alpha": 0.55,
+  "no_shadow": true,
+  "emission": [
+   0.1,
+   0.6,
+   0.35
+  ],
+  "emission_energy": 0.6
+ },
+ "black_cavity": {
+  "albedo": [
+   0.015,
+   0.015,
+   0.015
+  ],
+  "roughness": 0.9
+ },
+ "wire_black": {
+  "albedo": [
+   0.03,
+   0.03,
+   0.03
+  ],
+  "roughness": 0.45,
+  "tex": "rubber_black",
+  "repeat": 0.3
+ },
+ "wire_red": {
+  "albedo": [
+   0.35,
+   0.04,
+   0.03
+  ],
+  "roughness": 0.5
+ },
+ "wire_copper": {
+  "tex": "copper_oxidized",
+  "repeat": 0.2,
+  "normal": 0.2
+ },
+ "lip": {
+  "albedo": [
+   0.62,
+   0.45,
+   0.43
+  ],
+  "roughness": 0.55,
+  "sss": 0.3,
+  "sss_color": [
+   0.8,
+   0.3,
+   0.3
+  ]
+ },
+ "paper": {
+  "albedo": [
+   0.82,
+   0.79,
+   0.68
+  ],
+  "roughness": 0.92,
+  "double_sided": true
+ },
+ "paper_old": {
+  "albedo": [
+   0.68,
+   0.6,
+   0.44
+  ],
+  "roughness": 0.95,
+  "double_sided": true
+ },
+ "photo": {
+  "albedo": [
+   0.25,
+   0.24,
+   0.22
+  ],
+  "roughness": 0.3,
+  "double_sided": true
+ },
+ "photo_family": {
+  "tex": "photo_family",
+  "repeat": 1.0,
+  "normal": 0.3,
+  "double_sided": true,
+  "specular": 0.25
+ },
+ "photo_staff": {
+  "tex": "photo_staff",
+  "repeat": 1.0,
+  "normal": 0.3,
+  "double_sided": true,
+  "specular": 0.25
+ },
+ "wood_dark": {
+  "albedo": [
+   0.22,
+   0.14,
+   0.08
+  ],
+  "roughness": 0.7
+ },
+ "blood_dry": {
+  "albedo": [
+   0.18,
+   0.03,
+   0.02
+  ],
+  "roughness": 0.4,
+  "transparent": true,
+  "alpha": 0.9
+ },
+ "light_fluor": {
+  "albedo": [
+   0.9,
+   0.95,
+   1.0
+  ],
+  "emission": [
+   0.82,
+   0.92,
+   1.0
+  ],
+  "emission_energy": 6.0,
+  "unshaded": false
+ },
+ "light_fluor_off": {
+  "albedo": [
+   0.6,
+   0.62,
+   0.6
+  ],
+  "roughness": 0.3
+ },
+ "light_red": {
+  "albedo": [
+   1.0,
+   0.1,
+   0.05
+  ],
+  "emission": [
+   1.0,
+   0.08,
+   0.03
+  ],
+  "emission_energy": 8.0
+ },
+ "light_amber": {
+  "albedo": [
+   1.0,
+   0.55,
+   0.1
+  ],
+  "emission": [
+   1.0,
+   0.5,
+   0.08
+  ],
+  "emission_energy": 6.0
+ },
+ "light_green": {
+  "albedo": [
+   0.2,
+   1.0,
+   0.4
+  ],
+  "emission": [
+   0.2,
+   1.0,
+   0.35
+  ],
+  "emission_energy": 5.0
+ },
+ "light_cyan": {
+  "albedo": [
+   0.3,
+   0.9,
+   1.0
+  ],
+  "emission": [
+   0.3,
+   0.85,
+   1.0
+  ],
+  "emission_energy": 5.0
+ },
+ "eye_milky": {
+  "albedo": [
+   0.78,
+   0.8,
+   0.76
+  ],
+  "roughness": 0.05,
+  "clearcoat": 1.0
+ },
+ "eye_glow": {
+  "albedo": [
+   1.0,
+   0.3,
+   0.05
+  ],
+  "emission": [
+   1.0,
+   0.25,
+   0.04
+  ],
+  "emission_energy": 4.0
+ },
+ "twin_flesh": {
+  "tex": "skin_corpse",
+  "repeat": 0.15,
+  "normal": 0.8,
+  "albedo": [
+   0.47,
+   0.46,
+   0.47
+  ],
+  "roughness": 0.85,
+  "sss": 0.07,
+  "sss_color": [
+   0.35,
+   0.18,
+   0.18
+  ]
+ },
+ "twin_flesh_grown": {
+  "tex": "skin_diseased",
+  "repeat": 0.21,
+  "normal": 0.95,
+  "albedo": [
+   0.44,
+   0.42,
+   0.37
+  ],
+  "roughness": 0.9,
+  "sss": 0.05,
+  "sss_color": [
+   0.3,
+   0.16,
+   0.14
+  ]
+ },
+ "twin_bruise": {
+  "tex": "skin_corpse",
+  "repeat": 0.13,
+  "normal": 0.85,
+  "albedo": [
+   0.27,
+   0.23,
+   0.28
+  ],
+  "roughness": 0.92,
+  "sss": 0.04,
+  "sss_color": [
+   0.3,
+   0.12,
+   0.2
+  ]
+ },
+ "twin_skin_face": {
+  "tex": "skin_real",
+  "repeat": 0.13,
+  "normal": 0.6,
+  "albedo": [
+   0.5,
+   0.455,
+   0.435
+  ],
+  "roughness": 0.8,
+  "sss": 0.1,
+  "sss_color": [
+   0.6,
+   0.28,
+   0.22
+  ]
+ },
+ "twin_skin_jaw": {
+  "tex": "skin_stubble",
+  "repeat": 0.13,
+  "normal": 0.65,
+  "albedo": [
+   0.44,
+   0.4,
+   0.39
+  ],
+  "roughness": 0.8,
+  "sss": 0.08,
+  "sss_color": [
+   0.55,
+   0.26,
+   0.2
+  ]
+ },
+ "twin_trouser": {
+  "tex": "fabric_worn",
+  "repeat": 0.3,
+  "normal": 0.9,
+  "albedo": [
+   0.105,
+   0.1,
+   0.115
+  ],
+  "roughness": 1.0,
+  "double_sided": true
+ },
+ "twin_porcelain": {
+  "tex": "porcelain_crack",
+  "repeat": 0.18,
+  "normal": 0.85,
+  "albedo": [
+   0.5,
+   0.47,
+   0.4
+  ],
+  "roughness": 0.7
+ },
+ "gunmetal": {
+  "tex": "brushed_steel",
+  "repeat": 0.7,
+  "normal": 0.45,
+  "metallic": 0.85,
+  "roughness": 0.38,
+  "albedo": [
+   0.165,
+   0.17,
+   0.185
+  ]
+ },
+ "gunmetal_worn": {
+  "tex": "brushed_steel",
+  "repeat": 0.9,
+  "normal": 0.5,
+  "metallic": 0.7,
+  "roughness": 0.5,
+  "albedo": [
+   0.26,
+   0.26,
+   0.275
+  ]
+ }
 }

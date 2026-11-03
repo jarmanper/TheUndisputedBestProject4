@@ -18,8 +18,16 @@ variation_embolden = 0.08
 [sub_resource type="FontVariation" id="Font_sans"]
 base_font = ExtResource("10_sans")
 
+[sub_resource type="FontVariation" id="Font_kicker"]
+base_font = ExtResource("10_sans")
+spacing_glyph = 4
+
+[sub_resource type="FontVariation" id="Font_subtitle"]
+base_font = ExtResource("10_sans")
+spacing_glyph = 7
+
 [sub_resource type="StyleBoxEmpty" id="Style_btn"]
-content_margin_left = 20.0
+content_margin_left = 26.0
 content_margin_top = 7.0
 content_margin_right = 20.0
 content_margin_bottom = 7.0
@@ -28,7 +36,7 @@ content_margin_bottom = 7.0
 bg_color = Color(0.58, 0.42, 0.16, 0.16)
 border_width_left = 2
 border_color = Color(0.95, 0.74, 0.38, 0.95)
-content_margin_left = 34.0
+content_margin_left = 26.0
 content_margin_top = 7.0
 content_margin_right = 20.0
 content_margin_bottom = 7.0
@@ -37,7 +45,7 @@ content_margin_bottom = 7.0
 bg_color = Color(0.8, 0.6, 0.26, 0.3)
 border_width_left = 3
 border_color = Color(1, 0.88, 0.6, 1)
-content_margin_left = 36.0
+content_margin_left = 26.0
 content_margin_top = 7.0
 content_margin_right = 20.0
 content_margin_bottom = 7.0
@@ -198,8 +206,9 @@ theme_override_constants/separation = 0
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(0.52, 0.5, 0.47, 1)
+theme_override_fonts/font = SubResource("Font_kicker")
 theme_override_font_sizes/font_size = 13
-text = "T I M B U K   R E S E A R C H   F A C I L I T Y"
+text = "TIMBUK RESEARCH FACILITY"
 
 [node name="TitleGap" type="Control" parent="Margin/VBox"]
 unique_name_in_owner = true
@@ -225,8 +234,9 @@ mouse_filter = 2
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(0.86, 0.72, 0.5, 1)
+theme_override_fonts/font = SubResource("Font_subtitle")
 theme_override_font_sizes/font_size = 21
-text = "S E C O N D   H A N D"
+text = "SECOND HAND"
 
 [node name="Spacer" type="Control" parent="Margin/VBox"]
 layout_mode = 2
@@ -363,7 +373,7 @@ columns = 3
 
 [node name="VolLabel" type="Label" parent="PanelHost/Align/SettingsPanel/VBox/Grid"]
 layout_mode = 2
-text = "Master volume"
+text = "Volume"
 
 [node name="Volume" type="HSlider" parent="PanelHost/Align/SettingsPanel/VBox/Grid"]
 unique_name_in_owner = true
@@ -384,7 +394,7 @@ text = "80%"
 
 [node name="SensLabel" type="Label" parent="PanelHost/Align/SettingsPanel/VBox/Grid"]
 layout_mode = 2
-text = "Mouse sensitivity"
+text = "Sensitivity"
 
 [node name="Sensitivity" type="HSlider" parent="PanelHost/Align/SettingsPanel/VBox/Grid"]
 unique_name_in_owner = true

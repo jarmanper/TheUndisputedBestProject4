@@ -279,6 +279,6 @@ func _build_ui() -> void:
 	_retry_btn = UiStyle.button("Retry")
 	_retry_btn.pressed.connect(_on_retry)
 	_overlay_buttons.add_child(_retry_btn)
-	_title_btn = UiStyle.button("Return to title")
+	_title_btn = UiStyle.button("Title")
 	_title_btn.pressed.connect(_on_title)
 	_overlay_buttons.add_child(_title_btn)

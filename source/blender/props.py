@@ -616,13 +616,128 @@ def old_key():
 
 @prop(collide=False)
 def pistol():
-    """Worn service pistol (visual model only, muzzle points -Y)."""
-    o = [box("slide", (0.03, 0.19, 0.035), (0, 0, 0.11), "teal_metal", bevel=0.004)]
-    o.append(box("frame", (0.028, 0.17, 0.025), (0, 0.01, 0.083), "rubber", bevel=0.003))
-    o.append(box("grip", (0.028, 0.05, 0.11), (0, 0.065, 0.03), "rubber", rot=(-0.25, 0, 0), bevel=0.006))
-    o.append(cyl("barrel", 0.006, 0.02, (0, -0.1, 0.115), "black_cavity", rot=(math.pi / 2, 0, 0), seg=10))
-    o.append(box("guard", (0.006, 0.05, 0.004), (0, 0.0, 0.055), "rubber"))
-    o.append(empty("MUZZLE", (0, -0.105, 0.115)))
+    """Service pistol, visual model only. Muzzle points -Y and +Z is up.
+
+    Shaped to read as a real sidearm in the first-person viewmodel, where it
+    fills a third of the screen and the old five-box placeholder read as a toy:
+    a slide with rear serrations, an ejection port and a recessed bore, a
+    separate dust cover and frame, a trigger sitting inside an actual guard, a
+    raked grip with a magazine floorplate, and front and rear sights that line
+    up down -Y so looking along them is deliberate rather than accidental.
+    """
+    RAKE = -0.26         # grip angle; negative puts the heel BEHIND the top,
+                         # which is the way a pistol actually rakes. Positive
+                         # pushed the heel forward and read as a water pistol.
+    GC = (0.0, 0.055, 0.042)
+    c, s = math.cos(RAKE), math.sin(RAKE)
+
+    def gp(lx, ly, lz):
+        """Grip-local point -> model space (grip is rotated RAKE about X)."""
+        return (GC[0] + lx, GC[1] + ly * c - lz * s, GC[2] + ly * s + lz * c)
+
+    o = []
+    # --- slide -------------------------------------------------------------
+    o.append(box("slide", (0.026, 0.182, 0.029), (0, -0.006, 0.119), "gunmetal", bevel=0.0035))
+    o.append(box("slide_rib", (0.017, 0.182, 0.004), (0, -0.006, 0.1345), "gunmetal", bevel=0.001))
+    for i in range(7):
+        o.append(box("serration_%d" % i, (0.0268, 0.0026, 0.019),
+                     (0, 0.038 + i * 0.0085, 0.119), "gunmetal_worn", bevel=0.0005))
+    o.append(box("ejection_port", (0.0045, 0.038, 0.012), (0.0114, -0.016, 0.1245), "black_cavity"))
+    o.append(box("extractor", (0.004, 0.012, 0.005), (0.0114, 0.006, 0.1245), "gunmetal_worn"))
+
+    # --- bore --------------------------------------------------------------
+    o.append(cyl("crown", 0.0093, 0.009, (0, -0.0915, 0.117), "gunmetal", rot=(math.pi / 2, 0, 0), seg=20))
+    o.append(cyl("bore", 0.0050, 0.014, (0, -0.0945, 0.117), "black_cavity", rot=(math.pi / 2, 0, 0), seg=16))
+
+    # --- sights: a square front post and a notched rear ---------------------
+    o.append(box("front_sight", (0.0034, 0.005, 0.0095), (0, -0.0845, 0.1405), "black_cavity"))
+    o.append(box("rear_sight_l", (0.0054, 0.007, 0.0085), (-0.0076, 0.064, 0.1405), "black_cavity"))
+    o.append(box("rear_sight_r", (0.0054, 0.007, 0.0085), (0.0076, 0.064, 0.1405), "black_cavity"))
+
+    # --- frame and dust cover ----------------------------------------------
+    o.append(box("dust_cover", (0.0225, 0.086, 0.015), (0, -0.046, 0.0965), "rubber", bevel=0.002))
+    o.append(box("frame", (0.0245, 0.072, 0.019), (0, 0.021, 0.0975), "rubber", bevel=0.002))
+    o.append(box("beavertail", (0.0245, 0.022, 0.012), (0, 0.062, 0.100), "rubber", bevel=0.003))
+    o.append(cyl("takedown_pin", 0.0034, 0.026, (0, -0.028, 0.094), "gunmetal_worn", rot=(0, math.pi / 2, 0), seg=12))
+    o.append(box("slide_stop", (0.030, 0.016, 0.006), (0, 0.004, 0.104), "gunmetal_worn", bevel=0.001))
+
+    # --- trigger and its guard ---------------------------------------------
+    o.append(box("guard_front", (0.0065, 0.008, 0.030), (0, -0.013, 0.073), "rubber", bevel=0.002))
+    o.append(box("guard_bottom", (0.0065, 0.042, 0.0075), (0, 0.008, 0.0595), "rubber", bevel=0.002))
+    o.append(box("trigger", (0.005, 0.0085, 0.020), (0, 0.001, 0.0745), "gunmetal_worn", bevel=0.001))
+
+    # --- grip, front-strap ribs and magazine --------------------------------
+    o.append(box("grip", (0.027, 0.050, 0.098), gp(0, 0, 0), "rubber", rot=(RAKE, 0, 0), bevel=0.006))
+    for i in range(5):
+        lz = -0.030 + i * 0.016
+        o.append(box("strap_rib_%d" % i, (0.0254, 0.0016, 0.0032), gp(0, -0.0246, lz),
+                     "gunmetal_worn", rot=(RAKE, 0, 0), bevel=0.0005))
+    o.append(box("backstrap", (0.0272, 0.006, 0.070), gp(0, 0.025, 0.004), "rubber",
+                 rot=(RAKE, 0, 0), bevel=0.002))
+    o.append(box("mag_floor", (0.029, 0.052, 0.006), gp(0, 0.002, -0.052), "gunmetal",
+                 rot=(RAKE, 0, 0), bevel=0.0015))
+    o.append(box("mag_release", (0.030, 0.012, 0.012), gp(0, 0.020, 0.030), "gunmetal_worn",
+                 rot=(RAKE, 0, 0), bevel=0.001))
+
+    o.append(empty("MUZZLE", (0, -0.100, 0.117)))
+    return o
+
+
+@prop(collide=False)
+def viewmodel_hand():
+    """The player's right hand and forearm, gripping pistol() in its own space.
+
+    Parented under the Pistol node in scenes/game/player.tscn, so it inherits
+    the viewmodel's sway, bob and recoil and gets the same z-clip material
+    treatment - weapon_viewmodel.gd walks every MeshInstance3D beneath itself.
+    It is a separate prop and not part of pistol() because pistol() is also a
+    world prop sitting on a desk in area A, and that one must stay a bare gun.
+
+    Right-handed hold: the backstrap sits in the palm on the +X side, the
+    fingers wrap the front strap over to -X, the index finger lies on the
+    trigger, and the thumb runs forward along the -X side of the frame.
+    """
+    RAKE = -0.26         # must match pistol()
+    GC = (0.0, 0.055, 0.042)
+    c, s = math.cos(RAKE), math.sin(RAKE)
+
+    def gp(lx, ly, lz):
+        return (GC[0] + lx, GC[1] + ly * c - lz * s, GC[2] + ly * s + lz * c)
+
+    SKIN = "skin_real"
+    o = []
+    # --- forearm, running back and down out of frame ------------------------
+    o.append(cyl("forearm", 0.042, 0.210, gp(0.004, 0.120, -0.052), SKIN,
+                 rot=(RAKE + math.pi / 2, 0, 0), seg=18, r2=0.034))
+    o.append(sphere("wrist", 0.037, gp(0.004, 0.030, -0.046), SKIN, 18, 12, scale=(0.95, 1.0, 0.9)))
+
+    # --- palm wrapping the backstrap ---------------------------------------
+    o.append(box("palm", (0.025, 0.046, 0.076), gp(0.019, 0.010, -0.004), SKIN,
+                 rot=(RAKE, 0, 0), bevel=0.011))
+    o.append(box("thenar", (0.020, 0.026, 0.034), gp(0.011, 0.024, 0.018), SKIN,
+                 rot=(RAKE, 0, 0), bevel=0.009))
+
+    # --- index finger: lies FORWARD along the frame, tip curled to the trigger
+    o.append(cyl("index_prox", 0.0098, 0.042, (0.0125, 0.018, 0.0825), SKIN,
+                 rot=(math.pi / 2, 0, 0), seg=12))
+    o.append(cyl("index_mid", 0.0092, 0.024, (0.0115, -0.006, 0.0795), SKIN,
+                 rot=(math.pi / 2 - 0.5, 0, 0), seg=12))
+    o.append(cyl("index_tip", 0.0085, 0.016, (0.0075, -0.012, 0.0745), SKIN,
+                 rot=(math.pi / 2 - 1.1, 0, 0.35), seg=12))
+
+    # --- three fingers wrapped around the front strap -----------------------
+    for i, lz in enumerate((-0.004, -0.024, -0.043)):
+        r = 0.0105 - i * 0.0008
+        o.append(cyl("finger_%d_prox" % i, r, 0.044, gp(0.004, -0.020, lz), SKIN,
+                     rot=(0, math.pi / 2, 0), seg=12))
+        o.append(cyl("finger_%d_tip" % i, r * 0.92, 0.022, gp(-0.020, -0.030, lz), SKIN,
+                     rot=(0, math.pi / 2, 0.55), seg=12))
+
+    # --- thumb along the left side of the frame -----------------------------
+    o.append(cyl("thumb_prox", 0.0125, 0.046, gp(-0.016, 0.006, 0.030), SKIN,
+                 rot=(RAKE + 1.15, 0, 0), seg=14))
+    o.append(cyl("thumb_tip", 0.0112, 0.034, (-0.016, 0.004, 0.088), SKIN,
+                 rot=(1.45, 0, 0), seg=14))
     return o
 
 

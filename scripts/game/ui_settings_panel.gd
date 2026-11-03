@@ -22,9 +22,9 @@ func _ready() -> void:
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	add_child(title)
 	_quality = _option_row("Graphics quality", UiSettings.QUALITY_NAMES)
-	_sens = _slider_row("Mouse sensitivity", 0.2, 3.0, 0.05)
+	_sens = _slider_row("Sensitivity", 0.2, 3.0, 0.05)
 	_sens_value = _sens.get_meta("value_label")
-	_vol = _slider_row("Master volume", 0.0, 1.0, 0.01)
+	_vol = _slider_row("Volume", 0.0, 1.0, 0.01)
 	_vol_value = _vol.get_meta("value_label")
 	_fs = CheckButton.new()
 	_fs.text = "Fullscreen"

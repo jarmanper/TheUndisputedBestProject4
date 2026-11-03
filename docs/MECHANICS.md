@@ -36,6 +36,42 @@ Presentation was kept wherever it is not a rule: muzzle flash and gun kick, the
 tracker hologram and marked outline, suspend afterimages and particles, the
 orange blast and scorch decal, camera shake, footsteps and head bob.
 
+## Nov 3: feel and difficulty, without touching the rules
+
+Asked for a better gun, a visible hand, shots that go somewhere when nothing is
+in range, more enemies and a harder game. Three of those would have broken
+section 5, so the difficulty comes from content instead of numbers.
+
+- **The pistol was five boxes.** It now has a slide with serrations, an ejection
+  port and a recessed bore, a dust cover, a trigger inside a real guard, a raked
+  grip with front-strap ribs and a magazine floorplate, and front and rear
+  sights that line up down -Y. It is a new dark `gunmetal` material because the
+  stock brushed steel rendered almost white and read as a toy. Rebuilt in
+  `source/blender/props.py` and checked by rendering it, not by reading the
+  numbers - the first attempt had the grip raked the wrong way.
+- **The hand is a separate prop** (`viewmodel_hand`), because `pistol` is also a
+  world prop on a desk in area A and that one has to stay a bare gun. It lives
+  under `scenes/props/pistol_viewmodel.tscn` with the gun.
+- **`weapon_viewmodel.gd` was dead code.** Nothing referenced it, so the gun had
+  no sway, no bob and no recoil, and `combat.gd`'s `gun.has_method("kick")` was
+  failing silently on every shot. It is attached now, which is most of what
+  makes the gun feel real.
+- **Firing at nothing** now flashes, cracks, throws sparks and leaves a pooled
+  bullet hole. This is feedback, not a rule: a miss deals no damage, starts no
+  cooldown, touches no mark or suspension and defeats nothing, which is exactly
+  what "an invalid activation does nothing and starts no cooldown" requires. The
+  effects are spaced by a cosmetic-only interval that no rule consults.
+- **Nine required targets became sixteen.** Adding enemies is content, which the
+  assignment allows, so difficulty went up without changing a single number the
+  authoring team checks. `tests/placement_check.gd` proves every target has
+  floor under it and no geometry through it - it caught two of the seven new
+  spawns standing over a void on the lower level.
+
+**Enemy health and the Mark/Suspend/Explosion cooldowns were deliberately left
+alone.** Raising them was asked for and would have cost up to 4 points on
+"Built as written", and broken the combo section 5 documents: Mark, Suspend,
+two Combat hits and an Explosion is exactly 100 and exactly one kill.
+
 ## Consequences worth knowing
 
 - **Combat is now a 3 m attack, not a gun.** At 3 m with a 0.6 s cooldown, five

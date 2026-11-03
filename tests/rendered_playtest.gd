@@ -78,6 +78,11 @@ func _run() -> void:
 	check(player != null, "the game scene loads and the player exists")
 	check(scene.get_node_or_null("HUD") != null, "the HUD is present")
 	check(state != null, "GameState autoload is live")
+	var gun: Node = player.get_node_or_null("Head/Camera3D/Pistol")
+	check(gun != null and gun.has_method("kick"), "the pistol viewmodel is live and can recoil")
+	check(gun != null and gun.find_child("Hand", true, false) != null, "the player's hand is on screen")
+	var gun_meshes: int = gun.find_children("*", "MeshInstance3D", true, false).size() if gun else 0
+	check(gun_meshes >= 2, "gun and hand both have geometry (%d meshes)" % gun_meshes)
 	state.game_won.connect(func(): won = true)
 	state.player_died.connect(func(): died = true)
 
@@ -88,7 +93,7 @@ func _run() -> void:
 		check(not InputMap.has_action(removed), "removed action is gone: " + removed)
 
 	var targets: Array = get_nodes_in_group("enemy")
-	check(targets.size() == 9, "9 required targets staged at load (8 patients + the Twin), got %d" % targets.size())
+	check(targets.size() == 16, "16 required targets staged at load (15 patients + the Twin), got %d" % targets.size())
 	check(get_nodes_in_group("boss").size() == 1, "the Twin is one of the required targets")
 
 	# Every scripted door must be open at load. These used to be sealed behind
@@ -130,6 +135,25 @@ func _run() -> void:
 	await press("explode")
 	check(t.health <= before_hp - 20.0 - 60.0 or t.is_dead(), "pressing R detonates on the marked, suspended target for 60")
 	check(not explosion.is_ready(), "Explosion went on cooldown after a real press")
+
+	# a shot into empty space: effects yes, rules no
+	var combat: Node = player.get_node("Combat")
+	combat.cooldown_left = 0.0
+	player.look_at(player.global_position + Vector3(0, 0, 50))
+	await frames(3)
+	var hp_all := []
+	for t3 in get_nodes_in_group("enemy"):
+		hp_all.append(t3.health)
+	var cd_before: float = combat.cooldown_left
+	combat._fire_at_nothing()
+	await frames(2)
+	var unchanged := true
+	var idx := 0
+	for t3 in get_nodes_in_group("enemy"):
+		if t3.health != hp_all[idx]:
+			unchanged = false
+		idx += 1
+	check(unchanged and combat.cooldown_left == cd_before, "a shot that hits nothing deals no damage and starts no cooldown")
 
 	# -------------------------------------------------------------- movement
 	print("phase: movement")

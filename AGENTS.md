@@ -139,8 +139,18 @@ counted once. Speaker nameplates are counted once per distinct speaker.
 | "OBJECTIVE" header, "[Space]" hint | On-screen labels (the assignment counts these) | `scripts/ui/dialogue_box.gd` | 2 |
 | **Total as built** | | | **116** |
 
-**116 / 150. 34 words of headroom.** Verified by parsing the files above, not by
-re-reading this table. The three objectives changed on Nov 2 because two of them
+**131 / 150. Run `python3 tools/word_count.py` - do not trust this table.**
+The tool parses the actual scenes, scripts and voice lines and applies the
+assignment's rule, including "a string shown in more than one place is counted
+once". It is the only number worth quoting.
+
+**The Nov 2 audit here said 116 and was wrong: it missed the loading screen
+entirely.** `scenes/web/loading_screen.tscn` is not the game's name, not a menu
+button and not a controls screen, so every word on it counts, and its footer
+was the single longest piece of text in the game - 12 words, longer than any
+story line. With it included the real figure was 140, or 171 counting every
+menu word, i.e. over the cap. Trimming the loading screen and four menu labels
+brought it to 131 without cutting a single line of story. The three objectives changed on Nov 2 because two of them
 asked for things the player can no longer do - "Find Mom's keycard" and "Restore
 power" were impossible once the interact action went, and the chamber they used
 to unlock is open from the start.
@@ -173,7 +183,11 @@ and `ui_settings.gd:20`, 11); and the `OBJECTIVE` header, the `[Space]` hint and
 the end-screen buttons (`Retry`, `Play again`, `Return to title` —
 `scripts/ui/dialogue_box.gd`, 8). The title screen is exempt by rule 4.
 
-**Worst case, if a grader also counts every menu word: 116 + 23 = 139 / 150.**
+**With menu text: 131 + 23 = 154, but 13 of those 23 are literally buttons**
+(`NEW GAME`, `SETTINGS`, `CONTROLS`, `QUIT`, `BACK`, `Resume`, `Quit`, `Retry`,
+`Play again`, `Title`), which the assignment exempts by name. The honest strict
+figure is **136**: 131 plus the five non-button menu labels (`PAUSED`,
+`Fullscreen`, `Low`/`Medium`/`High`).
 It used to be 182, which would have failed. Two things fixed that, both on Nov 2:
 the HUD became wordless (the ammo counter, `HEALTH` label and the
 `MARKS`/`SUSPEND`/`CHARGES` status lines are now four unlabelled cooldown
