@@ -11,19 +11,26 @@ extends Control
 const SETTINGS_PATH := "user://settings.cfg"
 const BASE_SENSITIVITY := 0.0022  # player.gd default mouse_sensitivity
 
+## Key bindings only. The assignment exempts "a controls screen listing key
+## bindings" from the 150-word cap, so this stays a list of bindings and nothing
+## else - each mechanic's rules and numbers live in the design docs, not on
+## screen. The HUD meters sit in this same order, top to bottom, so the colours
+## never need a label either.
 const CONTROLS := [
 	["WASD", "Move"],
 	["Mouse", "Look"],
 	["Left mouse", "Combat"],
-	["Q", "Mark target"],
-	["E", "Suspend target"],
-	["R", "Explode marked target"],
+	["Q", "Marking"],
+	["E", "Suspend"],
+	["R", "Explosion"],
 	["Esc", "Pause"],
 ]
 
-@onready var title: Label = %Title
+@onready var backdrop: Node3D = %Backdrop
+@onready var kicker: Label = %Kicker
+@onready var rule: TextureRect = %Rule
 @onready var subtitle: Label = %Subtitle
-@onready var tick_label: Label = %Tick
+@onready var footer: Label = %Footer
 @onready var menu: VBoxContainer = %Menu
 @onready var controls_panel: PanelContainer = %ControlsPanel
 @onready var settings_panel: PanelContainer = %SettingsPanel
@@ -41,6 +48,7 @@ const CONTROLS := [
 @onready var fullscreen_toggle: CheckButton = %Fullscreen
 @onready var fade: ColorRect = %Fade
 @onready var ambience: AudioStreamPlayer = %Ambience
+@onready var hum: AudioStreamPlayer = %Hum
 @onready var tick_loop: AudioStreamPlayer = %TickLoop
 @onready var sting: AudioStreamPlayer = %Sting
 @onready var ui_sfx: AudioStreamPlayer = %UiSfx
@@ -82,17 +90,19 @@ func _ready() -> void:
 		var row_label := c.get_parent().get_child(c.get_index() - 1) as Label
 		c.focus_entered.connect(func() -> void:
 			_play(_hover_snd, 0.8)
-			row_label.add_theme_color_override("font_color", Color(1, 0.55, 0.42)))
+			row_label.add_theme_color_override("font_color", Color(1.0, 0.84, 0.52)))
 		c.focus_exited.connect(row_label.remove_theme_color_override.bind("font_color"))
 		c.mouse_entered.connect(c.grab_focus)
 
 	# Fade in from black, ambience swells in.
 	fade.color.a = 1.0
-	create_tween().tween_property(fade, "color:a", 0.0, 2.2).set_trans(Tween.TRANS_SINE)
+	create_tween().tween_property(fade, "color:a", 0.0, 1.7).set_trans(Tween.TRANS_SINE)
 	ambience.play()
+	hum.play()
 	tick_loop.play()
 	_fade_in_audio(ambience, -14.0)
-	_fade_in_audio(tick_loop, -20.0)
+	_fade_in_audio(hum, -24.0)
+	_fade_in_audio(tick_loop, -17.0)
 	_intro_reveal()
 	new_game_btn.grab_focus.call_deferred()
 
@@ -136,6 +146,9 @@ func _show_panel(panel: PanelContainer) -> void:
 	for p in [controls_panel, settings_panel]:
 		p.visible = p == panel
 	menu.visible = panel == null
+	# The panels sit over the title block, so get the subtitle out of the way.
+	for c in [rule, subtitle]:
+		create_tween().tween_property(c, "modulate:a", 0.0 if panel else 1.0, 0.2)
 	if panel:
 		panel.modulate.a = 0.0
 		create_tween().tween_property(panel, "modulate:a", 1.0, 0.25)
@@ -159,7 +172,8 @@ func _start_game() -> void:
 	tw.tween_property(fade, "color:a", 1.0, 1.4).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
 	tw.tween_property(ambience, "volume_db", -60.0, 1.4)
 	tw.tween_property(tick_loop, "volume_db", -60.0, 1.0)
-	tw.tween_property(title, "scale", Vector2(1.04, 1.04), 1.4)
+	tw.tween_property(hum, "volume_db", -60.0, 1.4)
+	backdrop.wind_up()
 	await tw.finished
 	GameState.start_new_game()
 
@@ -243,16 +257,28 @@ func _update_labels() -> void:
 # --- Atmosphere ---------------------------------------------------------------
 
 func _intro_reveal() -> void:
-	var items: Array[Control] = [title, subtitle]
+	# The lettering is real geometry in the backdrop; it swings into place one
+	# beat at a time. The 2D furniture fades up underneath it.
+	backdrop.reveal_title()
+	var items: Array[Control] = [kicker, rule, subtitle]
 	for b in menu.get_children():
 		items.append(b)
-	var delay := 0.6
+	items.append(footer)
+	var delay := 0.35
 	for c in items:
 		c.modulate.a = 0.0
 		var tw := create_tween()
 		tw.tween_interval(delay)
-		tw.tween_property(c, "modulate:a", 1.0, 0.7).set_trans(Tween.TRANS_SINE)
-		delay += 0.12
+		tw.tween_property(c, "modulate:a", 1.0, 0.6).set_trans(Tween.TRANS_SINE)
+		delay += 0.1
+	# The rule under the title draws itself out like a second hand sweeping.
+	# (Animating the minimum size, not the scale: a container resets scale.)
+	var rule_width := rule.custom_minimum_size.x
+	rule.custom_minimum_size.x = 0.0
+	var rt := create_tween()
+	rt.tween_interval(0.5)
+	rt.tween_property(rule, "custom_minimum_size:x", rule_width, 1.0) \
+			.set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
 
 
 func _fade_in_audio(p: AudioStreamPlayer, target_db: float) -> void:
@@ -260,25 +286,18 @@ func _fade_in_audio(p: AudioStreamPlayer, target_db: float) -> void:
 	create_tween().tween_property(p, "volume_db", target_db, 3.0)
 
 
+## Once a second, in time with the tick loop: the escape wheel steps, the
+## pendulum gets its push, and the subtitle catches the light for a frame.
 func _on_tick() -> void:
 	if _leaving:
 		return
 	_tick += 1
-	tick_label.text = "tick" if _tick % 2 == 1 else "tock"
+	backdrop.tick()
+	# self_modulate, not modulate: modulate carries the fade-in and the
+	# fade-out behind an open panel, and this would overwrite its alpha.
 	var tw := create_tween()
-	tw.tween_property(subtitle, "modulate", Color(1.5, 0.35, 0.3, 1), 0.05)
-	tw.tween_property(subtitle, "modulate", Color(0.8, 0.8, 0.8, 1), 0.6)
-	tick_label.modulate.a = 0.7
-	create_tween().tween_property(tick_label, "modulate:a", 0.0, 0.9)
-	if randf() < 0.25:
-		_flicker_title()
-
-
-func _flicker_title() -> void:
-	var tw := create_tween()
-	for i in randi_range(2, 4):
-		tw.tween_property(title, "modulate:a", randf_range(0.1, 0.4), 0.04)
-		tw.tween_property(title, "modulate:a", 1.0, randf_range(0.03, 0.08))
+	tw.tween_property(subtitle, "self_modulate", Color(1.35, 1.2, 1.0), 0.06)
+	tw.tween_property(subtitle, "self_modulate", Color.WHITE, 0.75)
 
 
 func _fill_controls() -> void:

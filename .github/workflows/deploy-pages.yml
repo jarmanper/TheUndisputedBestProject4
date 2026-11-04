@@ -1,9 +1,19 @@
 name: Deploy to GitHub Pages
 
+# The assignment requires Pages to be served from `main` / `/docs`, and a Pages
+# site has exactly one source - so this workflow must NOT also deploy on every
+# push, or it fights the /docs source for it. The graded export is committed to
+# docs/ by hand (tools/web_export.sh docs/index.html). Kept runnable by hand so
+# the build can still be checked in CI without touching the live site.
 on:
-  push:
-    branches: [main]
   workflow_dispatch:
+    inputs:
+      texture_limit:
+        description: "Max texture size for the web build (px)"
+        default: "512"
+      keep_lods:
+        description: "Keep mesh LODs (1) or strip them (0)"
+        default: "0"
 
 permissions:
   contents: read
@@ -16,6 +26,12 @@ concurrency:
 
 env:
   GODOT_VERSION: 4.7.2-stable
+  # The desktop asset set exports to a 271 MB payload, which no grader on a
+  # classroom connection will wait for. tools/web_export.sh re-imports the
+  # textures and meshes at web sizes for this build only. See docs/PLAYTEST.md
+  # round 1 (both testers blocked on load).
+  WEB_TEXTURE_LIMIT: ${{ github.event.inputs.texture_limit || '512' }}
+  WEB_KEEP_LODS: ${{ github.event.inputs.keep_lods || '0' }}
 
 jobs:
   build:
@@ -41,13 +57,29 @@ jobs:
           unzip -q templates.tpz -d /tmp/templates
           mv /tmp/templates/templates/* "$template_dir/"
 
-      - name: Import project resources
-        run: ./godot --headless --verbose --import
-
+      # No separate --import step: web_export.sh patches the import settings
+      # first and then imports once, so a cold runner does not import the
+      # desktop-sized textures and immediately throw them away.
       - name: Export Web build
+        env:
+          GODOT: ${{ github.workspace }}/godot
+        run: ./tools/web_export.sh "${{ github.workspace }}/build/web/index.html"
+
+      # A build that is too big to download is the bug this workflow exists to
+      # avoid shipping again. Fail loudly instead of deploying it quietly.
+      - name: Check payload size
         run: |
-          mkdir -p build/web
-          ./godot --headless --export-release "Web" build/web/index.html
+          total=$(du -sb build/web | cut -f1)
+          mb=$((total / 1048576))
+          echo "Web payload: ${mb} MB"
+          ls -l build/web
+          if [ "$mb" -gt 160 ]; then
+            echo "::error::Web payload is ${mb} MB (limit 160 MB). Lower WEB_TEXTURE_LIMIT or cut assets."
+            exit 1
+          fi
+          if [ "$mb" -gt 120 ]; then
+            echo "::warning::Web payload is ${mb} MB. Graders on slow connections will wait a long time."
+          fi
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

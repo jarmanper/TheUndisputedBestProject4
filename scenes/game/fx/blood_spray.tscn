@@ -1,0 +1,104 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/visual/vfx_player.gd" id="1_vfx"]
+[ext_resource type="Texture2D" path="res://assets/textures/vfx/flare.png" id="2_flare"]
+[ext_resource type="Texture2D" path="res://assets/textures/vfx/smoke_atlas.png" id="3_smoke"]
+
+[sub_resource type="Gradient" id="Gradient_drop"]
+offsets = PackedFloat32Array(0, 0.7, 1)
+colors = PackedColorArray(0.55, 0.03, 0.03, 1, 0.38, 0.01, 0.01, 1, 0.25, 0, 0, 0)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_drop"]
+gradient = SubResource("Gradient_drop")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_drop"]
+particle_flag_align_y = true
+direction = Vector3(0, 1, 0)
+spread = 40.0
+initial_velocity_min = 1.8
+initial_velocity_max = 4.5
+gravity = Vector3(0, -9.8, 0)
+scale_min = 0.6
+scale_max = 1.5
+color_ramp = SubResource("GradientTexture1D_drop")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_drop"]
+transparency = 1
+shading_mode = 0
+vertex_color_use_as_albedo = true
+albedo_texture = ExtResource("2_flare")
+disable_receive_shadows = true
+billboard_keep_scale = true
+
+[sub_resource type="QuadMesh" id="QuadMesh_drop"]
+material = SubResource("StandardMaterial3D_drop")
+size = Vector2(0.035, 0.09)
+
+[sub_resource type="Gradient" id="Gradient_mist"]
+colors = PackedColorArray(0.3, 0.01, 0.01, 0.4, 0.18, 0, 0, 0)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_mist"]
+gradient = SubResource("Gradient_mist")
+
+[sub_resource type="Curve" id="Curve_mist"]
+_data = [Vector2(0, 0.4), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_mist"]
+curve = SubResource("Curve_mist")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_mist"]
+direction = Vector3(0, 1, 0)
+spread = 35.0
+initial_velocity_min = 0.3
+initial_velocity_max = 1.0
+gravity = Vector3(0, -0.5, 0)
+damping_min = 2.0
+damping_max = 2.0
+scale_curve = SubResource("CurveTexture_mist")
+color_ramp = SubResource("GradientTexture1D_mist")
+anim_offset_max = 1.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_mist"]
+transparency = 1
+depth_draw_mode = 2
+shading_mode = 0
+vertex_color_use_as_albedo = true
+albedo_texture = ExtResource("3_smoke")
+disable_receive_shadows = true
+billboard_mode = 3
+billboard_keep_scale = true
+particles_anim_h_frames = 2
+particles_anim_v_frames = 2
+particles_anim_loop = false
+
+[sub_resource type="QuadMesh" id="QuadMesh_mist"]
+material = SubResource("StandardMaterial3D_mist")
+size = Vector2(0.45, 0.45)
+
+[node name="BloodSpray" type="Node3D"]
+script = ExtResource("1_vfx")
+duration = 1.0
+
+[node name="Droplets" type="GPUParticles3D" parent="."]
+cast_shadow = 0
+emitting = false
+amount = 40
+lifetime = 0.6
+one_shot = true
+explosiveness = 0.95
+visibility_aabb = AABB(-4, -4, -4, 8, 8, 8)
+transform_align = 3
+process_material = SubResource("ParticleProcessMaterial_drop")
+draw_pass_1 = SubResource("QuadMesh_drop")
+
+[node name="Mist" type="GPUParticles3D" parent="."]
+cast_shadow = 0
+emitting = false
+amount = 6
+lifetime = 0.5
+one_shot = true
+explosiveness = 1.0
+visibility_aabb = AABB(-2, -2, -2, 4, 4, 4)
+process_material = SubResource("ParticleProcessMaterial_mist")
+draw_pass_1 = SubResource("QuadMesh_mist")

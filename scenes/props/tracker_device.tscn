@@ -3,17 +3,17 @@
 [ext_resource type="PackedScene" path="res://assets/models/props/tracker_device.glb" id="1_fcakn"]
 [ext_resource type="Script" path="res://scripts/visual/light_flicker.gd" id="2_qc3wo"]
 
-[node name="TrackerDevice" type="Node3D" unique_id=1905412669]
+[node name="TrackerDevice" type="Node3D" unique_id=1671194960]
 
-[node name="Model" type="Node3D" parent="." unique_id=853355018 instance=ExtResource("1_fcakn")]
+[node name="Model" type="Node3D" parent="." unique_id=2115332895 instance=ExtResource("1_fcakn")]
 
-[node name="Lights" type="Node3D" parent="." unique_id=245187224]
+[node name="Lights" type="Node3D" parent="." unique_id=1371584796]
 
-[node name="tracker_light" type="OmniLight3D" parent="Lights" unique_id=1556926447]
+[node name="tracker_light" type="OmniLight3D" parent="Lights" unique_id=630113614]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.06, 0.02)
 light_color = Color(1, 0.2, 0.1, 1)
 light_energy = 0.2
-light_volumetric_fog_energy = 1.5
+light_volumetric_fog_energy = 0.1
 shadow_blur = 1.5
 distance_fade_enabled = true
 distance_fade_begin = 30.0

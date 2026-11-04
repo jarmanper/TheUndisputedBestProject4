@@ -1,0 +1,177 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/game/story_trigger.gd" id="1_story"]
+
+[sub_resource type="BoxShape3D" id="Box_0"]
+size = Vector3(6, 3, 6)
+
+[sub_resource type="BoxShape3D" id="Box_1"]
+size = Vector3(5, 3, 5)
+
+[sub_resource type="BoxShape3D" id="Box_2"]
+size = Vector3(4, 3, 6)
+
+[sub_resource type="BoxShape3D" id="Box_3"]
+size = Vector3(5, 3, 5)
+
+[sub_resource type="BoxShape3D" id="Box_4"]
+size = Vector3(5, 3, 5)
+
+[sub_resource type="BoxShape3D" id="Box_5"]
+size = Vector3(4, 3, 6)
+
+[sub_resource type="BoxShape3D" id="Box_6"]
+size = Vector3(8, 3, 6)
+
+[sub_resource type="BoxShape3D" id="Box_7"]
+size = Vector3(4, 6, 4)
+
+[sub_resource type="BoxShape3D" id="Box_8"]
+size = Vector3(6, 3, 8)
+
+[sub_resource type="BoxShape3D" id="Box_9"]
+size = Vector3(5, 3, 5)
+
+[sub_resource type="BoxShape3D" id="Box_10"]
+size = Vector3(12, 4, 12)
+
+[node name="StoryLayer" type="Node3D"]
+
+[node name="Intro" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 3)
+monitorable = false
+script = ExtResource("1_story")
+trigger_id = "intro"
+lines = Array[String](["Mom: If you're hearing this, we never left Timbuk.", "Me: Mom? Twelve years. I'm coming down."])
+objective = "Go deeper"
+requires_flag = ""
+sets_flag = ""
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Intro"]
+shape = SubResource("Box_0")
+
+[node name="SecurityOffice" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12.15, 1.5, 1.5)
+monitorable = false
+script = ExtResource("1_story")
+trigger_id = "security"
+objective = "Find them"
+requires_flag = ""
+sets_flag = ""
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="SecurityOffice"]
+shape = SubResource("Box_1")
+
+[node name="ResearchCorridor" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, -16.15)
+monitorable = false
+script = ExtResource("1_story")
+trigger_id = "research"
+objective = ""
+requires_flag = ""
+sets_flag = ""
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ResearchCorridor"]
+shape = SubResource("Box_2")
+
+[node name="ClockWorkshop" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.45, 1.5, -26.3)
+monitorable = false
+script = ExtResource("1_story")
+trigger_id = "clock_workshop"
+lines = Array[String](["Mom: Subject Two's heart is a clock. He asks for his brother.", "Me: What brother?"])
+objective = ""
+requires_flag = ""
+sets_flag = ""
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ClockWorkshop"]
+shape = SubResource("Box_3")
+
+[node name="Dormitory" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -22.05, 1.5, -20.45)
+monitorable = false
+script = ExtResource("1_story")
+trigger_id = "dormitory"
+lines = Array[String](["???: Tick... tock... where are you, brother?"])
+objective = ""
+requires_flag = ""
+sets_flag = ""
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Dormitory"]
+shape = SubResource("Box_4")
+
+[node name="CellBlock" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 35.5, 1.5, -44.15)
+monitorable = false
+script = ExtResource("1_story")
+trigger_id = "cell_block"
+objective = ""
+requires_flag = ""
+sets_flag = ""
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="CellBlock"]
+shape = SubResource("Box_5")
+
+[node name="ContainmentHall" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, -40.3)
+monitorable = false
+script = ExtResource("1_story")
+trigger_id = "containment"
+lines = Array[String](["Mom: Containment failed. Your father went down to him."])
+objective = ""
+requires_flag = ""
+sets_flag = ""
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ContainmentHall"]
+shape = SubResource("Box_6")
+
+[node name="LowerStairs" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.5, -56.6)
+monitorable = false
+script = ExtResource("1_story")
+trigger_id = "lower_stairs"
+objective = ""
+requires_flag = ""
+sets_flag = ""
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LowerStairs"]
+shape = SubResource("Box_7")
+
+[node name="Generator" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -27.15, -4.5, -69)
+monitorable = false
+script = ExtResource("1_story")
+trigger_id = "generator"
+lines = Array[String](["Mom: We kept him in the chamber below. Forgive us."])
+objective = "Reach the chamber"
+requires_flag = "has_keycard"
+sets_flag = ""
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Generator"]
+shape = SubResource("Box_8")
+
+[node name="TwinsRoom" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, -4.5, -70.85)
+monitorable = false
+script = ExtResource("1_story")
+trigger_id = "twins_room"
+lines = Array[String](["Me: They raised him in here."])
+objective = ""
+requires_flag = ""
+sets_flag = ""
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="TwinsRoom"]
+shape = SubResource("Box_9")
+
+[node name="TwinChamber" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14.7, -4.5, -105.3)
+monitorable = false
+script = ExtResource("1_story")
+trigger_id = "twin_chamber"
+lines = Array[String](["Twin: They made me. They kept me. You they let live.", "Me: Where are our parents?", "Twin: Here. With me. It's time you saw."])
+objective = "Stop your brother"
+requires_flag = "power_restored"
+sets_flag = "chamber_open"
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="TwinChamber"]
+shape = SubResource("Box_10")

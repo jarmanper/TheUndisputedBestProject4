@@ -16,7 +16,7 @@ import os
 
 import bmesh
 import bpy
-from mathutils import Matrix, Vector
+from mathutils import Euler, Matrix, Vector
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 TEX_DIR = os.path.join(ROOT, "assets", "textures")
@@ -365,6 +365,256 @@ def collider(name, size, loc, rot=(0, 0, 0)):
     ob.display_type = "WIRE"
     ob.hide_render = True
     return ob
+
+
+# -------------------------------------------------- per-part box collision
+#
+# One axis-aligned box over a whole prop makes flat or splayed geometry
+# (puddles, leg splay, lamp arms, slid-open doors) inflate into an invisible
+# wall metres away from anything the player can see. `part_colliders()` instead
+# fits a box per visible part, throws away the parts nothing should bump into,
+# and merges the rest only while a merge stays tight.
+
+# Cosmetic parts that are solid enough to survive the geometric filters below
+# but must never block the player.
+NONSOLID_PARTS = frozenset((
+    "blood", "puddle", "spill", "residue", "shard", "drag", "finger", "smear",
+    "paper", "form", "folder", "label", "tag", "toe_tag", "card", "number",
+    "cable", "wire", "hose", "zip", "line", "chain", "cord", "bubble",
+    "fluid", "liq", "drape", "curtain", "blanket", "coat", "rag", "dead",
+    "glass", "collar", "pane", "window", "lens", "screen", "readout", "scr",
+))
+MIN_SOLID_THICK = 0.02     # thinner than this is a pane/sheet/wire: no collision
+PANEL_SPAN = 0.35          # ... unless it spans this much both ways (a shelf)
+MIN_SOLID_SIZE = 0.10      # smaller than this in every axis is a trinket
+STEP_OVER = 0.12           # parts entirely below this are walked over
+COL_MIN = 0.05             # smallest collider box Godot should get
+ROUND_DIA = 1.0            # round parts this wide get a 12-gon, not a box
+ROUND_TOL = 0.08           # how straight a part's silhouette must be to count
+
+
+def _part_base(ob):
+    return ob.name.split(".")[0]
+
+
+def round_collider(name, r, h, loc, rot=(0, 0, 0), seg=12):
+    """Invisible 12-gon prism collision: a box over a wide cylinder leaves
+    invisible corners sticking out by 41% of its radius."""
+    bm = bmesh.new()
+    bmesh.ops.create_cone(bm, cap_ends=True, cap_tris=False, segments=seg,
+                          radius1=r / math.cos(math.pi / seg), radius2=r / math.cos(math.pi / seg),
+                          depth=max(h, COL_MIN))
+    ob = mesh_obj(name + "-colonly", bm, None)
+    ob.location = loc
+    ob.rotation_euler = rot
+    ob.display_type = "WIRE"
+    ob.hide_render = True
+    return ob
+
+
+SPLIT_VOL = 0.12           # only parts with a box this big are worth splitting
+SPLIT_LEN = 0.7            # ... and this long
+SPLIT_GAIN = 0.4           # keep the split only if it costs this much of the box
+
+
+def _slab_boxes(ob, size, rot):
+    """Boxes that follow a long bent part (a pipe, an arc, a cable run) instead
+    of one box around its diagonal. None when splitting does not pay off."""
+    if _vol(size) < SPLIT_VOL or max(size) < SPLIT_LEN:
+        return None
+    bb = [Vector(c) for c in ob.bound_box]
+    lo = Vector([min(v[i] for v in bb) for i in range(3)])
+    hi = Vector([max(v[i] for v in bb) for i in range(3)])
+    axis = max(range(3), key=lambda i: hi[i] - lo[i])
+    n = min(8, max(2, int(math.ceil((hi[axis] - lo[axis]) / 0.4))))
+    step = (hi[axis] - lo[axis]) / n
+    sc = [abs(s) for s in ob.scale]
+    cuts = []
+    for k in range(n):
+        a0, a1 = lo[axis] + k * step, lo[axis] + (k + 1) * step
+        sel = [v.co for v in ob.data.vertices if a0 - 1e-6 <= v.co[axis] <= a1 + 1e-6]
+        if not sel:
+            cuts.append(None)       # a plain box has vertices only at its corners
+            continue
+        slo = Vector([min(p[i] for p in sel) for i in range(3)])
+        shi = Vector([max(p[i] for p in sel) for i in range(3)])
+        slo[axis], shi[axis] = a0, a1
+        cuts.append((slo, shi))
+    # a slab with no vertices of its own spans whatever its neighbours span, so
+    # splitting a solid box gives the box back and is rejected by the gain test
+    for k, c in enumerate(cuts):
+        if c is not None:
+            continue
+        near = [d for d in (next((cuts[m] for m in range(k, -1, -1) if cuts[m]), None),
+                            next((cuts[m] for m in range(k, n) if cuts[m]), None)) if d]
+        if not near:
+            return None
+        slo = Vector([min(d[0][i] for d in near) for i in range(3)])
+        shi = Vector([max(d[1][i] for d in near) for i in range(3)])
+        slo[axis] = lo[axis] + k * step
+        shi[axis] = lo[axis] + (k + 1) * step
+        cuts[k] = (slo, shi)
+    out = []
+    for slo, shi in cuts:
+        ssize = Vector([(shi[i] - slo[i]) * sc[i] for i in range(3)])
+        out.append((ob.matrix_world @ ((slo + shi) / 2), ssize, rot, _vol(ssize)))
+    if not out or sum(b[3] for b in out) > SPLIT_GAIN * _vol(size):
+        return None
+    return out
+
+
+def _round_part(ob, size):
+    """(radius, is_round): a part whose silhouette around its own Z axis is a
+    circle (cylinder, disc, ring) rather than a box."""
+    if abs(size.x - size.y) > 0.02 + 0.05 * max(size.x, size.y):
+        return 0.0, False
+    vs = ob.data.vertices
+    if len(vs) < 8:
+        return 0.0, False
+    bb = [Vector(c) for c in ob.bound_box]
+    cx = (min(v.x for v in bb) + max(v.x for v in bb)) / 2
+    cy = (min(v.y for v in bb) + max(v.y for v in bb)) / 2
+    rs = [math.hypot(v.co.x - cx, v.co.y - cy) for v in vs]
+    rmax = max(rs)
+    if rmax < 1e-4 or (rmax - min(rs)) / rmax > ROUND_TOL:
+        return 0.0, False
+    return rmax * abs(ob.scale.x), True
+
+
+def _local_box(ob):
+    """(centre, size, rot) of a part's own bounding box in its parent frame."""
+    bb = [Vector(c) for c in ob.bound_box]
+    lo = Vector([min(v[i] for v in bb) for i in range(3)])
+    hi = Vector([max(v[i] for v in bb) for i in range(3)])
+    s = ob.scale
+    size = Vector([(hi[i] - lo[i]) * abs(s[i]) for i in range(3)])
+    ctr = ob.matrix_world @ ((lo + hi) / 2)
+    return ctr, size, tuple(ob.rotation_euler)
+
+
+def _corners(ctr, size, rot):
+    m = Matrix.Translation(ctr) @ Euler(rot).to_matrix().to_4x4()
+    return [m @ Vector((sx * size.x / 2, sy * size.y / 2, sz * size.z / 2))
+            for sx in (-1, 1) for sy in (-1, 1) for sz in (-1, 1)]
+
+
+def _world_aabb(ctr, size, rot):
+    pts = _corners(ctr, size, rot)
+    lo = Vector([min(p[i] for p in pts) for i in range(3)])
+    hi = Vector([max(p[i] for p in pts) for i in range(3)])
+    return lo, hi
+
+
+def _vol(size):
+    return max(size.x, 1e-4) * max(size.y, 1e-4) * max(size.z, 1e-4)
+
+
+MERGE_GAP = 0.25           # never merge across a horizontal gap wider than this
+MERGE_GAP_Z = 0.6          # ... or a vertical one wider than this
+FORCED_WASTE = 5.0         # over the box cap, merges may be this much looser
+
+
+def _gap(a, b):
+    """(horizontal, vertical) empty gap between two boxes (0 = they overlap).
+    Merging across a real gap is what turns a jammed-open door or a row of bars
+    into an invisible wall, so the gap caps apply to every merge."""
+    lo_a, hi_a = _world_aabb(*a[:3])
+    lo_b, hi_b = _world_aabb(*b[:3])
+    g = [max(lo_b[i] - hi_a[i], lo_a[i] - hi_b[i], 0.0) for i in range(3)]
+    return max(g[0], g[1]), g[2]
+
+
+def _merge_pair(a, b):
+    """Merged box of two (ctr, size, rot, solid) entries, kept oriented when
+    both share a rotation, otherwise their axis-aligned union."""
+    if max(abs(a[2][i] - b[2][i]) for i in range(3)) < 1e-4:
+        rot = a[2]
+        inv = Euler(rot).to_matrix().inverted()
+        pts = []
+        for e in (a, b):
+            pts += [inv @ p for p in _corners(e[0], e[1], e[2])]
+        lo = Vector([min(p[i] for p in pts) for i in range(3)])
+        hi = Vector([max(p[i] for p in pts) for i in range(3)])
+        ctr = Euler(rot).to_matrix() @ ((lo + hi) / 2)
+        return (ctr, hi - lo, rot, a[3] + b[3])
+    lo_a, hi_a = _world_aabb(*a[:3])
+    lo_b, hi_b = _world_aabb(*b[:3])
+    lo = Vector([min(lo_a[i], lo_b[i]) for i in range(3)])
+    hi = Vector([max(hi_a[i], hi_b[i]) for i in range(3)])
+    return ((lo + hi) / 2, hi - lo, (0, 0, 0), a[3] + b[3])
+
+
+def part_colliders(name, parts, skip=(), max_boxes=20, waste=1.5, floor=0.0):
+    """Collision boxes that hug `parts` (the prop's meshes before they are
+    joined). Returns a list of collider objects, possibly empty.
+
+    skip      extra part-name substrings that should not collide
+    max_boxes soft cap: above it looser merges are allowed, but a merge never
+              bridges a gap the player could walk through (MERGE_GAP)
+    waste     a merge is free while merged volume <= waste * the solid volume
+              of the parts inside it
+    floor     colliders are clipped to this Z and never pushed below it
+    """
+    boxes = []
+    rounds = []
+    for ob in parts:
+        if ob.type != "MESH":
+            continue
+        base = _part_base(ob)
+        if base in NONSOLID_PARTS or any(k and k in base for k in skip):
+            continue
+        ctr, size, rot = _local_box(ob)
+        dims = sorted(size)
+        if dims[2] < MIN_SOLID_SIZE:                       # trinket
+            continue
+        # a thin part only collides if it is a real panel (shelf, cage wall,
+        # table top) rather than a pane, strap, blade of grass or sheet of paper
+        if dims[0] < MIN_SOLID_THICK and dims[1] < PANEL_SPAN:
+            continue
+        lo, hi = _world_aabb(ctr, size, rot)
+        if hi.z <= floor + STEP_OVER:
+            continue
+        r, is_round = _round_part(ob, size)
+        if is_round and 2 * r >= ROUND_DIA:
+            rounds.append((ctr, r, size.z, rot))
+            continue
+        slabs = _slab_boxes(ob, size, rot)
+        boxes += slabs if slabs else [(ctr, size, rot, _vol(size))]
+
+    while len(boxes) > 1:
+        over = len(boxes) > max_boxes
+        best = None
+        for i in range(len(boxes)):
+            for j in range(i + 1, len(boxes)):
+                hg, vg = _gap(boxes[i], boxes[j])
+                if hg > MERGE_GAP or vg > MERGE_GAP_Z:
+                    continue            # merging these would wall off a real gap
+                m = _merge_pair(boxes[i], boxes[j])
+                cost = _vol(m[1]) / m[3]
+                if cost > waste and not (over and cost <= FORCED_WASTE):
+                    continue
+                if best is None or cost < best[0]:
+                    best = (cost, i, j, m)
+        if best is None:
+            break
+        cost, i, j, m = best
+        boxes = [b for k, b in enumerate(boxes) if k not in (i, j)] + [m]
+
+    out = []
+    total = len(boxes) + len(rounds)
+    for k, (ctr, size, rot, _solid) in enumerate(boxes):
+        size = Vector([max(s, COL_MIN) for s in size])
+        if max(abs(r) for r in rot) < 1e-4:          # clip flat boxes to the floor
+            lo_z, hi_z = ctr.z - size.z / 2, ctr.z + size.z / 2
+            if lo_z < floor:
+                lo_z = min(floor, hi_z - COL_MIN)
+                size.z = hi_z - lo_z
+                ctr = Vector((ctr.x, ctr.y, (lo_z + hi_z) / 2))
+        out.append(collider(f"{name}_col{k}" if total > 1 else f"{name}_col",
+                            tuple(size), tuple(ctr), rot))
+    for k, (ctr, r, h, rot) in enumerate(rounds):
+        out.append(round_collider(f"{name}_round{k}", r, h, tuple(ctr), rot))
+    return out
 
 
 def apply_all(objs=None):

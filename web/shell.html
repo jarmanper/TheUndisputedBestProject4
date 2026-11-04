@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0">
+	<title>$GODOT_PROJECT_NAME</title>
+	<style>
+		html, body, #canvas { margin: 0; padding: 0; border: 0; }
+		body {
+			color: #eae7e2;
+			background-color: #040405;
+			overflow: hidden;
+			touch-action: none;
+			font-family: 'Oswald', 'Helvetica Neue', Arial, sans-serif;
+		}
+		#canvas { display: block; }
+		#canvas:focus { outline: none; }
+
+		#boot {
+			position: absolute; inset: 0;
+			display: flex; flex-direction: column;
+			align-items: center; justify-content: center;
+			background: radial-gradient(ellipse at 50% 45%, #121014 0%, #040405 70%);
+			z-index: 10;
+		}
+		#boot.gone { display: none; }
+		#boot-kicker {
+			font-size: 13px; letter-spacing: .34em; text-transform: uppercase;
+			color: #857868; margin-bottom: 26px;
+		}
+		#boot-title {
+			font-family: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+			font-size: 64px; letter-spacing: .16em; color: #efeae2;
+			margin: 0 0 6px 0; font-weight: 500;
+		}
+		#boot-sub {
+			font-size: 13px; letter-spacing: .3em; text-transform: uppercase;
+			color: #f2bd61; margin-bottom: 42px;
+		}
+		#boot-rail {
+			position: relative; width: min(560px, 76vw); height: 3px;
+			background: #2b2721; overflow: hidden;
+		}
+		#boot-fill {
+			position: absolute; left: 0; top: 0; bottom: 0; width: 0%;
+			background: #f2bd61; transition: width .18s linear;
+		}
+		#boot-rail.indeterminate #boot-fill {
+			width: 28%; animation: sweep 1.5s ease-in-out infinite; transition: none;
+		}
+		@keyframes sweep { 0% { left: -28%; } 100% { left: 100%; } }
+		#boot-row {
+			width: min(560px, 76vw); margin-top: 12px;
+			display: flex; justify-content: space-between;
+			font-size: 12px; letter-spacing: .22em; text-transform: uppercase;
+		}
+		#boot-stage { color: #8d8172; }
+		#boot-pct { color: #f2bd61; }
+		#boot-foot {
+			position: absolute; bottom: 36px; left: 0; right: 0; text-align: center;
+			font-size: 12px; letter-spacing: .14em; color: #4f4840;
+		}
+		#boot-notice {
+			display: none; margin-top: 30px; max-width: 70vw; padding: 14px 18px;
+			border: 1px solid #7d3a3a; background: #2a1618; color: #e8d9d9;
+			font-size: 13px; line-height: 1.5; letter-spacing: .02em;
+			white-space: pre-wrap; text-align: center;
+		}
+	</style>
+	$GODOT_HEAD_INCLUDE
+</head>
+<body>
+	<canvas id="canvas">Your browser does not support the canvas tag.</canvas>
+	<noscript>Your browser does not support JavaScript.</noscript>
+
+	<div id="boot">
+		<div id="boot-kicker">Timbuk Research Facility</div>
+		<h1 id="boot-title">TIMBUK</h1>
+		<div id="boot-sub">Second Hand</div>
+		<div id="boot-rail" class="indeterminate"><div id="boot-fill"></div></div>
+		<div id="boot-row"><span id="boot-stage">Connecting</span><span id="boot-pct"></span></div>
+		<div id="boot-notice"></div>
+		<div id="boot-foot">First load downloads the whole game. Leave the tab open.</div>
+	</div>
+
+	<script src="$GODOT_URL"></script>
+	<script>
+const GODOT_CONFIG = $GODOT_CONFIG;
+const GODOT_THREADS_ENABLED = $GODOT_THREADS_ENABLED;
+const engine = new Engine(GODOT_CONFIG);
+
+(function () {
+	const boot = document.getElementById('boot');
+	const rail = document.getElementById('boot-rail');
+	const fill = document.getElementById('boot-fill');
+	const stage = document.getElementById('boot-stage');
+	const pct = document.getElementById('boot-pct');
+	const notice = document.getElementById('boot-notice');
+	const foot = document.getElementById('boot-foot');
+
+	const MB = (b) => (b / 1048576).toFixed(1);
+	let done = false;
+	let lastBytes = 0;
+	const started = Date.now();
+
+	// Total bytes are baked into GODOT_CONFIG.fileSizes, so the bar is accurate
+	// even when the server sends no Content-Length.
+	let known = 0;
+	try { known = Object.values(GODOT_CONFIG.fileSizes || {}).reduce((a, b) => a + b, 0); } catch (e) { known = 0; }
+
+	function setStage(text) { stage.textContent = text; }
+
+	function setProgress(current, total) {
+		const max = total > 0 ? total : known;
+		if (max > 0 && current > 0) {
+			rail.classList.remove('indeterminate');
+			const f = Math.max(0, Math.min(1, current / max));
+			fill.style.width = (f * 100).toFixed(1) + '%';
+			pct.textContent = Math.round(f * 100) + '%';
+			setStage('Downloading  ' + MB(current) + ' / ' + MB(max) + ' MB');
+			lastBytes = current;
+		} else {
+			rail.classList.add('indeterminate');
+			pct.textContent = '';
+		}
+	}
+
+	function fail(err) {
+		console.error(err);
+		let msg = 'An unknown error occurred.';
+		if (err instanceof Error) { msg = err.message; } else if (typeof err === 'string') { msg = err; }
+		notice.textContent = msg;
+		notice.style.display = 'block';
+		rail.style.display = 'none';
+		setStage('Failed');
+		pct.textContent = '';
+		done = true;
+	}
+
+	// Honest feedback while the download is slow: say so rather than sit silent.
+	setInterval(function () {
+		if (done) { return; }
+		const secs = (Date.now() - started) / 1000;
+		if (secs > 20 && lastBytes > 0) {
+			foot.textContent = 'Still downloading (' + MB(lastBytes) + ' MB so far). This can take a minute or two.';
+		} else if (secs > 45) {
+			foot.textContent = 'Still working. Leave the tab open.';
+		}
+	}, 3000);
+
+	const missing = Engine.getMissingFeatures({ threads: GODOT_THREADS_ENABLED });
+	if (missing.length !== 0) {
+		fail('This browser is missing features Godot needs on the Web:\n' + missing.join('\n'));
+		return;
+	}
+
+	setStage('Downloading');
+	engine.startGame({
+		'onProgress': function (current, total) { setProgress(current, total); },
+	}).then(function () {
+		// Download finished; the engine is now booting and the project's own
+		// loading screen takes over from here.
+		done = true;
+		fill.style.width = '100%';
+		pct.textContent = '100%';
+		setStage('Starting');
+		setTimeout(function () { boot.classList.add('gone'); }, 350);
+	}, fail);
+}());
+	</script>
+</body>
+</html>

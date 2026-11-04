@@ -1,3 +1,5 @@
+> **Recorded on main's earlier integration** (Rhaiyn's `playtest-integration` line, last at `ecf81ed`). On Nov 4 the team shipped `visual-rehaul` instead; the Marking lifecycle fix and `tests/marking_complete.gd` were ported to it (36/36). File names below such as `final_chamber.tscn` and `tests/marking_final_game.gd` exist only in that history. Results are kept as she recorded them.
+
 # Rhaiyn Newby — complete Marking delivery
 
 Owner: **Rhaiyn Newby**, Team 4, COMP 440 Project 4. Work branch: `playtest-integration`; integration PR: [#3](https://github.com/jarmanper/TheUndisputedBestProject4/pull/3).

@@ -15,7 +15,11 @@ func spawn(source: MeshInstance3D) -> MeshInstance3D:
 	ghost.mesh = source.bake_mesh_from_current_skeleton_pose() if source.skeleton != NodePath() else source.mesh
 	ghost.material_override = GHOST_MAT.duplicate()
 	ghost.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-	get_tree().current_scene.add_child(ghost)
+	# current_scene is null during a scene change and in test harnesses, so fall
+	# back to the root the same way TimbukFx.spawn does
+	var tree := get_tree()
+	var parent: Node = tree.current_scene if tree.current_scene else tree.root
+	parent.add_child(ghost)
 	ghost.global_transform = source.global_transform
 	var mat: ShaderMaterial = ghost.material_override
 	var tw := ghost.create_tween()

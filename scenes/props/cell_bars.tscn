@@ -2,6 +2,6 @@
 
 [ext_resource type="PackedScene" path="res://assets/models/props/cell_bars.glb" id="1_i88gt"]
 
-[node name="CellBars" type="Node3D" unique_id=2106428327]
+[node name="CellBars" type="Node3D" unique_id=1496262343]
 
-[node name="Model" type="Node3D" parent="." unique_id=2301520 instance=ExtResource("1_i88gt")]
+[node name="Model" type="Node3D" parent="." unique_id=1427377261 instance=ExtResource("1_i88gt")]

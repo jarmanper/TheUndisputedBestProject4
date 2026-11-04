@@ -1,45 +1,66 @@
-[gd_scene load_steps=8 format=3]
+[gd_scene format=3]
 
 [ext_resource type="Script" path="res://scripts/game/player.gd" id="player"]
 [ext_resource type="Script" path="res://scripts/game/mechanics/combat.gd" id="combat"]
-[ext_resource type="Script" path="res://scripts/game/mechanics/marking.gd" id="mark"]
+[ext_resource type="Script" path="res://scripts/game/mechanics/marking.gd" id="marking"]
 [ext_resource type="Script" path="res://scripts/game/mechanics/suspend.gd" id="suspend"]
 [ext_resource type="Script" path="res://scripts/game/mechanics/explosion.gd" id="explosion"]
+[ext_resource type="PackedScene" path="res://scenes/props/pistol_viewmodel.tscn" id="pistol"]
 
-[ext_resource type="Script" path="res://scripts/game/hooded_player_visual.gd" id="visual"]
-
-[sub_resource type="CapsuleShape3D" id="shape"]
+[sub_resource type="CapsuleShape3D" id="cap"]
 radius = 0.3
-height = 1.8
+height = 1.75
 
 [node name="Player" type="CharacterBody3D"]
 script = ExtResource("player")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
-position = Vector3(0, 0.9, 0)
-shape = SubResource("shape")
-
-[node name="Visual" type="Node3D" parent="."]
-script = ExtResource("visual")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.875, 0)
+shape = SubResource("cap")
 
 [node name="Head" type="Node3D" parent="."]
-position = Vector3(0.55, 1.55, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6, 0)
 
-[node name="SpringArm3D" type="SpringArm3D" parent="Head"]
-spring_length = 2.8
-margin = 0.2
-collision_mask = 1
-
-[node name="Camera3D" type="Camera3D" parent="Head/SpringArm3D"]
+[node name="Camera3D" type="Camera3D" parent="Head"]
 current = true
 fov = 75.0
-near = 0.05
+near = 0.03
+
+[node name="Flashlight" type="SpotLight3D" parent="Head/Camera3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.15, -0.1, 0)
+light_color = Color(1, 0.95, 0.85, 1)
+light_energy = 3.0
+light_cull_mask = 4294967293
+shadow_enabled = true
+spot_range = 24.0
+spot_angle = 26.0
+spot_attenuation = 0.8
+
+[node name="ViewmodelKey" type="OmniLight3D" parent="Head/Camera3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.12, 0.16, -0.08)
+light_color = Color(1, 0.96, 0.9, 1)
+light_energy = 1.05
+light_cull_mask = 2
+shadow_enabled = false
+omni_range = 1.6
+
+[node name="ViewmodelFill" type="OmniLight3D" parent="Head/Camera3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, -0.12, -0.1)
+light_color = Color(0.62, 0.72, 0.9, 1)
+light_energy = 0.42
+light_cull_mask = 2
+shadow_enabled = false
+omni_range = 1.4
+
+[node name="Pistol" parent="Head/Camera3D" instance=ExtResource("pistol")]
+transform = Transform3D(0.996195, 0, -0.0871557, -0.00228147, 0.999657, -0.0260773, 0.0871259, 0.0261769, 0.995853, 0.165, -0.145, -0.30)
 
 [node name="Combat" type="Node" parent="."]
 script = ExtResource("combat")
+muzzle_path = NodePath("../Head/Camera3D/Pistol")
 
 [node name="Marking" type="Node" parent="."]
-script = ExtResource("mark")
+script = ExtResource("marking")
 
 [node name="Suspend" type="Node" parent="."]
 script = ExtResource("suspend")

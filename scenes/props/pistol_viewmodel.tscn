@@ -1,0 +1,24 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/game/weapon_viewmodel.gd" id="vm"]
+[ext_resource type="PackedScene" path="res://assets/models/props/pistol.glb" id="gun"]
+[ext_resource type="PackedScene" path="res://assets/models/props/viewmodel_hand.glb" id="hand"]
+
+; The model is authored muzzle-down -Y with +Z up, which is Blender's
+; convention. glTF maps Blender -Y to +Z, and +Z in Godot points BACK at the
+; camera - so the imported gun aims at the player. Both meshes are turned 180
+; degrees about Y here, once, so the node's own -Z forward is the muzzle and
+; every transform above this behaves the way a viewmodel transform should.
+; This lives in the viewmodel scene and not in pistol(), because pistol() is
+; also the prop lying on a desk in area A.
+
+[node name="PistolViewmodel" type="Node3D"]
+script = ExtResource("vm")
+
+[node name="Pivot" type="Node3D" parent="."]
+
+[node name="Model" parent="Pivot" instance=ExtResource("gun")]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 0, 0, 0)
+
+[node name="Hand" parent="Pivot" instance=ExtResource("hand")]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 0, 0, 0)

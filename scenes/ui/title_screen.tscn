@@ -3,82 +3,94 @@
 [ext_resource type="Script" path="res://scripts/ui/title_screen.gd" id="1_title"]
 [ext_resource type="Script" path="res://scripts/ui/title_backdrop.gd" id="2_backdrop"]
 [ext_resource type="Shader" path="res://scripts/ui/title_overlay.gdshader" id="3_overlay"]
+[ext_resource type="Shader" path="res://scripts/ui/title_grain.gdshader" id="7_grain"]
 [ext_resource type="AudioStream" path="res://assets/audio/ambience/amb_chamber.wav" id="4_amb"]
 [ext_resource type="AudioStream" path="res://assets/audio/sfx/clock_tick_loop.wav" id="5_tick"]
+[ext_resource type="FontFile" path="res://assets/fonts/CormorantGaramond.ttf" id="9_serif"]
+[ext_resource type="FontFile" path="res://assets/fonts/Oswald.ttf" id="10_sans"]
 [ext_resource type="AudioStream" path="res://assets/audio/sfx/reveal_sting.wav" id="6_sting"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/machine_hum_loop.wav" id="8_hum"]
 
-[sub_resource type="SystemFont" id="Font_serif"]
-font_names = PackedStringArray("Cormorant Garamond", "Playfair Display", "Georgia", "Times New Roman", "Liberation Serif", "DejaVu Serif", "serif")
-font_weight = 600
+[sub_resource type="FontVariation" id="Font_serif"]
+base_font = ExtResource("9_serif")
+variation_embolden = 0.08
 
-[sub_resource type="SystemFont" id="Font_sans"]
-font_names = PackedStringArray("Oswald", "Bebas Neue", "Arial Narrow", "Liberation Sans Narrow", "DejaVu Sans Condensed", "Helvetica", "sans-serif")
+[sub_resource type="FontVariation" id="Font_sans"]
+base_font = ExtResource("10_sans")
+
+[sub_resource type="FontVariation" id="Font_kicker"]
+base_font = ExtResource("10_sans")
+spacing_glyph = 4
+
+[sub_resource type="FontVariation" id="Font_subtitle"]
+base_font = ExtResource("10_sans")
+spacing_glyph = 7
 
 [sub_resource type="StyleBoxEmpty" id="Style_btn"]
-content_margin_left = 18.0
-content_margin_top = 6.0
-content_margin_right = 18.0
-content_margin_bottom = 6.0
+content_margin_left = 26.0
+content_margin_top = 7.0
+content_margin_right = 20.0
+content_margin_bottom = 7.0
 
 [sub_resource type="StyleBoxFlat" id="Style_btn_hover"]
-bg_color = Color(0.45, 0.05, 0.04, 0.35)
-border_width_left = 3
-border_color = Color(0.9, 0.22, 0.16, 1)
-content_margin_left = 30.0
-content_margin_top = 6.0
-content_margin_right = 18.0
-content_margin_bottom = 6.0
+bg_color = Color(0.58, 0.42, 0.16, 0.16)
+border_width_left = 2
+border_color = Color(0.95, 0.74, 0.38, 0.95)
+content_margin_left = 26.0
+content_margin_top = 7.0
+content_margin_right = 20.0
+content_margin_bottom = 7.0
 
 [sub_resource type="StyleBoxFlat" id="Style_btn_pressed"]
-bg_color = Color(0.6, 0.06, 0.05, 0.55)
+bg_color = Color(0.8, 0.6, 0.26, 0.3)
 border_width_left = 3
-border_color = Color(1, 0.35, 0.25, 1)
-content_margin_left = 32.0
-content_margin_top = 6.0
-content_margin_right = 18.0
-content_margin_bottom = 6.0
+border_color = Color(1, 0.88, 0.6, 1)
+content_margin_left = 26.0
+content_margin_top = 7.0
+content_margin_right = 20.0
+content_margin_bottom = 7.0
 
 [sub_resource type="StyleBoxFlat" id="Style_panel"]
-bg_color = Color(0.02, 0.018, 0.02, 0.82)
+bg_color = Color(0.014, 0.015, 0.019, 0.93)
 border_width_left = 2
-border_color = Color(0.6, 0.12, 0.1, 0.9)
-content_margin_left = 32.0
-content_margin_top = 24.0
-content_margin_right = 32.0
-content_margin_bottom = 24.0
+border_color = Color(0.85, 0.66, 0.33, 0.85)
+content_margin_left = 30.0
+content_margin_top = 22.0
+content_margin_right = 30.0
+content_margin_bottom = 22.0
 
 [sub_resource type="StyleBoxFlat" id="Style_slider"]
-bg_color = Color(0.25, 0.22, 0.21, 0.8)
+bg_color = Color(0.22, 0.21, 0.2, 0.85)
 content_margin_top = 2.0
 content_margin_bottom = 2.0
 
 [sub_resource type="StyleBoxFlat" id="Style_slider_fill"]
-bg_color = Color(0.8, 0.18, 0.13, 1)
+bg_color = Color(0.93, 0.72, 0.33, 1)
 content_margin_top = 2.0
 content_margin_bottom = 2.0
 
 [sub_resource type="StyleBoxFlat" id="Style_focus_line"]
 draw_center = false
 border_width_bottom = 1
-border_color = Color(0.9, 0.22, 0.16, 0.8)
+border_color = Color(0.95, 0.74, 0.38, 0.8)
 
 [sub_resource type="Theme" id="Theme_menu"]
 default_font = SubResource("Font_sans")
-Button/colors/font_color = Color(0.72, 0.69, 0.64, 1)
-Button/colors/font_hover_color = Color(1, 0.94, 0.88, 1)
-Button/colors/font_focus_color = Color(1, 0.94, 0.88, 1)
+Button/colors/font_color = Color(0.65, 0.63, 0.59, 1)
+Button/colors/font_hover_color = Color(1, 0.94, 0.84, 1)
+Button/colors/font_focus_color = Color(1, 0.94, 0.84, 1)
 Button/colors/font_pressed_color = Color(1, 1, 1, 1)
-Button/colors/font_disabled_color = Color(0.4, 0.38, 0.36, 1)
-Button/font_sizes/font_size = 26
+Button/colors/font_disabled_color = Color(0.36, 0.35, 0.33, 1)
+Button/font_sizes/font_size = 25
 Button/styles/normal = SubResource("Style_btn")
 Button/styles/hover = SubResource("Style_btn_hover")
 Button/styles/focus = SubResource("Style_btn_hover")
 Button/styles/pressed = SubResource("Style_btn_pressed")
 Button/styles/disabled = SubResource("Style_btn")
-CheckButton/colors/font_color = Color(0.8, 0.78, 0.72, 1)
-CheckButton/colors/font_hover_color = Color(1, 0.94, 0.88, 1)
-CheckButton/colors/font_focus_color = Color(1, 0.94, 0.88, 1)
-CheckButton/font_sizes/font_size = 20
+CheckButton/colors/font_color = Color(0.78, 0.76, 0.71, 1)
+CheckButton/colors/font_hover_color = Color(1, 0.94, 0.84, 1)
+CheckButton/colors/font_focus_color = Color(1, 0.94, 0.84, 1)
+CheckButton/font_sizes/font_size = 19
 CheckButton/styles/normal = SubResource("Style_btn")
 CheckButton/styles/hover = SubResource("Style_btn")
 CheckButton/styles/focus = SubResource("Style_focus_line")
@@ -87,24 +99,37 @@ HSlider/styles/slider = SubResource("Style_slider")
 HSlider/styles/grabber_area = SubResource("Style_slider_fill")
 HSlider/styles/grabber_area_highlight = SubResource("Style_slider_fill")
 HSlider/styles/focus = SubResource("Style_focus_line")
-Label/colors/font_color = Color(0.8, 0.78, 0.72, 1)
-Label/font_sizes/font_size = 20
+Label/colors/font_color = Color(0.76, 0.74, 0.7, 1)
+Label/font_sizes/font_size = 19
 
 [sub_resource type="ShaderMaterial" id="Mat_overlay"]
 shader = ExtResource("3_overlay")
 
+[sub_resource type="ShaderMaterial" id="Mat_grain"]
+shader = ExtResource("7_grain")
+
 [sub_resource type="Gradient" id="Grad_left"]
-offsets = PackedFloat32Array(0, 0.45, 1)
-colors = PackedColorArray(0, 0, 0, 0.88, 0, 0, 0, 0.55, 0, 0, 0, 0)
+offsets = PackedFloat32Array(0, 0.5, 1)
+colors = PackedColorArray(0, 0, 0, 0.82, 0, 0, 0, 0.42, 0, 0, 0, 0)
 
 [sub_resource type="GradientTexture2D" id="Tex_left"]
 gradient = SubResource("Grad_left")
 width = 256
 height = 4
 
-[sub_resource type="Gradient" id="Grad_rule"]
+[sub_resource type="Gradient" id="Grad_bottom"]
 offsets = PackedFloat32Array(0, 1)
-colors = PackedColorArray(0.85, 0.18, 0.13, 1, 0.85, 0.18, 0.13, 0)
+colors = PackedColorArray(0, 0, 0, 0, 0, 0, 0, 0.75)
+
+[sub_resource type="GradientTexture2D" id="Tex_bottom"]
+gradient = SubResource("Grad_bottom")
+width = 4
+height = 256
+fill_to = Vector2(0, 1)
+
+[sub_resource type="Gradient" id="Grad_rule"]
+offsets = PackedFloat32Array(0, 0.12, 1)
+colors = PackedColorArray(0.95, 0.76, 0.42, 0.9, 0.95, 0.76, 0.42, 0.75, 0.95, 0.76, 0.42, 0)
 
 [sub_resource type="GradientTexture2D" id="Tex_rule"]
 gradient = SubResource("Grad_rule")
@@ -122,7 +147,18 @@ theme = SubResource("Theme_menu")
 script = ExtResource("1_title")
 
 [node name="Backdrop" type="Node3D" parent="."]
+unique_name_in_owner = true
 script = ExtResource("2_backdrop")
+
+[node name="Overlay" type="ColorRect" parent="."]
+material = SubResource("Mat_overlay")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
 
 [node name="LeftShade" type="TextureRect" parent="."]
 layout_mode = 1
@@ -135,15 +171,18 @@ texture = SubResource("Tex_left")
 expand_mode = 1
 stretch_mode = 0
 
-[node name="Overlay" type="ColorRect" parent="."]
-material = SubResource("Mat_overlay")
+[node name="BottomShade" type="TextureRect" parent="."]
 layout_mode = 1
-anchors_preset = 15
+anchors_preset = 12
+anchor_top = 0.45
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
-grow_vertical = 2
+grow_vertical = 0
 mouse_filter = 2
+texture = SubResource("Tex_bottom")
+expand_mode = 1
+stretch_mode = 0
 
 [node name="Margin" type="MarginContainer" parent="."]
 layout_mode = 1
@@ -152,71 +191,64 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/margin_left = 96
-theme_override_constants/margin_top = 72
-theme_override_constants/margin_right = 72
-theme_override_constants/margin_bottom = 48
+mouse_filter = 2
+theme_override_constants/margin_left = 88
+theme_override_constants/margin_top = 52
+theme_override_constants/margin_right = 64
+theme_override_constants/margin_bottom = 40
 
 [node name="VBox" type="VBoxContainer" parent="Margin"]
 layout_mode = 2
+mouse_filter = 2
 theme_override_constants/separation = 0
 
 [node name="Kicker" type="Label" parent="Margin/VBox"]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.55, 0.5, 0.46, 1)
-theme_override_font_sizes/font_size = 15
-text = "A  HORROR  IN  BORROWED  TIME"
-
-[node name="Title" type="Label" parent="Margin/VBox"]
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_colors/font_color = Color(0.92, 0.88, 0.8, 1)
-theme_override_colors/font_shadow_color = Color(0.4, 0.03, 0.02, 0.55)
-theme_override_constants/shadow_offset_x = 3
-theme_override_constants/shadow_offset_y = 3
-theme_override_constants/shadow_outline_size = 10
-theme_override_fonts/font = SubResource("Font_serif")
-theme_override_font_sizes/font_size = 136
-text = "TIMBUK"
+theme_override_colors/font_color = Color(0.52, 0.5, 0.47, 1)
+theme_override_fonts/font = SubResource("Font_kicker")
+theme_override_font_sizes/font_size = 13
+text = "TIMBUK RESEARCH FACILITY"
+
+[node name="TitleGap" type="Control" parent="Margin/VBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 212)
+layout_mode = 2
+mouse_filter = 2
 
 [node name="Rule" type="TextureRect" parent="Margin/VBox"]
-custom_minimum_size = Vector2(460, 2)
+unique_name_in_owner = true
+custom_minimum_size = Vector2(368, 2)
 layout_mode = 2
 size_flags_horizontal = 0
+mouse_filter = 2
 texture = SubResource("Tex_rule")
 expand_mode = 1
 
-[node name="SubRow" type="HBoxContainer" parent="Margin/VBox"]
+[node name="SubGap" type="Control" parent="Margin/VBox"]
+custom_minimum_size = Vector2(0, 11)
 layout_mode = 2
-theme_override_constants/separation = 20
+mouse_filter = 2
 
-[node name="Subtitle" type="Label" parent="Margin/VBox/SubRow"]
-unique_name_in_owner = true
-modulate = Color(0.8, 0.8, 0.8, 1)
-layout_mode = 2
-theme_override_colors/font_color = Color(0.85, 0.24, 0.18, 1)
-theme_override_font_sizes/font_size = 30
-text = "S E C O N D    H A N D"
-
-[node name="Tick" type="Label" parent="Margin/VBox/SubRow"]
+[node name="Subtitle" type="Label" parent="Margin/VBox"]
 unique_name_in_owner = true
 layout_mode = 2
-size_flags_vertical = 8
-theme_override_colors/font_color = Color(0.55, 0.5, 0.45, 1)
-theme_override_fonts/font = SubResource("Font_serif")
-theme_override_font_sizes/font_size = 16
-text = "tick"
+theme_override_colors/font_color = Color(0.86, 0.72, 0.5, 1)
+theme_override_fonts/font = SubResource("Font_subtitle")
+theme_override_font_sizes/font_size = 21
+text = "SECOND HAND"
 
 [node name="Spacer" type="Control" parent="Margin/VBox"]
 layout_mode = 2
 size_flags_vertical = 3
+mouse_filter = 2
 
 [node name="Menu" type="VBoxContainer" parent="Margin/VBox"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(320, 0)
+custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 size_flags_horizontal = 0
-theme_override_constants/separation = 4
+theme_override_constants/separation = 2
 
 [node name="NewGame" type="Button" parent="Margin/VBox/Menu"]
 unique_name_in_owner = true
@@ -242,68 +274,110 @@ layout_mode = 2
 text = "QUIT"
 alignment = 0
 
-[node name="ControlsPanel" type="PanelContainer" parent="Margin/VBox"]
+[node name="FooterGap" type="Control" parent="Margin/VBox"]
+custom_minimum_size = Vector2(0, 26)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="FooterRow" type="HBoxContainer" parent="Margin/VBox"]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="Footer" type="Label" parent="Margin/VBox/FooterRow"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.46, 0.44, 0.41, 1)
+theme_override_fonts/font = SubResource("Font_serif")
+theme_override_font_sizes/font_size = 16
+text = "Nobody was ever found."
+
+[node name="Hint" type="Label" parent="Margin/VBox/FooterRow"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.38, 0.37, 0.35, 1)
+theme_override_font_sizes/font_size = 13
+text = "ENTER  select      ESC  back"
+
+[node name="PanelHost" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/margin_left = 88
+theme_override_constants/margin_top = 52
+theme_override_constants/margin_right = 64
+theme_override_constants/margin_bottom = 106
+
+[node name="Align" type="VBoxContainer" parent="PanelHost"]
+layout_mode = 2
+mouse_filter = 2
+alignment = 2
+
+[node name="ControlsPanel" type="PanelContainer" parent="PanelHost/Align"]
 unique_name_in_owner = true
 visible = false
-custom_minimum_size = Vector2(520, 0)
+custom_minimum_size = Vector2(620, 0)
 layout_mode = 2
 size_flags_horizontal = 0
 theme_override_styles/panel = SubResource("Style_panel")
 
-[node name="VBox" type="VBoxContainer" parent="Margin/VBox/ControlsPanel"]
+[node name="VBox" type="VBoxContainer" parent="PanelHost/Align/ControlsPanel"]
 layout_mode = 2
-theme_override_constants/separation = 14
+theme_override_constants/separation = 13
 
-[node name="Heading" type="Label" parent="Margin/VBox/ControlsPanel/VBox"]
+[node name="Heading" type="Label" parent="PanelHost/Align/ControlsPanel/VBox"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.88, 0.25, 0.19, 1)
-theme_override_font_sizes/font_size = 24
+theme_override_colors/font_color = Color(0.95, 0.76, 0.42, 1)
+theme_override_font_sizes/font_size = 22
 text = "CONTROLS"
 
-[node name="List" type="GridContainer" parent="Margin/VBox/ControlsPanel/VBox"]
+[node name="List" type="GridContainer" parent="PanelHost/Align/ControlsPanel/VBox"]
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_constants/h_separation = 48
-theme_override_constants/v_separation = 6
-columns = 2
+theme_override_constants/h_separation = 30
+theme_override_constants/v_separation = 4
+columns = 4
 
-[node name="Back" type="Button" parent="Margin/VBox/ControlsPanel/VBox"]
+[node name="Back" type="Button" parent="PanelHost/Align/ControlsPanel/VBox"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 0
 text = "BACK"
 
-[node name="SettingsPanel" type="PanelContainer" parent="Margin/VBox"]
+[node name="SettingsPanel" type="PanelContainer" parent="PanelHost/Align"]
 unique_name_in_owner = true
 visible = false
-custom_minimum_size = Vector2(560, 0)
+custom_minimum_size = Vector2(540, 0)
 layout_mode = 2
 size_flags_horizontal = 0
 theme_override_styles/panel = SubResource("Style_panel")
 
-[node name="VBox" type="VBoxContainer" parent="Margin/VBox/SettingsPanel"]
+[node name="VBox" type="VBoxContainer" parent="PanelHost/Align/SettingsPanel"]
 layout_mode = 2
-theme_override_constants/separation = 14
+theme_override_constants/separation = 13
 
-[node name="Heading" type="Label" parent="Margin/VBox/SettingsPanel/VBox"]
+[node name="Heading" type="Label" parent="PanelHost/Align/SettingsPanel/VBox"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.88, 0.25, 0.19, 1)
-theme_override_font_sizes/font_size = 24
+theme_override_colors/font_color = Color(0.95, 0.76, 0.42, 1)
+theme_override_font_sizes/font_size = 22
 text = "SETTINGS"
 
-[node name="Grid" type="GridContainer" parent="Margin/VBox/SettingsPanel/VBox"]
+[node name="Grid" type="GridContainer" parent="PanelHost/Align/SettingsPanel/VBox"]
 layout_mode = 2
-theme_override_constants/h_separation = 24
-theme_override_constants/v_separation = 14
+theme_override_constants/h_separation = 22
+theme_override_constants/v_separation = 13
 columns = 3
 
-[node name="VolLabel" type="Label" parent="Margin/VBox/SettingsPanel/VBox/Grid"]
+[node name="VolLabel" type="Label" parent="PanelHost/Align/SettingsPanel/VBox/Grid"]
 layout_mode = 2
-text = "Master volume"
+text = "Volume"
 
-[node name="Volume" type="HSlider" parent="Margin/VBox/SettingsPanel/VBox/Grid"]
+[node name="Volume" type="HSlider" parent="PanelHost/Align/SettingsPanel/VBox/Grid"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(240, 24)
+custom_minimum_size = Vector2(230, 22)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 4
@@ -311,20 +385,20 @@ max_value = 1.0
 step = 0.05
 value = 0.8
 
-[node name="VolValue" type="Label" parent="Margin/VBox/SettingsPanel/VBox/Grid"]
+[node name="VolValue" type="Label" parent="PanelHost/Align/SettingsPanel/VBox/Grid"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(56, 0)
+custom_minimum_size = Vector2(54, 0)
 layout_mode = 2
 horizontal_alignment = 2
 text = "80%"
 
-[node name="SensLabel" type="Label" parent="Margin/VBox/SettingsPanel/VBox/Grid"]
+[node name="SensLabel" type="Label" parent="PanelHost/Align/SettingsPanel/VBox/Grid"]
 layout_mode = 2
-text = "Mouse sensitivity"
+text = "Sensitivity"
 
-[node name="Sensitivity" type="HSlider" parent="Margin/VBox/SettingsPanel/VBox/Grid"]
+[node name="Sensitivity" type="HSlider" parent="PanelHost/Align/SettingsPanel/VBox/Grid"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(240, 24)
+custom_minimum_size = Vector2(230, 22)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 4
@@ -333,51 +407,40 @@ max_value = 3.0
 step = 0.05
 value = 1.0
 
-[node name="SensValue" type="Label" parent="Margin/VBox/SettingsPanel/VBox/Grid"]
+[node name="SensValue" type="Label" parent="PanelHost/Align/SettingsPanel/VBox/Grid"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(56, 0)
+custom_minimum_size = Vector2(54, 0)
 layout_mode = 2
 horizontal_alignment = 2
 text = "1.00x"
 
-[node name="FsLabel" type="Label" parent="Margin/VBox/SettingsPanel/VBox/Grid"]
+[node name="FsLabel" type="Label" parent="PanelHost/Align/SettingsPanel/VBox/Grid"]
 layout_mode = 2
 text = "Fullscreen"
 
-[node name="Fullscreen" type="CheckButton" parent="Margin/VBox/SettingsPanel/VBox/Grid"]
+[node name="Fullscreen" type="CheckButton" parent="PanelHost/Align/SettingsPanel/VBox/Grid"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 0
 
-[node name="FsPad" type="Control" parent="Margin/VBox/SettingsPanel/VBox/Grid"]
+[node name="FsPad" type="Control" parent="PanelHost/Align/SettingsPanel/VBox/Grid"]
 layout_mode = 2
 
-[node name="SettingsBack" type="Button" parent="Margin/VBox/SettingsPanel/VBox"]
+[node name="SettingsBack" type="Button" parent="PanelHost/Align/SettingsPanel/VBox"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 0
 text = "BACK"
 
-[node name="FooterGap" type="Control" parent="Margin/VBox"]
-custom_minimum_size = Vector2(0, 28)
-layout_mode = 2
-
-[node name="FooterRow" type="HBoxContainer" parent="Margin/VBox"]
-layout_mode = 2
-
-[node name="Footer" type="Label" parent="Margin/VBox/FooterRow"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_colors/font_color = Color(0.48, 0.44, 0.4, 1)
-theme_override_fonts/font = SubResource("Font_serif")
-theme_override_font_sizes/font_size = 16
-text = "Find what was left behind."
-
-[node name="Hint" type="Label" parent="Margin/VBox/FooterRow"]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.4, 0.37, 0.34, 1)
-theme_override_font_sizes/font_size = 14
-text = "ENTER  select     ESC  back"
+[node name="Grain" type="ColorRect" parent="."]
+material = SubResource("Mat_grain")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
 
 [node name="Fade" type="ColorRect" parent="."]
 unique_name_in_owner = true
@@ -395,10 +458,15 @@ unique_name_in_owner = true
 stream = ExtResource("4_amb")
 volume_db = -14.0
 
+[node name="Hum" type="AudioStreamPlayer" parent="."]
+unique_name_in_owner = true
+stream = ExtResource("8_hum")
+volume_db = -24.0
+
 [node name="TickLoop" type="AudioStreamPlayer" parent="."]
 unique_name_in_owner = true
 stream = ExtResource("5_tick")
-volume_db = -20.0
+volume_db = -17.0
 
 [node name="Sting" type="AudioStreamPlayer" parent="."]
 unique_name_in_owner = true

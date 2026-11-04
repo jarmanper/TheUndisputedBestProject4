@@ -1,0 +1,140 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/web/loading_screen.gd" id="1_script"]
+[ext_resource type="FontFile" path="res://assets/fonts/Oswald.ttf" id="2_sans"]
+[ext_resource type="FontFile" path="res://assets/fonts/CormorantGaramond.ttf" id="3_serif"]
+
+[sub_resource type="FontVariation" id="Font_sans"]
+base_font = ExtResource("2_sans")
+
+[sub_resource type="FontVariation" id="Font_serif"]
+base_font = ExtResource("3_serif")
+variation_opentype = {
+"wght": 500
+}
+
+[node name="LoadingScreen" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+script = ExtResource("1_script")
+
+[node name="Bg" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+color = Color(0.014, 0.015, 0.019, 1)
+
+[node name="Box" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -280.0
+offset_top = -70.0
+offset_right = 280.0
+offset_bottom = 70.0
+mouse_filter = 2
+theme_override_constants/separation = 14
+
+[node name="Kicker" type="Label" parent="Box"]
+layout_mode = 2
+text = "TIMBUK RESEARCH FACILITY"
+horizontal_alignment = 1
+theme_override_fonts/font = SubResource("Font_sans")
+theme_override_font_sizes/font_size = 15
+theme_override_colors/font_color = Color(0.52, 0.45, 0.36, 1)
+
+[node name="Title" type="Label" parent="Box"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "LOADING"
+horizontal_alignment = 1
+theme_override_fonts/font = SubResource("Font_serif")
+theme_override_font_sizes/font_size = 46
+theme_override_colors/font_color = Color(0.93, 0.9, 0.86, 1)
+
+[node name="BarTrack" type="Control" parent="Box"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(560, 3)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="Rail" type="ColorRect" parent="Box/BarTrack"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+color = Color(0.17, 0.15, 0.12, 1)
+
+[node name="BarFill" type="ColorRect" parent="Box/BarTrack"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_top = -1.5
+offset_right = 0.0
+offset_bottom = 1.5
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.95, 0.74, 0.38, 1)
+
+[node name="Row" type="HBoxContainer" parent="Box"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 8
+
+[node name="Hint" type="Label" parent="Box/Row"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "ENTERING THE FACILITY"
+theme_override_fonts/font = SubResource("Font_sans")
+theme_override_font_sizes/font_size = 14
+theme_override_colors/font_color = Color(0.58, 0.5, 0.4, 1)
+
+[node name="Tick" type="Label" parent="Box/Row"]
+custom_minimum_size = Vector2(14, 0)
+horizontal_alignment = 1
+unique_name_in_owner = true
+layout_mode = 2
+text = "."
+theme_override_fonts/font = SubResource("Font_sans")
+theme_override_font_sizes/font_size = 14
+theme_override_colors/font_color = Color(0.95, 0.74, 0.38, 1)
+
+[node name="Percent" type="Label" parent="Box/Row"]
+custom_minimum_size = Vector2(62, 0)
+unique_name_in_owner = true
+layout_mode = 2
+text = "0%"
+horizontal_alignment = 2
+theme_override_fonts/font = SubResource("Font_sans")
+theme_override_font_sizes/font_size = 14
+theme_override_colors/font_color = Color(0.95, 0.74, 0.38, 1)
+
+[node name="Footer" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -340.0
+offset_top = -58.0
+offset_right = 340.0
+offset_bottom = -34.0
+mouse_filter = 2
+text = "Keep this tab open."
+horizontal_alignment = 1
+theme_override_fonts/font = SubResource("Font_sans")
+theme_override_font_sizes/font_size = 13
+theme_override_colors/font_color = Color(0.36, 0.33, 0.29, 1)

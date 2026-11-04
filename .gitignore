@@ -1,3 +1,13 @@
 # Godot 4+ specific ignores
 .godot/
 /android/
+
+# Python bytecode from the asset generators
+__pycache__/
+*.pyc
+
+# Local web export output
+/build/
+
+# Blender backup saves
+*.blend1

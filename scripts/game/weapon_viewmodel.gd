@@ -37,8 +37,15 @@ func _ready() -> void:
 		_make_viewmodel(m)
 
 
+## Render layer the viewmodel lives on, so the player's own flashlight can be
+## told to skip it. The light sits on the camera roughly where the gun is, so
+## at 33 cm it blew the slide and the hand out to flat white.
+const VIEWMODEL_LAYER := 2
+
+
 func _make_viewmodel(m: MeshInstance3D) -> void:
 	m.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	m.layers = VIEWMODEL_LAYER
 	if m.mesh == null:
 		return
 	for i in m.mesh.get_surface_count():

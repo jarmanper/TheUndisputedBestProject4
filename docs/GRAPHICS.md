@@ -103,7 +103,11 @@ How it works, briefly:
 
 ## Performance
 
-At 1920×1080 on the dev laptop (Radeon RX 7700S), GPU render time is about 8–9 ms in every area and in the reveal, so there's comfortable headroom for 60 FPS. Lights fade out with distance, glass and fluids skip shadow maps, and Godot generates mesh LODs on import. SSR is disabled because it smears additive effects and the reflection probes cover reflections.
+At 1920×1080 on the dev laptop (Radeon RX 7700S), GPU render time is about 10 ms per frame at the default Medium quality, 13 ms at High and 6 ms at Low. Lights fade out with distance, glass and fluids skip shadow maps, and Godot generates mesh LODs on import.
+
+Quality is a player setting (`[video] quality` in `user://settings.cfg`, exposed in the settings panel) because the grading machine is unknown. It drives MSAA, TAA, anisotropy, the shadow atlas, SSAO/SSIL, volumetric fog and SSR. The default is Medium: a grader who hits a stutter will never go and change it.
+
+SSR is on at Medium and High. It was previously disabled on the grounds that it smeared additive effects, but that reproduces only with an artificially overbright quad — against the project's real explosion and fire effects there's no visible smearing, and wet-floor reflections are worth the 0.5–1 ms.
 
 ## Known gaps
 

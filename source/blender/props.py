@@ -2,7 +2,9 @@
 
 Each @prop function builds one prop at the origin (floor at z=0, front facing
 -Y) and returns its objects. `build_all()` exports each to
-assets/models/props/<name>.glb with a simple collision box.
+assets/models/props/<name>.glb with collision fitted to its parts
+(tlib.part_colliders): a box per solid part, nothing on decals and rubble the
+player walks over, so a prop never blocks anywhere you cannot see it blocking.
 
 Run:  blender -b --factory-startup --python source/blender/props.py [-- name ...]
 """
@@ -21,9 +23,18 @@ from tlib import box, cyl, sphere, torus, tube, bezier_points, collider, empty  
 PROPS = {}
 
 
-def prop(collide=True):
+def prop(collide=True, skip=(), max_boxes=20, waste=1.5):
+    """Register a prop builder.
+
+    collide    True  -> one collision box per visible part (see tlib.part_colliders)
+               "box" -> a single box over the whole prop (only for solid blocks)
+               False -> no collision at all (decals, rubble the player walks over)
+    skip       part-name substrings that should not collide on this prop
+    max_boxes  cap on collision boxes for this prop
+    waste      how loose a merge of two boxes may be before it is rejected
+    """
     def deco(fn):
-        PROPS[fn.__name__] = (fn, collide)
+        PROPS[fn.__name__] = (fn, collide, dict(skip=skip, max_boxes=max_boxes, waste=waste))
         return fn
     return deco
 
@@ -540,7 +551,7 @@ def wall_clock():
     return o
 
 
-@prop()
+@prop(collide=False)   # low rubble the player walks over
 def debris_pile():
     rnd = random.Random(21)
     o = []
@@ -561,7 +572,7 @@ def papers_scattered():
     return scatter_papers(14, (1.2, 0.9), 0.002, seed=5)
 
 
-@prop()
+@prop(collide=False)   # tiles lying flat on the floor
 def ceiling_tile_fallen():
     rnd = random.Random(8)
     o = []
@@ -605,13 +616,117 @@ def old_key():
 
 @prop(collide=False)
 def pistol():
-    """Worn service pistol (visual model only, muzzle points -Y)."""
-    o = [box("slide", (0.03, 0.19, 0.035), (0, 0, 0.11), "teal_metal", bevel=0.004)]
-    o.append(box("frame", (0.028, 0.17, 0.025), (0, 0.01, 0.083), "rubber", bevel=0.003))
-    o.append(box("grip", (0.028, 0.05, 0.11), (0, 0.065, 0.03), "rubber", rot=(-0.25, 0, 0), bevel=0.006))
-    o.append(cyl("barrel", 0.006, 0.02, (0, -0.1, 0.115), "black_cavity", rot=(math.pi / 2, 0, 0), seg=10))
-    o.append(box("guard", (0.006, 0.05, 0.004), (0, 0.0, 0.055), "rubber"))
-    o.append(empty("MUZZLE", (0, -0.105, 0.115)))
+    """Service pistol, visual model only. Muzzle points -Y and +Z is up.
+
+    Shaped to read as a real sidearm in the first-person viewmodel, where it
+    fills a third of the screen and the old five-box placeholder read as a toy:
+    a slide with rear serrations, an ejection port and a recessed bore, a
+    separate dust cover and frame, a trigger sitting inside an actual guard, a
+    raked grip with a magazine floorplate, and front and rear sights that line
+    up down -Y so looking along them is deliberate rather than accidental.
+    """
+    RAKE = -0.26         # grip angle; negative puts the heel BEHIND the top,
+                         # which is the way a pistol actually rakes. Positive
+                         # pushed the heel forward and read as a water pistol.
+    GC = (0.0, 0.055, 0.042)
+    c, s = math.cos(RAKE), math.sin(RAKE)
+
+    def gp(lx, ly, lz):
+        """Grip-local point -> model space (grip is rotated RAKE about X)."""
+        return (GC[0] + lx, GC[1] + ly * c - lz * s, GC[2] + ly * s + lz * c)
+
+    o = []
+    # --- slide -------------------------------------------------------------
+    o.append(box("slide", (0.026, 0.182, 0.029), (0, -0.006, 0.119), "gunmetal", bevel=0.0035))
+    o.append(box("slide_rib", (0.017, 0.182, 0.004), (0, -0.006, 0.1345), "gunmetal", bevel=0.001))
+    for i in range(7):
+        o.append(box("serration_%d" % i, (0.0268, 0.0026, 0.019),
+                     (0, 0.038 + i * 0.0085, 0.119), "gunmetal_worn", bevel=0.0005))
+    o.append(box("ejection_port", (0.0045, 0.038, 0.012), (0.0114, -0.016, 0.1245), "black_cavity"))
+    o.append(box("extractor", (0.004, 0.012, 0.005), (0.0114, 0.006, 0.1245), "gunmetal_worn"))
+
+    # --- bore --------------------------------------------------------------
+    o.append(cyl("crown", 0.0093, 0.009, (0, -0.0915, 0.117), "gunmetal", rot=(math.pi / 2, 0, 0), seg=20))
+    o.append(cyl("bore", 0.0050, 0.014, (0, -0.0945, 0.117), "black_cavity", rot=(math.pi / 2, 0, 0), seg=16))
+
+    # --- sights: a square front post and a notched rear ---------------------
+    o.append(box("front_sight", (0.0034, 0.005, 0.0095), (0, -0.0845, 0.1405), "black_cavity"))
+    o.append(box("rear_sight_l", (0.0054, 0.007, 0.0085), (-0.0076, 0.064, 0.1405), "black_cavity"))
+    o.append(box("rear_sight_r", (0.0054, 0.007, 0.0085), (0.0076, 0.064, 0.1405), "black_cavity"))
+
+    # --- frame and dust cover ----------------------------------------------
+    o.append(box("dust_cover", (0.0225, 0.086, 0.015), (0, -0.046, 0.0965), "rubber", bevel=0.002))
+    o.append(box("frame", (0.0245, 0.072, 0.019), (0, 0.021, 0.0975), "rubber", bevel=0.002))
+    o.append(box("beavertail", (0.0245, 0.022, 0.012), (0, 0.062, 0.100), "rubber", bevel=0.003))
+    o.append(cyl("takedown_pin", 0.0034, 0.026, (0, -0.028, 0.094), "gunmetal_worn", rot=(0, math.pi / 2, 0), seg=12))
+    o.append(box("slide_stop", (0.030, 0.016, 0.006), (0, 0.004, 0.104), "gunmetal_worn", bevel=0.001))
+
+    # --- trigger and its guard ---------------------------------------------
+    o.append(box("guard_front", (0.0065, 0.008, 0.030), (0, -0.013, 0.073), "rubber", bevel=0.002))
+    o.append(box("guard_bottom", (0.0065, 0.042, 0.0075), (0, 0.008, 0.0595), "rubber", bevel=0.002))
+    o.append(box("trigger", (0.005, 0.0085, 0.020), (0, 0.001, 0.0745), "gunmetal_worn", bevel=0.001))
+
+    # --- grip, front-strap ribs and magazine --------------------------------
+    o.append(box("grip", (0.027, 0.050, 0.098), gp(0, 0, 0), "rubber", rot=(RAKE, 0, 0), bevel=0.006))
+    for i in range(5):
+        lz = -0.030 + i * 0.016
+        o.append(box("strap_rib_%d" % i, (0.0254, 0.0016, 0.0032), gp(0, -0.0246, lz),
+                     "gunmetal_worn", rot=(RAKE, 0, 0), bevel=0.0005))
+    o.append(box("backstrap", (0.0272, 0.006, 0.070), gp(0, 0.025, 0.004), "rubber",
+                 rot=(RAKE, 0, 0), bevel=0.002))
+    o.append(box("mag_floor", (0.029, 0.052, 0.006), gp(0, 0.002, -0.052), "gunmetal",
+                 rot=(RAKE, 0, 0), bevel=0.0015))
+    o.append(box("mag_release", (0.030, 0.012, 0.012), gp(0, 0.020, 0.030), "gunmetal_worn",
+                 rot=(RAKE, 0, 0), bevel=0.001))
+
+    o.append(empty("MUZZLE", (0, -0.100, 0.117)))
+    return o
+
+
+@prop(collide=False)
+def viewmodel_hand():
+    """Just enough hand to say the gun is being held, in pistol()'s own space.
+
+    Deliberately minimal. An earlier version modelled a full palm, thumb and
+    forearm out of boxes and cylinders, and at viewmodel range that reads as
+    pale sausages rather than a hand - primitives cannot carry an anatomical
+    read at that size. So this is only what wraps the grip: four finger backs
+    across the front strap, a thumb lying along the frame, and a sliver of palm
+    behind the backstrap. Everything else is left off screen, which is also how
+    the viewmodel is posed in scenes/game/player.tscn.
+
+    Parented under the Pistol node, so it inherits the sway, bob and recoil and
+    picks up the same z-clip treatment - weapon_viewmodel.gd walks every
+    MeshInstance3D beneath itself and puts them on the viewmodel light layer.
+    It is separate from pistol() because pistol() is also a desk prop in area A.
+    """
+    RAKE = -0.26         # must match pistol()
+    GC = (0.0, 0.055, 0.042)
+    c, s = math.cos(RAKE), math.sin(RAKE)
+
+    def gp(lx, ly, lz):
+        return (GC[0] + lx, GC[1] + ly * c - lz * s, GC[2] + ly * s + lz * c)
+
+    SKIN = "skin_real"
+    o = []
+
+    # --- the four finger backs across the front strap ----------------------
+    # Slightly proud of the grip on both sides so they read as wrapped round
+    # it rather than stuck on, and tapering down the hand like real fingers.
+    for i, lz in enumerate((0.012, -0.008, -0.027, -0.044)):
+        r = 0.0098 - i * 0.0007
+        o.append(cyl("finger_%d" % i, r, 0.036, gp(0.0, -0.0225, lz), SKIN,
+                     rot=(0, math.pi / 2, 0), seg=10))
+        # the knuckle end, a touch larger, on the palm side
+        o.append(sphere("knuckle_%d" % i, r * 1.05, gp(0.016, -0.019, lz), SKIN, 10, 8))
+
+    # --- thumb, lying forward along the left of the frame ------------------
+    o.append(cyl("thumb", 0.0105, 0.040, gp(-0.0135, -0.004, 0.028), SKIN,
+                 rot=(RAKE + 1.25, 0, 0), seg=10))
+
+    # --- a sliver of palm behind the backstrap -----------------------------
+    o.append(box("palm_edge", (0.016, 0.020, 0.062), gp(0.017, 0.020, -0.010), SKIN,
+                 rot=(RAKE, 0, 0), bevel=0.008))
     return o
 
 
@@ -630,9 +745,30 @@ def tracker_device():
 
 @prop(collide=False)
 def photo_frame():
+    """Desk photograph. The default print is `photo_staff`: two anonymous
+    colleagues, so the seven frames build_facility puts on desks across the
+    facility only ever say "people worked here".
+
+    The family portrait (`photo_family`) belongs to one frame, the one on the
+    lobby bench, which swaps this surface at runtime with prop_retint in
+    scenes/game/entrance_dressing.tscn. Surface order matters there: the frame
+    and stand share surface 0 (wood_dark) and the print is surface 1, because
+    the frame box is built first.
+
+    The print gets a planar UV so the whole photograph lands on the front
+    face once. It used to be a flat brown box with no picture on it, which
+    made the most direct wordless story prop in the game say nothing.
+    """
     o = [box("frame", (0.2, 0.015, 0.25), (0, 0, 0.125), "wood_dark", rot=(-0.2, 0, 0), bevel=0.003)]
-    o.append(box("photo", (0.16, 0.017, 0.21), (0, -0.002, 0.125), "photo", rot=(-0.2, 0, 0)))
-    o.append(box("stand", (0.02, 0.1, 0.18), (0, 0.06, 0.09), "wood_dark", rot=(0.35, 0, 0)))
+    print_ = box("photo", (0.16, 0.004, 0.21), (0, -0.0065, 0.125), "photo_staff",
+                 rot=(-0.2, 0, 0), uv=False)
+    T.planar_uv(print_, "Y")
+    o.append(print_)
+    # The kickstand leans *backwards* from the top of the frame. It used to be
+    # a 0.1 m deep plank tilted the other way, whose top corner came out
+    # through the front of the print -- which nobody could see while the print
+    # was a flat brown box.
+    o.append(box("stand", (0.02, 0.015, 0.18), (0, 0.055, 0.085), "wood_dark", rot=(0.42, 0, 0)))
     return o
 
 
@@ -740,7 +876,7 @@ def blood_trail():
     return o
 
 
-@prop()
+@prop(max_boxes=60, waste=1.25)   # radially symmetric centrepiece: keep it tight
 def failed_containment_device():
     """Centerpiece: a 3 m pressure chamber burst open from the inside."""
     o = []
@@ -852,14 +988,33 @@ def locker_row():
     o = []
     for i in range(4):
         x = -0.6 + i * 0.4
+        if i == 2:
+            continue                        # the open bay, built below
         o.append(box("locker", (0.38, 0.45, 1.85), (x, 0, 0.925), "painted_metal", bevel=0.006))
         for k in range(3):
             o.append(box("vent", (0.22, 0.01, 0.012), (x, -0.226, 1.6 + k * 0.03), "black_cavity"))
         o.append(box("handle", (0.02, 0.02, 0.08), (x + 0.12, -0.235, 1.0), "steel"))
-        if i == 2:
-            o.append(box("door_open", (0.36, 0.02, 1.8), (x + 0.33, -0.36, 0.93), "painted_metal", rot=(0, 0, -1.2), bevel=0.004))
-            o.append(box("inside", (0.34, 0.02, 1.8), (x, -0.21, 0.93), "black_cavity"))
-            o.append(box("coat", (0.28, 0.08, 0.9), (x, -0.12, 1.25), "fabric_bloody", bevel=0.03))
+
+    # The open bay is a carcass, not a solid block. It used to be the same
+    # solid box as its neighbours with a black panel across the *front* of it
+    # (y = -0.21, ahead of the coat at y = -0.12), so the coat inside was
+    # occluded by both and nobody ever saw it. Now the front is genuinely
+    # open, the dark panel is the back wall, and the coat hangs between them.
+    x = 0.2
+    o.append(box("locker", (0.38, 0.03, 1.85), (x, 0.21, 0.925), "painted_metal"))        # back
+    for sx in (-1, 1):
+        o.append(box("locker", (0.02, 0.45, 1.85), (x + sx * 0.18, 0, 0.925), "painted_metal"))
+    o.append(box("locker", (0.38, 0.45, 0.02), (x, 0, 1.84), "painted_metal"))            # top
+    o.append(box("locker", (0.38, 0.45, 0.02), (x, 0, 0.02), "painted_metal"))            # floor
+    o.append(box("inside", (0.34, 0.01, 1.8), (x, 0.185, 0.93), "black_cavity"))          # dark back wall
+    o.append(box("shelf", (0.34, 0.43, 0.015), (x, 0, 1.6), "painted_metal"))
+    o.append(cyl("rail", 0.008, 0.33, (x, 0.03, 1.54), "steel", rot=(0, math.pi / 2, 0), seg=8))
+    o.append(box("coat", (0.30, 0.07, 0.13), (x, 0.01, 1.45), "fabric_bloody", bevel=0.035))
+    o.append(box("coat", (0.25, 0.07, 0.66), (x, 0.01, 1.11), "fabric_bloody", bevel=0.02))
+    o.append(box("coat", (0.29, 0.08, 0.3), (x, 0.015, 0.73), "fabric_bloody", bevel=0.035))
+    o.append(box("collar", (0.11, 0.05, 0.07), (x, -0.012, 1.51), "fabric", bevel=0.025))
+    o.append(box("door_open", (0.36, 0.02, 1.8), (x + 0.33, -0.36, 0.93), "painted_metal", rot=(0, 0, -1.2), bevel=0.004))
+    o.append(box("handle", (0.02, 0.02, 0.08), (x + 0.375, -0.48, 1.0), "steel", rot=(0, 0, -1.2)))
     o.append(box("bench", (1.6, 0.3, 0.04), (0, -0.6, 0.45), "wood_dark", bevel=0.005))
     o += legs(0.7, 0.1, 0.43, 0.015, "steel")
     for leg in o[-4:]:
@@ -1189,21 +1344,25 @@ def wall_bloodsmear():
 def build_all(names=None):
     names = names or list(PROPS)
     for name in names:
-        fn, collide = PROPS[name]
+        fn, collide, opt = PROPS[name]
         T.reset()
         objs = fn()
         meshes = [o for o in objs if o.type == "MESH"]
         empties = [o for o in objs if o.type == "EMPTY"]
+        # collision is fitted to the separate parts, before they are joined
+        cols = T.part_colliders(name, meshes, **opt) if collide is True else []
         body = T.join(meshes, name)
         T.shade_smooth(body, 35)
         out = [body] + empties
-        if collide:
+        if collide == "box":
             bb = [body.matrix_world @ Vector(c) for c in body.bound_box]
             lo = Vector((min(v.x for v in bb), min(v.y for v in bb), max(0.0, min(v.z for v in bb))))
             hi = Vector((max(v.x for v in bb), max(v.y for v in bb), max(v.z for v in bb)))
             size = hi - lo
             if size.z > 0.05:
                 out.append(collider(name + "_col", tuple(max(s, 0.02) for s in size), tuple((lo + hi) / 2)))
+        out += cols
+        print(f"PROPCOL {name} {len(cols)}")
         T.export_glb(f"assets/models/props/{name}.glb", out)
         T.save_blend(f"source/blender/props/{name}.blend")
 

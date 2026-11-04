@@ -1,0 +1,21 @@
+[gd_resource type="StandardMaterial3D" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/textures/skin_stubble_albedo.png" id="1_vupcc"]
+[ext_resource type="Texture2D" path="res://assets/textures/skin_stubble_normal.png" id="2_d642i"]
+[ext_resource type="Texture2D" path="res://assets/textures/skin_stubble_rough.png" id="3_yygb7"]
+
+[resource]
+resource_name = "twin_skin_jaw"
+albedo_color = Color(0.44, 0.4, 0.39, 1)
+albedo_texture = ExtResource("1_vupcc")
+roughness = 0.8
+roughness_texture = ExtResource("3_yygb7")
+normal_enabled = true
+normal_scale = 0.65
+normal_texture = ExtResource("2_d642i")
+subsurf_scatter_enabled = true
+subsurf_scatter_strength = 0.08
+subsurf_scatter_skin_mode = true
+backlight_enabled = true
+backlight = Color(0.1375, 0.065, 0.05, 0.25)
+uv1_scale = Vector3(7.692308, 7.692308, 7.692308)

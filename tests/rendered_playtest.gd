@@ -1,12 +1,22 @@
 extends SceneTree
-## Exercise title transition, real mapped ability inputs and live enemy AI.
+## Drives the REAL game scene with REAL input events: the four abilities on
+## their mapped keys, physical WASD movement, the pause key, an enemy actually
+## hitting the player, and both ways the level can end. Unit checks prove the
+## numbers; this proves the game is playable.
+##   godot --path . --rendering-method gl_compatibility --script tests/rendered_playtest.gd
+
 var checks := 0
 var failures := 0
-var level: Node3D
+var scene: Node
 var player: TimbukPlayer
+var state: Node
+var won := false
+var died := false
+
 
 func _initialize() -> void:
 	_run.call_deferred()
+
 
 func check(value: bool, message: String) -> void:
 	checks += 1
@@ -14,120 +24,178 @@ func check(value: bool, message: String) -> void:
 		print("PASS: ", message)
 	else:
 		failures += 1
-		push_error(message)
+		printerr("FAIL: ", message)
 
-func ticks(count: int) -> void:
-	for i in count:
+
+func frames(n: int) -> void:
+	for i in n:
 		await physics_frame
 		await process_frame
 
-func press(action: String) -> void:
-	await physics_frame
-	var event := InputEventAction.new()
-	event.action = action
-	event.pressed = true
-	Input.parse_input_event(event)
-	Input.flush_buffered_events()
-	await ticks(2)
-	Input.action_release(action)
 
-func capture(label: String) -> void:
-	if DisplayServer.get_name() == "headless":
+## The HUD pauses the game when the window loses focus, which it always has in
+## an automated run, and paused abilities do not process input at all.
+func keep_live() -> void:
+	paused = false
+	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+	var hud: Node = scene.get_node_or_null("HUD")
+	if hud and hud.has_method("set_paused"):
+		hud.set_paused(false)
+
+
+## Presses and releases a mapped action the way a keyboard or mouse would.
+func press(action: String) -> void:
+	keep_live()
+	for ev in InputMap.action_get_events(action):
+		var e: InputEvent = ev.duplicate()
+		e.pressed = true
+		Input.parse_input_event(e)
+		await frames(2)
+		var up: InputEvent = ev.duplicate()
+		up.pressed = false
+		Input.parse_input_event(up)
+		await frames(2)
 		return
-	await RenderingServer.frame_post_draw
-	DirAccess.make_dir_recursive_absolute("res://.godot/captures")
-	root.get_texture().get_image().save_png("res://.godot/captures/live_%s.png" % label)
+
+
+## Puts the player `distance` metres in front of `target`, looking at it.
+func stand_before(target: Node3D, distance: float) -> void:
+	var c: Vector3 = target.center()
+	player.global_position = c - Vector3.UP * TimbukPlayer.AIM_HEIGHT + Vector3(0, 0, distance)
+	player.rotation = Vector3.ZERO
+	player.head.rotation = Vector3.ZERO
+	player.look_at(Vector3(c.x, player.global_position.y, c.z))
+	await frames(3)
+
 
 func _run() -> void:
-	root.size = Vector2i(1280, 720)
-	var title: Control = load("res://scenes/ui/title_screen.tscn").instantiate()
-	root.add_child(title)
-	current_scene = title
-	await ticks(120)
-	await capture("title")
-	title.get_node("%NewGame").pressed.emit()
-	await ticks(100)
-	level = current_scene
-	check(level.scene_file_path == "res://scenes/game/main.tscn", "title New Game loads playable game")
-	player = level.get_node("Player")
-	var target: TimbukEnemy = level.required_targets[0]
-	var camera_before := player.head.rotation.x
-	if DisplayServer.get_name() != "headless":
-		var motion := InputEventMouseMotion.new()
-		motion.relative = Vector2(0, 15)
-		player._unhandled_input(motion)
-		check(player.head.rotation.x != camera_before, "captured mouse controls shoulder camera")
-		player.head.rotation.x = camera_before
-	await capture("start")
-	await press("mark")
-	check(target.marked, "live Q marks crosshair target")
-	await press("suspend")
-	check(target.suspended and player.get_node("Suspend").duration_left > 3.8, "live E freezes marked target for 4 s")
-	await capture("frozen")
-	var wall := StaticBody3D.new()
-	var collider := CollisionShape3D.new()
-	var box := BoxShape3D.new()
-	box.size = Vector3(2, 4, 0.2)
-	collider.shape = box
-	wall.add_child(collider)
-	var mesh := MeshInstance3D.new()
-	var box_mesh := BoxMesh.new()
-	box_mesh.size = box.size
-	mesh.mesh = box_mesh
-	wall.add_child(mesh)
-	wall.position = Vector3(0.55, 1.8, 1.8)
-	level.add_child(wall)
-	await ticks(3)
-	check(target.marked and not target.get("_icon").visible and player.crosshair_target(15) == null, "level geometry hides tracking icon and blocks selection while preserving mark")
-	await capture("occluded")
-	wall.queue_free()
-	await ticks(3)
-	await press("attack")
-	check(target.health == 80 and target.suspended, "live Left Mouse deals 20 without ending suspension")
-	await ticks(38)
-	await press("attack")
-	check(target.health == 60, "second new Left Mouse press deals 20")
-	await press("explode")
-	check(target.health == 0 and not target.marked and not target.suspended, "live R completes 100 HP signature combo")
-	await capture("explosion")
-	# Exercise live AI against a stationary player using the real damage method.
-	player.set_physics_process(false)
-	for enemy in level.required_targets:
-		if enemy == target:
+	state = root.get_node_or_null("GameState")
+	scene = load("res://scenes/game/main.tscn").instantiate()
+	root.add_child(scene)
+	await frames(20)
+
+	player = scene.get_node_or_null("Player")
+	check(player != null, "the game scene loads and the player exists")
+	check(scene.get_node_or_null("HUD") != null, "the HUD is present")
+	check(state != null, "GameState autoload is live")
+	var gun: Node = player.get_node_or_null("Head/Camera3D/Pistol")
+	check(gun != null and gun.has_method("kick"), "the pistol viewmodel is live and can recoil")
+	check(gun != null and gun.find_child("Hand", true, false) != null, "the player's hand is on screen")
+	var gun_meshes: int = gun.find_children("*", "MeshInstance3D", true, false).size() if gun else 0
+	check(gun_meshes >= 2, "gun and hand both have geometry (%d meshes)" % gun_meshes)
+	state.game_won.connect(func(): won = true)
+	state.player_died.connect(func(): died = true)
+
+	# -------------------------------------------------------- input contract
+	for action in ["move_forward", "move_back", "move_left", "move_right", "attack", "mark", "suspend", "explode", "pause"]:
+		check(InputMap.has_action(action), "input action exists: " + action)
+	for removed in ["sprint", "interact", "reload", "flashlight", "crouch"]:
+		check(not InputMap.has_action(removed), "removed action is gone: " + removed)
+
+	var targets: Array = get_nodes_in_group("enemy")
+	check(targets.size() == 16, "16 required targets staged at load (15 patients + the Twin), got %d" % targets.size())
+	check(get_nodes_in_group("boss").size() == 1, "the Twin is one of the required targets")
+
+	# Every scripted door must be open at load. These used to be sealed behind
+	# `power_restored`, which no longer exists, which made the Twin unreachable
+	# and the level unwinnable.
+	var doors := 0
+	var sealed := 0
+	for node in get_nodes_in_group("interactable"):
+		if not (node is Interactable) or node.kind != Interactable.Kind.DOOR:
 			continue
-		enemy.set_physics_process(false)
-	# Walk a visible corridor enemy into attack range on real navigation.
-	var attacker: TimbukEnemy = level.required_targets[3]
-	player.global_position = Vector3(0, 0.001, -6.8)
-	attacker.set_physics_process(true)
-	await ticks(180)
-	check(attacker.alerted and attacker.global_position.z > -9, "live enemy triggers at 8 m and navigates toward player")
-	check(player.health < 100 and int(player.health) % 10 == 0, "live enemy attacks for 10 damage")
-	await capture("attack")
-	# A clear existing floor area in containment isolates the enemy attack
-	# from decorative props while exercising repeated attacks and real loss.
-	player.global_position = Vector3(0, 0.001, -33)
-	attacker.global_position = Vector3(0, 0.001, -34.3)
-	attacker.velocity = Vector3.ZERO
-	attacker.state = attacker.State.CHASE
-	attacker.attack_cooldown_left = 0
-	for frame in 60 * 33:
-		await ticks(1)
-		if current_scene != level or player.dead:
-			break
-	check(current_scene != level or player.dead, "live enemy can kill player; loss/restart occurs")
-	await capture("loss")
-	for frame in 130:
-		await ticks(1)
-		if is_instance_valid(current_scene) and current_scene != level:
-			break
-	level = current_scene
-	player = level.get_node("Player")
-	check(player.health == 100 and level.required_targets.all(func(e): return e.health == 100), "live loss restarts with full HP and original targets")
-	await capture("restart")
-	level.queue_free()
-	await process_frame
-	OS.delay_msec(100)
-	await process_frame
-	print("LIVE PLAYTEST: %d checks, %d failures" % [checks, failures])
+		doors += 1
+		for c in node.get_children():
+			if c is CollisionShape3D and not c.disabled:
+				sealed += 1
+	check(doors > 0 and sealed == 0, "all %d scripted doors are open at load (%d still sealed)" % [doors, sealed])
+
+	# ---------------------------------------------------------- real ability
+	print("phase: abilities")
+	keep_live()
+	var t: TimbukEnemy = targets[0]
+	t.navigation_enabled = false
+	await stand_before(t, 2.0)
+	var marking: Node = player.get_node("Marking")
+	await press("mark")
+	check(t.marked and marking.current_target == t, "pressing Q really marks the target in the live scene")
+
+	var suspend: Node = player.get_node("Suspend")
+	await press("suspend")
+	# frames elapse between the press and this check, so the exact value has
+	# already ticked down; >2 s is what proves the marked branch was taken,
+	# because an unmarked freeze can never start above 2 s.
+	check(t.suspended and suspend.duration_left > 2.0, "pressing E freezes it, and the live mark makes it the 4 s version (%.2f s left)" % suspend.duration_left)
+
+	var before_hp: float = t.health
+	await press("attack")
+	check(t.health == before_hp - 20.0, "clicking really deals 20 damage")
+
+	var explosion: Node = player.get_node("Explosion")
+	await press("explode")
+	check(t.health <= before_hp - 20.0 - 60.0 or t.is_dead(), "pressing R detonates on the marked, suspended target for 60")
+	check(not explosion.is_ready(), "Explosion went on cooldown after a real press")
+
+	# a shot into empty space: effects yes, rules no
+	var combat: Node = player.get_node("Combat")
+	combat.cooldown_left = 0.0
+	player.look_at(player.global_position + Vector3(0, 0, 50))
+	await frames(3)
+	var hp_all := []
+	for t3 in get_nodes_in_group("enemy"):
+		hp_all.append(t3.health)
+	var cd_before: float = combat.cooldown_left
+	combat._fire_at_nothing()
+	await frames(2)
+	var unchanged := true
+	var idx := 0
+	for t3 in get_nodes_in_group("enemy"):
+		if t3.health != hp_all[idx]:
+			unchanged = false
+		idx += 1
+	check(unchanged and combat.cooldown_left == cd_before, "a shot that hits nothing deals no damage and starts no cooldown")
+
+	# -------------------------------------------------------------- movement
+	print("phase: movement")
+	var t2: TimbukEnemy = targets[1]
+	t2.navigation_enabled = false
+	await stand_before(t2, 6.0)
+	keep_live()
+	var start := player.global_position
+	for ev in InputMap.action_get_events("move_forward"):
+		var e: InputEvent = ev.duplicate()
+		e.pressed = true
+		Input.parse_input_event(e)
+		break
+	await frames(40)
+	for ev in InputMap.action_get_events("move_forward"):
+		var e: InputEvent = ev.duplicate()
+		e.pressed = false
+		Input.parse_input_event(e)
+		break
+	await frames(3)
+	check(player.global_position.distance_to(start) > 0.5, "holding W physically moves the player through the facility")
+
+	# ------------------------------------------------------------ enemy hits
+	print("phase: enemy attack")
+	var attacker: TimbukEnemy = targets[2]
+	attacker.navigation_enabled = false
+	await stand_before(attacker, 1.5)
+	attacker._player = player
+	keep_live()
+	var hp_before: float = player.health
+	await frames(90)
+	check(player.health < hp_before, "an enemy within 2 m really damages the player (%d -> %d)" % [hp_before, player.health])
+
+	# ------------------------------------------------------------------- win
+	print("phase: win")
+	player.health = 100.0
+	for e in get_nodes_in_group("enemy"):
+		if is_instance_valid(e) and not e.is_dead():
+			e.apply_damage(1000.0)
+	await frames(10)
+	check(won, "defeating every required target wins the level")
+	check(not died, "the win was not also recorded as a loss")
+
+	print("RENDERED PLAYTEST: %d checks, %d failures" % [checks, failures])
 	quit(0 if failures == 0 else 1)

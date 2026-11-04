@@ -7,7 +7,7 @@ Shared context for every person and coding agent working in this repo. Read it a
 - **Assignment:** Project 4, "Someone Else's Mechanics, Your Story." Theme: **Found** (the player finds the story in places, objects, sounds and what's left behind).
 - **Team 4:** Daniel Animashaun, Rickey Johnson, Rhaiyn Newby, Jarman Perry.
 - **We build Team 3's four mechanics** (Combat, Marking, Suspend, Explosion) exactly as written, and we write the story.
-- **Engine:** Godot 4.7, GDScript, Compatibility (required for web export), Jolt Physics. 1 world unit = 1 meter.
+- **Engine:** Godot 4.7, GDScript, Forward+, Jolt Physics. 1 world unit = 1 meter.
 - **Game due:** Wednesday, November 4, 2026 (final playtest).
 - **Grading:** Team 3 reports whether each mechanic was built exactly as written. Another team judges the story.
 
@@ -25,19 +25,16 @@ Shared context for every person and coding agent working in this repo. Read it a
 
 Edit only the files you own. If you need a change in someone else's file, ask them (or leave a note in your PR).
 
-**October 28 integration authorization:** Rhaiyn explicitly authorized the `playtest-integration` branch to repair all integrated gameplay, UI, story and shared settings from `full-game2` against this document. Original mechanic owners remain unchanged. These cross-owner repairs are documented in the integration PR; generated graphics scenes remain untouched relative to `full-game2`.
-
-The later `full-game2` UI commit `a6610c9` is merged into the integration branch. Its reusable UI helpers are retained, while its ammo/interact HUD, unbudgeted dialogue and manual retry loop are superseded by the assignment-compliant HUD and automatic restart. No history is rewritten.
-
 | Area | Owner | Files |
 | --- | --- | --- |
-| Combat + enemy behavior (Team 3 defines enemies inside Combat) | Rickey | `scripts/game/mechanics/combat.gd`, `scripts/game/enemy.gd`, `scripts/game/twin_boss.gd` |
-| Marking | Rhaiyn | `scripts/game/mechanics/marking.gd` |
-| Suspend | Jarman | `scripts/game/mechanics/suspend.gd` |
-| Explosion | Daniel | `scripts/game/mechanics/explosion.gd` |
+| Combat + enemy behavior (Team 3 defines enemies inside Combat) | Rickey | `scripts/abilities/combat.gd`, `scripts/enemies/`, `scenes/enemies/` *(proposed)* |
+| Marking | Rhaiyn | `scripts/abilities/marking.gd` *(proposed)* |
+| Suspend | Jarman | `scripts/abilities/suspend.gd` *(proposed)* |
+| Explosion | Daniel | `scripts/abilities/explosion.gd` *(proposed)* |
 | Graphics, audio, map | Jarman | `assets/`, `source/`, `tools/`, `scripts/visual/`, all generated scenes |
-| Shared core: player, target base class, targeting, HUD, level manager, input map, physics layers | **Rhaiyn Newby** | Integrated architecture: `scripts/game/`, `scenes/game/` |
+| Shared core: player, target base class, targeting, HUD, level manager, input map, physics layers | **Unassigned. Claim it before starting.** | `scripts/core/`, `scenes/game/` *(proposed)* |
 | Story text and word budget | **Unassigned** | Label3D text, `source/audio/voice_lines.txt`, section 4.5 here |
+| Found-story props (wordless) | Rickey | `scenes/game/found_story.tscn`, `scenes/game/story/`, `scripts/game/story_recorder.gd`, `tests/found_story.gd` |
 
 **Git:** one branch per person, merged into `main` through a pull request (as `graphics-v2` was). Pull before you start. `project.godot` is shared: change it (input map, layer names, autoloads, main scene) in one small commit and tell the team. Never let two people edit the same `.tscn`.
 
@@ -74,19 +71,170 @@ The clock motif (the Twin's clock-face skull, clock workshop, grandfather clocks
 | 5 | Key | Progress to the next area | **Conflicts with the rules. See section 8** |
 
 ### 4.5 Word budget (150 max)
-Counts are per word as displayed or spoken. The submitted doc says 120; the real count of the planned text is 117.
 
-| Text | Type | Where | Words |
+**This table is the build, re-audited Oct 29 2026 after the story rewrite, not a
+plan.**
+
+History, because it explains the numbers. An older table listed a newspaper, an
+"Experiment 024" report, a "Security Log 17", four warning signs and a Twin
+exchange that **were never built**, so its 117 / 160 figures were both wrong.
+The real as-built count was **656 words, 4.4x over the cap**: 501 words of
+trigger dialogue + 32 of objectives + 6 of speaker nameplates in
+`scenes/game/story_layer.tscn`, 31 in `scenes/game/main.tscn`, 44 on the death
+and ending screens, and 42 spoken (the 48 recorded words minus the 6
+`chemical_*` words, which no creature in the build loads). The first pass trimmed
+that to 134. Worse than the count, the trimmed game still told a *different
+story* from the one submitted in section 4: Reyes the contractor, a voice on the
+radio claiming to be Dr. Hale, the twins Tomas and Teo, no missing parents.
+Both playtesters read it as a generic zombie-outbreak escape
+(`docs/PLAYTEST.md`).
+
+**The Oct 29 rewrite** replaced every line so the game tells the submitted
+story. The player is looking for the parents who vanished here and the goal is to
+go *deeper*; the radio is gone and the guiding voice is **Mom**, a chain of
+recordings she left for her child, which also serves the "Found" theme; the
+Twin's chamber carries the twist and the ending screen the reconciliation.
+Section 4 is deliberately unchanged — it is the record of what was emailed.
+
+**The assignment's own rule (Nov 2, quoted).** "The whole game shows at most 150
+words of text. Words on signs and objects in the world count, and so do spoken
+words, labels on the screen, and win or lose screens. The game's name, menu
+buttons, and a controls screen listing key bindings do not count. Over 150 words
+caps game execution at 10 of 20." So **on-screen labels and the win/lose screens
+count** - the earlier reading in this section, which treated all HUD and screen
+text as exempt "chrome", was wrong and is corrected below.
+
+**Counting rule.** One word per whitespace-separated token that contains a letter
+or digit. Hyphenated compounds, numbers and "TIMBUK" are one word each. Bare
+punctuation ("...", "???") is zero. A string shown in more than one place is
+counted once. Speaker nameplates are counted once per distinct speaker.
+
+**What counts (rule 4: displayed or spoken story text):**
+
+| Text | Type | File:line | Words |
 | --- | --- | --- | --- |
-| "TIMBUK RESEARCH FACILITY SHUT DOWN FOLLOWING UNEXPLAINED DISAPPEARANCES. Officials have yet to release information regarding the missing employees or the experiments conducted inside." | Newspaper | Entrance, offices | 23 |
-| "Experiment 024: Subject has demonstrated an unusual ability to manipulate time. Further testing is required. Similar abilities may be present in the subject's biological relatives." | Report | Research rooms | 25 |
-| "Security Log 17: We've lost control of containment. The subjects are attacking researchers. Something is happening in the lower levels. Everyone needs to evacuate immediately." | Audio log | Security rooms, labs | 25 |
-| "Mama," "Help," "Home," "Please," "Cooking" | Monster speech at low HP | Any creature | 5 |
-| "WARNING: CONTAINMENT BREACH" / "AUTHORIZED PERSONNEL ONLY" / "EXPERIMENTAL TESTING CHAMBER" / "LOWER LEVEL ACCESS RESTRICTED" | Signs | Around the facility | 13 |
-| Twin: "They made me. They kept me here. You got to live your life out." Player: "What did you do to them?" Twin: "It's TIME you see for yourself" | Final encounter | Twin chamber | 26 |
-| **Planned total** | | | **117** |
+| Mom: "If you're hearing this, we never left Timbuk." | Trigger dialogue (premise) | `scenes/game/story_layer.tscn:45` | 8 |
+| Me: "Mom? Twelve years. I'm coming down." | Trigger dialogue (premise) | `story_layer.tscn:45` | 6 |
+| "Go deeper" | Objective | `story_layer.tscn:46` | 2 |
+| "Find them" | Objective | `story_layer.tscn:58` | 2 |
+| Mom: "Subject Two's heart is a clock. He asks for his brother." | Trigger dialogue (development) | `story_layer.tscn:82` | 11 |
+| Me: "What brother?" | Trigger dialogue | `story_layer.tscn:82` | 2 |
+| ???: "Tick... tock... where are you, brother?" | Trigger dialogue | `story_layer.tscn:95` | 6 |
+| Mom: "Containment failed. Your father went down to him." | Trigger dialogue (development) | `story_layer.tscn:120` | 8 |
+| Mom: "We kept him in the chamber below. Forgive us." | Trigger dialogue (development) | `story_layer.tscn:145` | 9 |
+| "Reach the chamber" | Objective | `story_layer.tscn:146` | 3 |
+| Me: "They raised him in here." | Trigger dialogue | `story_layer.tscn:158` | 5 |
+| Twin: "They made me. They kept me. You they let live." | Final encounter (the twist) | `story_layer.tscn:171` | 10 |
+| Me: "Where are our parents?" | Final encounter | `story_layer.tscn:171` | 4 |
+| Twin: "Here. With me. It's time you saw." | Final encounter | `story_layer.tscn:171` | 7 |
+| "Stop your brother" | Objective | `story_layer.tscn:172` | 3 |
+| Nameplates: MOM, ME, TWIN, ??? | Speaker labels (the `"Speaker:"` prefixes, drawn by `dialogue_box.gd:67`) | `story_layer.tscn` | 3 |
+| ~~"Mom's keycard."~~ | Pickup text - **no longer displayed** | `scenes/game/main.tscn:130` | 0 |
+| ~~"Locked. Needs a keycard."~~ | Locked text - **no longer displayed** | `scenes/game/main.tscn:142` | 0 |
+| ~~"Power. A door opens below."~~ | Switch text - **no longer displayed** | `scenes/game/main.tscn:143` | 0 |
+| ~~"Sealed. No power."~~ | Locked text - **no longer displayed** | `scenes/game/main.tscn:151`, `:161` | 0 |
+| "YOUR CLOCK STOPPED" / "He heard you." | Death screen | `scripts/ui/dialogue_box.gd:129` | 6 |
+| "THE CLOCK IS QUIET" / "Mom. Dad. My brother." | Ending screen (reconciliation) | `scripts/ui/dialogue_box.gd:136-137` | 8 |
+| "where are you", "mother" | Creature speech (failed patients) | `source/audio/voice_lines.txt:19-20` | 4 |
+| "brother", "tick tock", "you left me here" | Creature speech (the Twin) | `source/audio/voice_lines.txt:21-23` | 7 |
+| "OBJECTIVE" header, "[Space]" hint | On-screen labels (the assignment counts these) | `scripts/ui/dialogue_box.gd` | 2 |
+| **Total as built** | | | **116** |
 
-**October 28 playtest budget (implemented): 48 of 150 words.** The original plan above remains the submitted checkpoint reference. This build displays only its 23-word newspaper in the entrance and its 25-word Experiment 024 report in the research corridor. Both are non-interactive environmental displays. HUD, pause, win and loss feedback use shapes/colors without words. All creature speech arrays are emptied before entering the scene; breathing/groans remain. The lengthy `full-game2` dialogue layer, objectives, prompts and ending dialogue were removed. Eight original baked sign areas are covered with blank visual panels because their lettering is merged into map detail meshes. Title/controls text is exempt. No new story words were added. The source voice recordings remain available to their owner but are not played; enabling them requires a new budget audit.
+**131 / 150. Run `python3 tools/word_count.py` - do not trust this table.**
+The tool parses the actual scenes, scripts and voice lines and applies the
+assignment's rule, including "a string shown in more than one place is counted
+once". It is the only number worth quoting.
+
+**The Nov 2 audit here said 116 and was wrong: it missed the loading screen
+entirely.** `scenes/web/loading_screen.tscn` is not the game's name, not a menu
+button and not a controls screen, so every word on it counts, and its footer
+was the single longest piece of text in the game - 12 words, longer than any
+story line. With it included the real figure was 140, or 171 counting every
+menu word, i.e. over the cap. Trimming the loading screen and four menu labels
+brought it to 131 without cutting a single line of story. The three objectives changed on Nov 2 because two of them
+asked for things the player can no longer do - "Find Mom's keycard" and "Restore
+power" were impossible once the interact action went, and the chamber they used
+to unlock is open from the start.
+
+**Why it dropped from 129 (Nov 2).** Team 3's rules allow no interact action, so
+the prompt the HUD used to draw over a prop is gone and with it the only way
+those four prop strings reached the screen. The strings are still on the nodes
+as inert data; they are counted as 0 because nothing can display them. **They
+should come back as world-space labels on the props themselves** - readable with
+no key press, which is both what the rules allow and what the "Found" theme and
+the Oct 28 playtest asked for. Until then the facility tells that part of the
+story only through props and sound. The three triggers with no `lines` (`research`,
+`cell_block`, `lower_stairs`) are deliberately wordless — those rooms carry their
+story in props and sound.
+
+**Nameplates are three words.** `???` is bare punctuation (zero words by the rule
+above) and the Twin keeps it until the chamber. Every plate has an explicit case
+in `_speaker_color` (`dialogue_box.gd:77`): `me` pale, `mom`/`dad` amber (the
+colour the old table gave recordings), `twin`/`???` red. Every `"Speaker: text"`
+line was checked against `story_trigger.gd`'s `0 < idx < 24` window; the colon
+sits at index 2, 3 or 4 in all eleven of them.
+
+**What does not count, and why.** Rule 4 exempts the title and controls screens,
+which puts menus outside the cap, and section 6 specifies a wordless HUD. The
+remaining **25 words** of interface chrome are excluded: the pause menu
+(`PAUSED`, `Resume`, `Settings`, `Quit to title` — `scripts/game/hud.gd`, 6); the
+settings panel (`Back`, `Fullscreen`, `Graphics quality`, `Master volume`,
+`Mouse sensitivity`, `Low`/`Medium`/`High` — `scripts/game/ui_settings_panel.gd`
+and `ui_settings.gd:20`, 11); and the `OBJECTIVE` header, the `[Space]` hint and
+the end-screen buttons (`Retry`, `Play again`, `Return to title` —
+`scripts/ui/dialogue_box.gd`, 8). The title screen is exempt by rule 4.
+
+**With menu text: 131 + 23 = 154, but 13 of those 23 are literally buttons**
+(`NEW GAME`, `SETTINGS`, `CONTROLS`, `QUIT`, `BACK`, `Resume`, `Quit`, `Retry`,
+`Play again`, `Title`), which the assignment exempts by name. The honest strict
+figure is **136**: 131 plus the five non-button menu labels (`PAUSED`,
+`Fullscreen`, `Low`/`Medium`/`High`).
+It used to be 182, which would have failed. Two things fixed that, both on Nov 2:
+the HUD became wordless (the ammo counter, `HEALTH` label and the
+`MARKS`/`SUSPEND`/`CHARGES` status lines are now four unlabelled cooldown
+meters, and the `[E]` prompts went with the interact action), and the controls
+screen was trimmed back to **key bindings only**. That second one matters: it had
+briefly carried each mechanic's rules and numbers, roughly 20 extra words, which
+would have put the worst case at about 160 and forfeited the exemption for "a
+controls screen listing key bindings". Nothing on the HUD is a word any more -
+including the new row of target marks, which is deliberately wordless.
+
+**Not words, by our reading:** the only text baked into a texture is the Roman
+numeral ring on clock faces, the Twin's head and the suspend effect
+(`XII, I, ... XI`, from the three-glyph stroke font `GLYPHS` in
+`source/textures/texlib.py:290`). Those are dial markings, not language — the font
+physically cannot spell anything else. Nothing else in `source/textures/` or
+`source/blender/` renders text; the `warning_sign` texture is a wordless triangle.
+
+**The first cut has been taken.** The four interactable strings in
+`scenes/game/main.tscn` were 31 words — 23% of the cap on door and pickup
+flavour. They are now 14, and the keycard's text does story work for free
+(`"Mom's keycard."` tells the player in the first room that a parent worked
+here). **Next cut if we need more room:** the three development recordings
+(`clock_workshop`, `containment`, `generator`, 28 words together) are the only
+place with slack; the intro (14) and the chamber (21) are the premise and the
+twist and should be cut last.
+
+**Spoken lines are enforced in code.** `tools/build_scenes.gd` fills each
+creature's `lines` by globbing every `assets/audio/voices/<prefix>_*.wav`, so the
+generated character scenes still reference all 19 recorded lines (48 words).
+`BUDGETED_LINES` in `scripts/visual/creature_audio.gd` drops everything not in the
+5-line list above at load time; the surplus `.wav` files stay on disk so those
+generated scenes keep valid resource paths. The 14 cut lines (37 words) are kept,
+commented out, at the bottom of `source/audio/voice_lines.txt`. Adding a line
+needs an entry in *both* places, a matching cut here, and a `.wav` that already
+exists — nothing is re-recorded.
+
+The shipped 5 were re-picked for the submitted story on Oct 29: the failed
+patients say **"mother"** and **"where are you"** (they call for the woman who
+made them, and the whole game is a search), and the Twin says **"brother"**,
+**"tick tock"** and **"you left me here"** — the accusation at the heart of the
+twist, in his own voice, before he ever speaks a line of dialogue. `"help me"`
+and `"it hurts"` were cut: they are the generic-outbreak flavour that both
+playtesters read the game as. Verified at runtime — `tall_patient_a` and `_c`
+load exactly `failed_mother` + `failed_where_are_you`, `twin_monster` loads
+exactly the three `twin_*`, and `tall_patient_b` (the augmented patient) still
+has no spoken lines at all and falls back to its servo/glitch noises.
 
 ## 5. Team 3's mechanics (exact; do not change)
 
@@ -181,15 +329,7 @@ Our submitted clarity rating marked every mechanic "Clear" and can't be revised,
 
 ## 7. Technical contract (so we can work at the same time)
 
-**Status: integrated October 28 by Rhaiyn's authorization.** Preserve `full-game2`'s architecture rather than merging the separate prototype wholesale. `TimbukPlayer` is in `scripts/game/player.gd`; `TimbukEnemy` in `scripts/game/enemy.gd` supplies the common target API, navigation and exact enemy attacks. `scripts/game/mechanics/{combat,marking,suspend,explosion}.gd` are sibling Nodes directly under Player. Their owning teammates remain responsible for future changes. `main.gd` handles the level's required-target snapshot, instant victory/loss state, same-step loss precedence and 2-active-second restart. Win notification/progression is deferred until same-step damage resolves.
-
-The integrated APIs are `upper_body_point()`, `crosshair_target(range_m)`, `visible_point(point)`, player `damage(amount)`, enemy `center()`, `is_dead()`, `apply_damage(amount, resolve_defeat=true)`, `finish_defeat()`, `is_marked()` and `is_suspended()`. Marking exposes `current_target`, `duration_left`, `cooldown_left`, `try_mark()`, `clear_mark()` and `consume_mark()`. Suspend exposes `current_target`, `duration_left`, `activate()`, `reduce_cooldown(seconds)` and `end_suspension(target=null)`. Combat snapshots marks before damage; Explosion snapshots affected suspension before consumption/damage. Effect timers belong to their mechanic, not enemy AI.
-
-**Rhaiyn's Marking completion, October 29:** the integrated `marking.gd` is the authoritative Marking implementation. Its public activation rejects paused gameplay. It disconnects both defeat and tree-exit handlers when clearing/replacing a mark, and clears its target reference before a target leaves the level or is freed. These are lifecycle safeguards, not new gameplay actions or range-loss rules. `tests/marking_complete.gd` covers the full mechanic and its three interactions; `tests/marking_final_game.gd` drives physical Q/Left Mouse/E/R through the real title/main/final-chamber scenes, including a restart with a live mark and Marking the Twin. Completion evidence and file ownership are in `docs/MARKING_COMPLETION.md`. No story text or speech changed; the implemented word budget remains 48.
-
-Playtest route: level 1 instances existing areas A/B/C, with 12 required patients present at start. Necessary doors are already open. Blank metal walls seal unused side routes and lower stairs; no keys, generator action or interact input. Clearing every patient automatically loads `final_chamber.tscn`, which instances existing area E with the Twin already present. The Twin uses the same 100 HP/AI numbers as every patient. Clearing it wins. No optional targets or reinforcements. Navmeshes in `scenes/game/nav_main.tres` and `nav_final.tres` were baked from layer-1 colliders after the runtime content changes. Their authored paths are tested; they should be rebaked after layout changes using the integration test's `--save-nav` option.
-
-Compatibility adaptation happens only in runtime instances: inert cache substitutions prevent unsupported FogMaterial construction, FogVolumes are removed, and the original Environment is duplicated for fixed lighting without auto-exposure/SSIL/volumetric fog. Original generated scenes are not edited. Original title screen/settings and character visuals remain. Player is third-person with mouse camera, WASD, a fixed upright capsule and no other movement action; upper-body point is exactly 1.4 m above its collider bottom. HUD is wordless. The standalone `rhaiyn-marking-playable` implementation was reviewed and its Marking behavior ported, not wholesale merged.
+**Status: proposed. Nothing in `scripts/core/` exists yet.** Whoever claims the shared core finalizes this and updates the section.
 
 ### Folders
 ```
@@ -239,14 +379,72 @@ func is_ready() -> bool
 ```
 Abilities find each other as siblings under `Player/Abilities` (`$"../Suspend"`). Combat calls `suspend.reduce_cooldown(1.0)`. Explosion reads Marking's current target and asks Suspend to end suspensions. The HUD reads `cooldown_left` from all four.
 
+**As built (Nov 2 2026), where this branch differs from the sketch above.** The
+behaviour matches section 5 exactly; the names and paths do not all match this
+section, so read this before integrating:
+
+| This section | As built |
+| --- | --- |
+| `scripts/core/target.gd`, `class_name Target` | `scripts/game/enemy.gd`, `class_name TimbukEnemy` |
+| `scripts/core/player.gd`, `class_name Player` | `scripts/game/player.gd`, `class_name TimbukPlayer` |
+| `scripts/abilities/*` | `scripts/game/mechanics/{combat,marking,suspend,explosion}.gd` |
+| `Player/Abilities/<Ability>` | `Player/<Ability>` - the four ability nodes are **direct children** of the player, so each one reads `get_parent()` as the player and finds its siblings as `player.get_node("Suspend")` |
+| `hp`, `MAX_HP` | `health`, and the rule constant `TimbukEnemy.HEALTH` |
+| `apply_damage(amount: int)` | `apply_damage(amount: float)` |
+
+Everything else is present under the documented name: `defeated`, `marked`,
+`suspended`, `is_alive()`, `center()`, `upper_body_point()`,
+`crosshair_target()`, `take_hit()`, `cooldown_left`, `is_ready()` and
+`reduce_cooldown()`. The player is found by the `"player"` group and every
+enemy by the `"enemy"` group, which is what the level, HUD and AI all use
+rather than fixed paths. Each ability also exposes `cooldown_total()`,
+`effective_range()` and `ready_fraction()` so the HUD never has to reach for a
+script constant (`Object.get()` cannot read GDScript constants).
+
+**Nov 4 2026: `main` and `visual-rehaul` became one build.** They had been two
+separate integrations of the whole game since PR #4, with 27 files in conflict.
+`main` was Rhaiyn's `playtest-integration` line (PR #3) plus Daniel's `7c20a81`.
+The team kept `visual-rehaul` as the shipped build, because it carries the story,
+the found-story props, Combat feel and first person. `main` was merged into it
+with its tree kept (`git merge -s ours`), so all of `main`'s history is still
+there. Then these parts were ported by hand:
+- **Marking (Rhaiyn):** `try_mark()` refuses while paused, and the mark drops
+  its target the moment the target is defeated, leaves the level, or Marking is
+  torn down. Her `tests/marking_complete.gd` runs unchanged: 36/36.
+- **Combat and Explosion (Daniel):** direct calls are rejected while paused.
+  `Explosion.can_detonate()` runs every activation rule with no side effects.
+  The HUD lights the Explosion meter exactly when R would detonate and the
+  Marking meter while a mark is live, and tints the screen for 0.35 s on a
+  blast. Covered by 3 new checks in `tests/assignment_mechanics.gd` (62) and
+  by `tests/hud_glow.gd` (11).
+- **Project:** the physics layer names.
+
+Deliberately **not** ported. Each is still in `main`'s history if the team wants
+it back:
+- **Daniel's instruction panel and key labels.** He asked for them on purpose,
+  and on `main` (no story text) they fit at 106/150. Here they add about 62
+  words to 131, which is about 193 and over the cap. Key bindings alone could go
+  on the controls screen, which is exempt.
+- **The hooded player body and arm gesture.** They are built for a camera that
+  can see the player, and this build is first person.
+- **`main`'s rewritten player, enemy, HUD and level**, the separate
+  `final_chamber.tscn`, its navmeshes, and the export preset for that
+  two-level layout. `visual-rehaul`'s versions replace them.
+  `tests/marking_final_game.gd` depends on that layout, so it was not ported.
+- **The `gl_compatibility` project renderer.** It crashes the editor (see
+  below). The web build is Compatibility on its own.
+
 ### Godot gotchas
 - **Timers:** count down with `delta` in `_physics_process` (or use Timer nodes). Both freeze when `get_tree().paused = true`. Never use wall-clock time. The pause menu node needs `PROCESS_MODE_WHEN_PAUSED`.
-- **Navigation:** `main.gd` supplies a NavigationRegion3D and loads the baked `nav_main.tres` / `nav_final.tres` made from layer-1 colliders. Map cell size/height are 0.2 / 0.1 m. Enemy body is a 2.2 m upright capsule; navigation radius is 0.4 m. Re-run the integration suite with `--save-nav` after removing stale nav files if content geometry changes.
+- **Navigation:** there's no navmesh yet. The enemy owner adds a `NavigationRegion3D` to each game level and bakes it from layer 1 colliders.
 - **Creatures have no collider or body.** `scenes/characters/*.tscn` roots are plain `Node3D` visuals. Wrap them in an enemy scene.
 - **Models face +Z** (Godot's forward is −Z). Use `look_at(target, Vector3.UP, true)` so creatures face where they walk.
 - **Numbers live in named constants** at the top of the owning script (`const DAMAGE := 20`). The post-build PDF asks for the exact file, value and edit that would double the difficulty.
-- **Main scene:** `scenes/ui/title_screen.tscn` launches `scenes/game/main.tscn`. F5 runs the title; open main or final_chamber and use F6 to test a level directly.
+- **Main scene** is still `scenes/visual_inspection.tscn` (the flycam). Switch `run/main_scene` to the first game level in one coordinated commit.
 - The flycam's Q/E fly up and down. That only applies to the inspection scene.
+- **Renderers: leave the project on Forward+. The web build is Compatibility on its own.** Godot registers `rendering/renderer/rendering_method.web = "gl_compatibility"` as a built-in default, so the browser build already runs Compatibility without any override - checked by querying `ProjectSettings` directly. (Setting `renderer/rendering_method.web` by hand is redundant; Godot strips it on save for matching the default, which is also why `;` comments and defaulted keys never survive in `project.godot`.)
+- **Do not set the project renderer to `gl_compatibility`.** It was tried on 2026-11-02 and the *editor* dies with `CrashHandlerException: signal 11` during startup on an AMD Radeon RX 7700S, every launch, before it loads a scene. Ruled out in turn: the fog scenes (it crashes with no scene open), a stale D3D12 shader cache (it crashes on a cache OpenGL itself wrote) and the shader cache entirely (it crashes with `shader_compiler/shader_cache/enabled=false`). The *game* runs fine in Compatibility - only the editor is affected.
+- **To see what the browser will actually render**, force the renderer per run instead of changing the project setting: `godot --path . --rendering-method gl_compatibility`. `tests/compat_smoke.gd` does exactly this, and `TimbukCompat.adapt()` strips the passes Compatibility cannot draw at load time - which matters, because `FogMaterial` is a hard error there and the facility ships 52 FogVolumes.
 
 ## 8. Art and audio to use
 
@@ -254,15 +452,16 @@ Full guide: [docs/GRAPHICS.md](docs/GRAPHICS.md). Effects: instance from `scenes
 
 | Need | Use | Watch out |
 | --- | --- | --- |
-| Combat hit | `impact_sparks`, `assets/materials/fx_hit_flash.tres` (`material_overlay`, animate `flash` 1 → 0) | `muzzle_flash` and `bullet_hole` are gun effects. Combat is a 3 m attack |
+| Combat hit | `assets/materials/fx_hit_flash.tres` (`material_overlay`, animate `flash` 1 → 0); on flesh, `scenes/game/fx/blood_spray.tscn` and the floor decal `scenes/game/fx/blood_splat.tscn`; `TimbukEnemy.flinch(from)` leans the model only; `impact_sparks` for misses on walls | `muzzle_flash` and `bullet_hole` are gun effects. Combat is a 3 m attack. Feedback runs after the rules resolve and never moves the body. `tests/combat_feel.gd` guards it |
 | Mark | `assets/materials/fx_marked_outline.tres` (`material_overlay`; depth-tested, so it hides behind walls as required), `tracking_indicator`, `fx_tracker_hologram.tres`; handheld model `scenes/props/tracker_device.tscn` | `tracking_indicator` is built for the feet; the submitted answer puts the icon above the target |
 | Suspend | `suspend_field` (animate material `strength` 0–1), `suspended_particles`, `scripts/visual/afterimage_spawner.gd`, `fx_temporal_distortion.tres` | Don't move or disable the collider |
 | Explosion | `explosion_{orange,green,blue,purple}`; the `Shockwave` ring grows to exactly 4 m radius in 0.45 s; `scorch_mark` | `fire_*` loops forever. Team 3 forbids lingering areas, so fire is cosmetic only, short, and never does damage |
 | Enemies | `failed_humanoid`, `augmented_subject`, `chemical_subject`, `twin_monster` in `scenes/characters/`. Call `play_visual("walk")`. Failed: `idle walk react twitch`. Twin: `idle head_tilt eye_scan clock_spin twitch wire_vibrate walk_slow posture_shift reveal` | Animations are in place (no root motion). The Twin has the same 100 HP and numbers as every other target |
-| Creature voices | `CreatureAudio` node on each character: `say("help_me")`, `vocalize()`. Set `lines` to only budgeted lines | Random lines use words from the budget (section 4.5) |
+| Creature voices | `CreatureAudio` node on each character: `say("failed_mother")`, `vocalize()` | Budget filtering is automatic: `BUDGETED_LINES` in `creature_audio.gd` drops any line not in section 4.5 at load. Adding a line needs an entry there *and* a matching cut in 4.5 |
 | Twin reveal | `scenes/cinematics/twin_reveal.tscn`, `scripts/visual/reveal_sequence.gd` (set `auto_loop = false` in game) | It speaks "you found me" (3 words). The Twin must already exist at level start |
 | Readable text | Paper and newspaper props are blank. Add `Label3D` in your own scene | Every word counts |
 | Story props | `failed_containment_device`, `photo_frame`, `teddy_bear`, `papers_scattered`, `containment_tank(_broken)`, `cell_bars`, `clock_workbench`, `grandfather_clock`, `wall_clock`, `old_key`, `keycard`, `pistol` | Keys and weapons are set dressing only (rule 2) |
+| Found story (built) | `scenes/game/found_story.tscn`, instanced in `main.tscn`: Mom's recorder (`scenes/game/story/recorder.tscn`) in each room a `Mom:` line plays, which blinks until its trigger fires and then turns its reels; Dad's lit flashlight on the lower stairs, pointing down; the family photo and 12 growth marks in the twins' room; two covered bodies, the photo and a dead recorder under the chamber clock | Zero words, no interaction, and only the two gurneys collide. A new `Mom:` line needs a recorder with its `trigger_id`, or `tests/found_story.gd` fails |
 
 **Map areas** (`scenes/environments/`):
 | Scene | Rooms |
@@ -289,26 +488,19 @@ Full guide: [docs/GRAPHICS.md](docs/GRAPHICS.md). Effects: instance from `scenes
 | One big facility (~10 min run) | Every target in a level is required; the Twin won't necessarily die last | Put the Twin chamber in its own final level |
 
 ## 10. Open decisions
-- [x] Shared core: Rhaiyn; integrated architecture documented in section 7
+- [ ] Who builds the shared core (section 7)
 - [ ] The Combat weapon
-- [x] October 28 levels: A/B/C with 12 patients, then separate E with the Twin
-- [x] October 28 progression: clear required targets to load next level; no keys/interact
-- [ ] What the twin did to the parents (killed or ate)
-- [ ] What the player finds after the Twin dies (the Reconciliation beat needs a found moment)
+- [ ] Levels: how many, and which areas each one uses
+- [ ] Progression between areas (section 9, key row)
+- [ ] What the twin did to the parents (killed or ate). The chamber props (Nov 4) show two covered bodies, which reads as killed. Change `found_story.tscn` if the team picks the other
+- [ ] What the player finds after the Twin dies (the Reconciliation beat needs a found moment). Proposed (Nov 4): the parents under the giant clock, with the family photo and Mom's last recorder, in the same warm light as the lobby photo. It is visible during the fight because the ending screen comes the instant the Twin dies
 - [ ] Locations for the beats and found moments (needed for the story revision)
-- [x] October 28 speech disabled; implemented environmental text totals 48 words
+- [x] Trim the voice lines to fit 150 words — done Oct 29 2026, and the whole game
+  re-audited: 656 → 134, then **129 / 150** after the story text was rewritten to
+  match the submitted story. See section 4.5 for the table, the counting rule,
+  the chrome ruling and the next cut if we need more room.
 
 ## 11. Deadlines
 - **Story revision:** sections 1–4 and 6 can be revised once. One member emails it before **4:00 pm, Wednesday November 4, 2026**. The clarity rating is final.
 - **Game due:** **Wednesday, November 4, 2026.** The final playtest uses the latest story version.
 - After the build, the team writes a post-build PDF (core loop; exact file, function and value for 2–3 key mechanics; one AI output we changed; what Wednesday's changes did; what's fragile). Record real results as they happen. Never invent them.
-
-## November 4: Daniel gameplay request
-
-Daniel explicitly requested combat, marking, explosion improvements and on-screen instructions, authorizing the Combat/HUD integration edits for this task. Existing Marking behavior is retained. Explosion exposes a shared eligibility check for HUD feedback, rejects paused activation, and emits detonation feedback. Combat rejects paused activation and confirms successful hits visually. No mechanic numbers change.
-
-The prior wordless-HUD default is superseded by this request. Persistent HUD controls add 58 whitespace-separated words (including key names, numbers, and separators conservatively counted). Implemented total: **106 / 150** (48 environmental + 58 controls). Cooldown labels add LMB, Q, E, R: **110 / 150** total. Feedback uses shapes/colors with no additional words.
-
-Daniel also requested replacing the player placeholder with a hooded man. `scenes/game/player.tscn` now uses the cosmetic `scripts/game/hooded_player_visual.gd` character (hoodie, face, trousers, boots and walking motion). This request authorizes those shared-player visual edits. Player physics, camera, targeting and mechanic values are unchanged; no generated scenes or new on-screen words are involved.
-
-The requested explosion activation gesture listens to the existing post-damage `detonated` signal in the cosmetic player visual. The right arm extends for 0.10 s, holds for 0.12 s and lowers for 0.23 s, blending over walking. It never delays damage, changes cooldowns, locks movement or calls gameplay methods. Invalid activations do not emit the signal or play the gesture.

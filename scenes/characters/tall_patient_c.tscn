@@ -13,12 +13,12 @@
 [ext_resource type="AudioStream" path="res://assets/audio/voices/failed_mother.wav" id="11_sxadu"]
 [ext_resource type="AudioStream" path="res://assets/audio/voices/failed_where_are_you.wav" id="12_qpoa3"]
 
-[node name="TallPatientC" type="Node3D" unique_id=1624532059]
+[node name="TallPatientC" type="Node3D" unique_id=686615820]
 script = ExtResource("1_xxk3i")
 
 [node name="Model" type="Node3D" parent="." unique_id=13672867 instance=ExtResource("2_vpc8o")]
 
-[node name="CreatureAudio" type="Node3D" parent="." unique_id=829815937]
+[node name="CreatureAudio" type="Node3D" parent="." unique_id=1617899783]
 script = ExtResource("3_vhfte")
 loop_sound = ExtResource("4_16kkm")
 noises = Array[AudioStream]([ExtResource("5_3tl8a"), ExtResource("6_1nx2h")])

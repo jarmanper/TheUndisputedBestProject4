@@ -1,3 +1,5 @@
+> **Recorded on main's earlier integration** (Rhaiyn's `playtest-integration` line, last at `ecf81ed`). On Nov 4 the team shipped `visual-rehaul` instead; the Marking lifecycle fix and `tests/marking_complete.gd` were ported to it (36/36). File names below such as `final_chamber.tscn` and `tests/marking_final_game.gd` exist only in that history. Results are kept as she recorded them.
+
 # October 28 assignment integration
 
 `playtest-integration` starts from `origin/full-game2` (`aa255d6`). Inspected `origin/main` (`fc9a889`), `origin/full-game` (`9f843ab`) and `origin/rhaiyn-marking-playable` (`f0a360c`). The latter supplied the Marking reference; it was not merged or cherry-picked wholesale. AGENTS.md was missing from full-game2 and is restored from main, with the integration authorization, architecture, route and implemented word budget recorded.

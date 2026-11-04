@@ -1,18 +1,32 @@
 [gd_scene format=3]
 
 [ext_resource type="Script" path="res://scripts/game/main.gd" id="main"]
-[ext_resource type="PackedScene" path="res://scenes/game/player.tscn" id="player"]
+[ext_resource type="PackedScene" path="res://scenes/environments/timbuk_facility.tscn" id="facility"]
+[ext_resource type="PackedScene" path="res://scenes/game/entrance_dressing.tscn" id="dress"]
+[ext_resource type="PackedScene" path="res://scenes/game/found_story.tscn" id="found"]
+[ext_resource type="PackedScene" path="res://scenes/game/player.tscn" id="player_scene"]
 [ext_resource type="Script" path="res://scripts/game/hud.gd" id="hud"]
 [ext_resource type="Script" path="res://scripts/game/enemy.gd" id="enemy"]
-[ext_resource type="PackedScene" path="res://scenes/characters/tall_patient_a.tscn" id="a"]
-[ext_resource type="PackedScene" path="res://scenes/characters/tall_patient_b.tscn" id="b"]
-[ext_resource type="PackedScene" path="res://scenes/characters/tall_patient_c.tscn" id="c"]
+[ext_resource type="Script" path="res://scripts/game/twin_boss.gd" id="boss"]
+[ext_resource type="Script" path="res://scripts/game/interactable.gd" id="inter"]
+[ext_resource type="PackedScene" path="res://scenes/props/keycard.tscn" id="keycard"]
+[ext_resource type="PackedScene" path="res://scenes/characters/tall_patient_a.tscn" id="pa"]
+[ext_resource type="PackedScene" path="res://scenes/characters/tall_patient_b.tscn" id="pb"]
+[ext_resource type="PackedScene" path="res://scenes/characters/tall_patient_c.tscn" id="pc"]
+[ext_resource type="PackedScene" path="res://scenes/characters/twin_monster.tscn" id="twin"]
+[ext_resource type="Material" path="res://assets/materials/painted_metal.tres" id="metal"]
 
 [node name="Main" type="Node3D"]
 script = ExtResource("main")
 
-[node name="Player" parent="." instance=ExtResource("player")]
-position = Vector3(0, 0.05, 3)
+[node name="TimbukFacility" parent="." instance=ExtResource("facility")]
+
+[node name="EntranceDressing" parent="." instance=ExtResource("dress")]
+
+[node name="FoundStory" parent="." instance=ExtResource("found")]
+
+[node name="Player" parent="." instance=ExtResource("player_scene")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 3)
 
 [node name="HUD" type="CanvasLayer" parent="."]
 script = ExtResource("hud")
@@ -20,62 +34,125 @@ player_path = NodePath("../Player")
 
 [node name="Enemies" type="Node3D" parent="."]
 
-[node name="Patient1" type="CharacterBody3D" parent="Enemies"]
-position = Vector3(0.55, 0, 0.8)
+[node name="PatientCorridor" type="CharacterBody3D" parent="Enemies"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, 0.1, -18)
 script = ExtResource("enemy")
-model_scene = ExtResource("a")
+model_scene = ExtResource("pa")
 
-[node name="Patient2" type="CharacterBody3D" parent="Enemies"]
-position = Vector3(-12, 0, 1.5)
+[node name="PatientWestWing" type="CharacterBody3D" parent="Enemies"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15, 0.1, -13.3)
 script = ExtResource("enemy")
-model_scene = ExtResource("b")
+model_scene = ExtResource("pb")
 
-[node name="Patient3" type="CharacterBody3D" parent="Enemies"]
-position = Vector3(12, 0, -1.5)
+[node name="PatientEastWing" type="CharacterBody3D" parent="Enemies"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15, 0.1, -21.3)
 script = ExtResource("enemy")
-model_scene = ExtResource("c")
+model_scene = ExtResource("pc")
 
-[node name="Patient4" type="CharacterBody3D" parent="Enemies"]
-position = Vector3(0, 0, -10)
+[node name="PatientContainment" type="CharacterBody3D" parent="Enemies"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 0.1, -36)
 script = ExtResource("enemy")
-model_scene = ExtResource("a")
+model_scene = ExtResource("pa")
 
-[node name="Patient5" type="CharacterBody3D" parent="Enemies"]
-position = Vector3(0, 0, -14)
+[node name="PatientCellBlock" type="CharacterBody3D" parent="Enemies"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 35.5, 0.1, -40)
 script = ExtResource("enemy")
-model_scene = ExtResource("b")
+model_scene = ExtResource("pb")
 
-[node name="Patient6" type="CharacterBody3D" parent="Enemies"]
-position = Vector3(0, 0, -18)
+[node name="PatientLowerCorridor" type="CharacterBody3D" parent="Enemies"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, -5.9, -72)
 script = ExtResource("enemy")
-model_scene = ExtResource("c")
+model_scene = ExtResource("pc")
 
-[node name="Patient7" type="CharacterBody3D" parent="Enemies"]
-position = Vector3(0, 0, -22)
+[node name="PatientGenerator" type="CharacterBody3D" parent="Enemies"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -22, -5.9, -68)
 script = ExtResource("enemy")
-model_scene = ExtResource("a")
+model_scene = ExtResource("pa")
 
-[node name="Patient8" type="CharacterBody3D" parent="Enemies"]
-position = Vector3(-3, 0, -23.7)
+[node name="PatientChamberApproach" type="CharacterBody3D" parent="Enemies"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14.7, -5.9, -84)
 script = ExtResource("enemy")
-model_scene = ExtResource("b")
+model_scene = ExtResource("pb")
 
-[node name="Patient9" type="CharacterBody3D" parent="Enemies"]
-position = Vector3(0, 0, -27)
+[node name="PatientCorridorB" type="CharacterBody3D" parent="Enemies"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.8, 0.1, -20.5)
 script = ExtResource("enemy")
-model_scene = ExtResource("c")
+model_scene = ExtResource("pb")
 
-[node name="Patient10" type="CharacterBody3D" parent="Enemies"]
-position = Vector3(-5, 0, -34)
+[node name="PatientWestWingB" type="CharacterBody3D" parent="Enemies"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -17.5, 0.1, -15.8)
 script = ExtResource("enemy")
-model_scene = ExtResource("a")
+model_scene = ExtResource("pc")
 
-[node name="Patient11" type="CharacterBody3D" parent="Enemies"]
-position = Vector3(5, 0, -39)
+[node name="PatientEastWingB" type="CharacterBody3D" parent="Enemies"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.5, 0.1, -23.8)
 script = ExtResource("enemy")
-model_scene = ExtResource("b")
+model_scene = ExtResource("pa")
 
-[node name="Patient12" type="CharacterBody3D" parent="Enemies"]
-position = Vector3(-5, 0, -46)
+[node name="PatientContainmentB" type="CharacterBody3D" parent="Enemies"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.5, 0.1, -38.5)
 script = ExtResource("enemy")
-model_scene = ExtResource("c")
+model_scene = ExtResource("pc")
+
+[node name="PatientCellBlockB" type="CharacterBody3D" parent="Enemies"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 33.0, 0.1, -42.5)
+script = ExtResource("enemy")
+model_scene = ExtResource("pa")
+
+[node name="PatientLowerCorridorB" type="CharacterBody3D" parent="Enemies"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, -5.9, -74.0)
+script = ExtResource("enemy")
+model_scene = ExtResource("pb")
+
+[node name="PatientChamberApproachB" type="CharacterBody3D" parent="Enemies"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14.7, -5.9, -87.5)
+script = ExtResource("enemy")
+model_scene = ExtResource("pc")
+
+[node name="TwinBoss" type="CharacterBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14.7, -5.9, -105.3)
+script = ExtResource("boss")
+model_scene = ExtResource("twin")
+
+[node name="Interactables" type="Node3D" parent="."]
+
+[node name="Keycard" type="StaticBody3D" parent="Interactables"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -11.6, 0.8, 1.2)
+script = ExtResource("inter")
+prompt = "take keycard"
+grants_flag = "has_keycard"
+used_text = "Mom's keycard."
+model_scene = ExtResource("keycard")
+model_offset = Vector3(0, -0.04, 0)
+box_size = Vector3(0.5, 0.3, 0.5)
+
+[node name="Generator" type="StaticBody3D" parent="Interactables"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -27, -5, -66)
+script = ExtResource("inter")
+kind = 1
+prompt = "restore power"
+required_flag = "has_keycard"
+grants_flag = "power_restored"
+locked_text = "Locked. Needs a keycard."
+used_text = "Power. A door opens below."
+box_size = Vector3(3.2, 2.2, 2.6)
+
+[node name="TwinChamberDoor" type="StaticBody3D" parent="Interactables"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14.7, -4.35, -92.15)
+script = ExtResource("inter")
+kind = 2
+required_flag = "power_restored"
+locked_text = "Sealed. No power."
+box_size = Vector3(2.4, 3.3, 0.35)
+show_box = true
+box_material = ExtResource("metal")
+
+[node name="TwinChamberWestDoor" type="StaticBody3D" parent="Interactables"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.55, -4.6, -105.2)
+script = ExtResource("inter")
+kind = 2
+required_flag = "power_restored"
+locked_text = "Sealed. No power."
+box_size = Vector3(0.4, 2.9, 1.9)
+show_box = true
+box_material = ExtResource("metal")

@@ -1,0 +1,15 @@
+[gd_resource type="StandardMaterial3D" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/textures/photo_staff_albedo.png" id="1_uxsmq"]
+[ext_resource type="Texture2D" path="res://assets/textures/photo_staff_normal.png" id="2_onixk"]
+[ext_resource type="Texture2D" path="res://assets/textures/photo_staff_rough.png" id="3_mwyaw"]
+
+[resource]
+resource_name = "photo_staff"
+cull_mode = 2
+albedo_texture = ExtResource("1_uxsmq")
+metallic_specular = 0.25
+roughness_texture = ExtResource("3_mwyaw")
+normal_enabled = true
+normal_scale = 0.3
+normal_texture = ExtResource("2_onixk")

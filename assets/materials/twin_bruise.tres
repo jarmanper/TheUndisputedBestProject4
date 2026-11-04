@@ -1,0 +1,21 @@
+[gd_resource type="StandardMaterial3D" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/textures/skin_corpse_albedo.png" id="1_57bfy"]
+[ext_resource type="Texture2D" path="res://assets/textures/skin_corpse_normal.png" id="2_2xj1o"]
+[ext_resource type="Texture2D" path="res://assets/textures/skin_corpse_rough.png" id="3_q86ux"]
+
+[resource]
+resource_name = "twin_bruise"
+albedo_color = Color(0.27, 0.23, 0.28, 1)
+albedo_texture = ExtResource("1_57bfy")
+roughness = 0.92
+roughness_texture = ExtResource("3_q86ux")
+normal_enabled = true
+normal_scale = 0.85
+normal_texture = ExtResource("2_2xj1o")
+subsurf_scatter_enabled = true
+subsurf_scatter_strength = 0.04
+subsurf_scatter_skin_mode = true
+backlight_enabled = true
+backlight = Color(0.075, 0.03, 0.05, 0.25)
+uv1_scale = Vector3(7.692308, 7.692308, 7.692308)

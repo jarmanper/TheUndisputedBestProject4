@@ -18,8 +18,12 @@ const ENV_DIR := "res://assets/models/environment/"
 const FLICKER := preload("res://scripts/visual/light_flicker.gd")
 
 # kind -> [type, color, energy, range, shadow, spot_angle_deg (0 = omni), points down]
+# "fluor" is a recessed ceiling troffer. It used to be an omni, which lit the
+# ceiling it is sunk into and, in volumetric fog, scattered a shapeless ball.
+# A downward spot is both physically right for a recessed fixture and the only
+# way to get a visible cone through the haze.
 const LIGHTS := {
-	"fluor": ["omni", Color(0.82, 0.9, 1.0), 0.95, 5.5, false, 0, false],
+	"fluor": ["spot", Color(0.82, 0.9, 1.0), 1.9, 7.0, true, 92, true],
 	"fluor_hanging": ["omni", Color(0.8, 0.92, 1.0), 1.2, 5.0, true, 0, false],
 	"highbay": ["spot", Color(0.78, 0.9, 1.0), 4.0, 11.0, false, 75, true],
 	"sodium": ["spot", Color(1.0, 0.62, 0.3), 6.0, 18.0, true, 70, true],
@@ -44,6 +48,18 @@ const LIGHTS := {
 	"clock_wash": ["spot", Color(1.0, 0.8, 0.55), 6.0, 14.0, false, 55, false],
 	"uplight": ["spot", Color(1.0, 0.6, 0.3), 3.0, 10.0, false, 50, false],
 	"chamber_high": ["omni", Color(0.6, 0.72, 0.9), 1.6, 16.0, false, 0, false],
+}
+
+## How hard each light pushes into the volumetric fog (Light3D.light_volumetric_fog_energy).
+## The fixtures that are meant to throw a visible shaft get much more than the
+## rest; tiny indicator lamps get almost none so they do not fog up a whole room.
+const FOG_ENERGY := {
+	"fluor": 12.0, "fluor_hanging": 5.0, "highbay": 4.0, "sodium": 4.0, "spot": 3.5,
+	"surgical": 3.0, "cage": 2.5, "red": 1.6, "beacon": 1.6, "sign": 1.2,
+	"core": 2.5, "emitter": 2.5, "chamber_spill": 2.5, "chamber_high": 2.0,
+	"clock_wash": 2.5, "uplight": 2.5, "desk_lamp": 1.0, "tank": 1.2, "chem": 1.0,
+	"screen": 0.2, "keypad": 0.1, "tracker": 0.1,
+	"reveal_key": 2.0, "reveal_rim": 2.0, "reveal_fill": 1.0,
 }
 
 
@@ -165,7 +181,9 @@ func make_light(kind: String, ex: Dictionary, xf: Transform3D) -> Light3D:
 		s.spot_angle = spot_deg * 0.5
 		s.spot_range = ex.get("range", d[3])
 		s.spot_attenuation = 0.8
-		s.spot_angle_attenuation = 1.6
+		# A troffer wants a defined edge to its cone (that edge is the shaft);
+		# everything else keeps the soft falloff it had.
+		s.spot_angle_attenuation = 0.35 if kind == "fluor" else 1.6
 		light = s
 	else:
 		var o := OmniLight3D.new()
@@ -178,9 +196,18 @@ func make_light(kind: String, ex: Dictionary, xf: Transform3D) -> Light3D:
 		var c: Array = ex["color"]
 		light.light_color = Color(c[0], c[1], c[2])
 	light.light_energy = ex.get("energy", d[2])
+	# The emergency beacons ask (in source/blender/props.py, owned elsewhere) for
+	# range 7-9 m. That was fine while the ceiling fluorescents were omnis and
+	# washed the walls neutral; now that they are downward spots the beacon was
+	# the only thing lighting the upper walls and it painted whole corridors red.
+	# Pulled back here so it reads as a flashing lamp again, not a floodlight.
+	if kind == "beacon":
+		light.light_energy *= 0.9
+		if light is OmniLight3D:
+			(light as OmniLight3D).omni_range *= 0.78
 	light.shadow_enabled = ex.get("shadow", d[4])
 	light.shadow_blur = 1.5
-	light.light_volumetric_fog_energy = 1.5
+	light.light_volumetric_fog_energy = ex.get("fog_energy", FOG_ENERGY.get(kind, 1.5))
 	light.distance_fade_enabled = true
 	light.distance_fade_begin = 30.0
 	light.distance_fade_length = 10.0
@@ -328,27 +355,112 @@ func add_room_extras(root: Node3D, inst: Node3D) -> void:
 			amb.position = xf.origin
 			fogs.add_child(amb, true)
 			amb.owner = root
-		var density: float = {"lab": 0.0, "lobby": 0.0, "industrial": 0.02, "lower": 0.05, "chamber": 0.035, "outdoor": 0.015}.get(style, 0.0)
+		# Local haze on top of the global fog. The lab/lobby rooms used to be 0.0,
+		# which is why the clean half of the facility had no shafts at all even
+		# though volumetric fog was switched on.
+		var density: float = {"lab": 0.022, "lobby": 0.011, "industrial": 0.022, "lower": 0.05, "chamber": 0.035, "outdoor": 0.015}.get(style, 0.0)
+		if style != "outdoor" and size.x * size.z >= 10.0:
+			var dust := make_dust(size)
+			dust.name = String(m.name).trim_prefix("ROOM__") + "_dust"
+			dust.position = xf.origin
+			fogs.add_child(dust, true)
+			dust.owner = root
 		if density > 0.0:
 			var fog := FogVolume.new()
 			fog.name = String(m.name).trim_prefix("ROOM__") + "_fog"
-			fog.size = size
 			fog.shape = RenderingServer.FOG_VOLUME_SHAPE_BOX
 			fog.material = fog_material(style, density)
-			fog.position = xf.origin
+			if style in ["lab", "lobby"]:
+				# Haze hangs in the top half of the clean rooms rather than
+				# filling them. That is what makes the troffer cones read: the
+				# shaft is bright where the fog is, and eye level stays clear,
+				# so the dark corners and the floor contrast survive.
+				fog.size = Vector3(size.x, size.y * 0.55, size.z)
+				fog.position = xf.origin + Vector3(0, size.y * 0.225, 0)
+			else:
+				fog.size = size
+				fog.position = xf.origin
 			fogs.add_child(fog, true)
 			fog.owner = root
 
 
+const DUST_SCRIPT := preload("res://scripts/visual/dust_motes.gd")
+
+
+## Shared billboard quad for every room's dust. One resource so all the dust in
+## the facility costs one material.
+func dust_quad() -> QuadMesh:
+	var path := "res://assets/materials/fx_dust_mote.tres"
+	var m := StandardMaterial3D.new()
+	m.resource_name = "dust_mote"
+	m.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	m.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	m.blend_mode = BaseMaterial3D.BLEND_MODE_ADD
+	m.vertex_color_use_as_albedo = true
+	m.albedo_texture = load("res://assets/textures/vfx/flare.png")
+	m.billboard_mode = BaseMaterial3D.BILLBOARD_PARTICLES
+	m.billboard_keep_scale = true
+	m.depth_draw_mode = BaseMaterial3D.DEPTH_DRAW_DISABLED
+	m.disable_receive_shadows = true
+	# motes very close to the camera would read as lens dirt, so fade them out
+	m.proximity_fade_enabled = true
+	m.proximity_fade_distance = 1.2
+	var q := QuadMesh.new()
+	q.size = Vector2(0.02, 0.02)
+	q.material = m
+	ResourceSaver.save(q, path)
+	return load(path)
+
+
+## Dust motes filling one room. Cheap: the emitter only ticks at 15 fps and is
+## culled by its visibility AABB when the room is off screen.
+func make_dust(size: Vector3) -> GPUParticles3D:
+	var p := GPUParticles3D.new()
+	p.amount = clampi(int(size.x * size.z * 0.9), 20, 110)
+	p.lifetime = 18.0
+	p.preprocess = 18.0
+	p.randomness = 1.0
+	p.explosiveness = 0.0
+	p.emitting = true
+	p.fixed_fps = 15
+	p.interpolate = true
+	p.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	p.visibility_aabb = AABB(-size * 0.5, size)
+	p.draw_pass_1 = dust_quad()
+	var pm := ParticleProcessMaterial.new()
+	pm.direction = Vector3(0, 1, 0)
+	pm.spread = 180.0
+	pm.initial_velocity_min = 0.008
+	pm.initial_velocity_max = 0.05
+	pm.gravity = Vector3(0.004, -0.006, 0.0)   # a barely-there drift
+	pm.emission_shape = ParticleProcessMaterial.EMISSION_SHAPE_BOX
+	pm.emission_box_extents = Vector3(size.x * 0.47, size.y * 0.42, size.z * 0.47)
+	pm.scale_min = 0.35
+	pm.scale_max = 1.5
+	var grad := Gradient.new()
+	grad.offsets = PackedFloat32Array([0.0, 0.22, 0.78, 1.0])
+	grad.colors = PackedColorArray([Color(0.85, 0.88, 0.92, 0.0), Color(0.85, 0.88, 0.92, 0.55),
+		Color(0.85, 0.88, 0.92, 0.55), Color(0.85, 0.88, 0.92, 0.0)])
+	var gt := GradientTexture1D.new()
+	gt.gradient = grad
+	pm.color_ramp = gt
+	p.process_material = pm
+	p.set_script(DUST_SCRIPT)
+	return p
+
+
+## Note: always rebuilt, never loaded from disk. The old version returned the
+## cached .tres if it existed, so editing the densities above changed nothing.
 func fog_material(style: String, density: float) -> FogMaterial:
 	var path := "res://assets/materials/fog_%s.tres" % style
-	if ResourceLoader.exists(path):
-		return load(path)
 	var fm := FogMaterial.new()
 	fm.density = density
 	fm.albedo = {"industrial": Color(0.75, 0.8, 0.82), "lower": Color(0.7, 0.66, 0.58),
-		"chamber": Color(0.8, 0.72, 0.65), "outdoor": Color(0.55, 0.62, 0.72)}.get(style, Color.WHITE)
-	fm.height_falloff = 0.15 if style != "outdoor" else 0.35
+		"chamber": Color(0.8, 0.72, 0.65), "outdoor": Color(0.55, 0.62, 0.72),
+		"lab": Color(0.78, 0.82, 0.86), "lobby": Color(0.78, 0.82, 0.86)}.get(style, Color.WHITE)
+	# The lab/lobby volumes are a thin layer near the ceiling, so they must not
+	# thin out towards their own top.
+	fm.height_falloff = 0.35 if style == "outdoor" else (0.02 if style in ["lab", "lobby"] else 0.15)
 	fm.edge_fade = 0.3
 	var noise := FastNoiseLite.new()
 	noise.frequency = 0.08
@@ -391,8 +503,17 @@ func make_environment() -> Environment:
 	env.ssao_intensity = 2.2
 	env.ssil_enabled = true
 	env.ssil_intensity = 0.8
-	# SSR off: it smears additive VFX into glossy floors/walls; probes handle reflections
-	env.ssr_enabled = false
+	# SSR back on (was off: "it smears additive VFX into glossy floors/walls").
+	# Re-tested 2026-10-29 against the real explosion_orange / fire_orange VFX in
+	# the research corridor and the lobby: at the brightness those effects
+	# actually use, no smearing is visible on the dado walls or the tile floor,
+	# and the floors gain a real wet-polished reflection. The smearing only
+	# reproduces with an artificially overbright (6x) additive quad, so the short
+	# ray budget below is what keeps it in check. Costs ~0.5-1 ms.
+	# The Low graphics preset turns this off again (scripts/game/ui_settings.gd).
+	env.ssr_enabled = true
+	env.ssr_max_steps = 32
+	env.ssr_fade_in = 0.3
 	env.glow_enabled = true
 	env.glow_intensity = 0.55
 	env.glow_bloom = 0.04
@@ -401,13 +522,27 @@ func make_environment() -> Environment:
 	env.set_glow_level(1, 0.6)
 	env.set_glow_level(3, 1.0)
 	env.set_glow_level(5, 0.6)
+	# Volumetric fog. This used to be enabled but invisible indoors:
+	#   * density 0.008 is ~1/6 of Godot's default -- over a 16 m lobby that is
+	#     about 12% extinction, i.e. nothing.
+	#   * length 48 m stretched the froxel grid over the whole facility, so the
+	#     few metres under a ceiling fixture got almost no depth resolution.
+	#   * ambient_inject 0.35 lifted the unlit fog to roughly the brightness of
+	#     the lit fog, which flattens a beam into a wash.
+	# Density is now high enough to read, the grid is packed into the 30 m the
+	# player can actually see, and the ambient floor is low so a shaft stands
+	# out against it. The Low preset still switches the whole thing off.
 	env.volumetric_fog_enabled = true
-	env.volumetric_fog_density = 0.008
-	env.volumetric_fog_albedo = Color(0.7, 0.74, 0.8)
-	env.volumetric_fog_anisotropy = 0.45
-	env.volumetric_fog_length = 48.0
-	env.volumetric_fog_ambient_inject = 0.35
-	env.volumetric_fog_sky_affect = 0.15
+	env.volumetric_fog_density = 0.012
+	env.volumetric_fog_albedo = Color(0.72, 0.76, 0.82)
+	env.volumetric_fog_anisotropy = 0.25
+	env.volumetric_fog_length = 30.0
+	env.volumetric_fog_detail_spread = 1.4
+	env.volumetric_fog_gi_inject = 0.2
+	env.volumetric_fog_ambient_inject = 0.03
+	env.volumetric_fog_sky_affect = 0.05
+	env.volumetric_fog_temporal_reprojection_enabled = true
+	env.volumetric_fog_temporal_reprojection_amount = 0.92
 	env.adjustment_enabled = true
 	env.adjustment_contrast = 1.06
 	env.adjustment_saturation = 0.88
@@ -540,7 +675,9 @@ func build_reveal(twin_scene: String) -> void:
 	twin.set("desync", false)
 	root.add_child(twin)
 	# face key light + soft fill so the face always reads (never lost in darkness)
-	var face_c := bpos(Vector3(14.7, 106.65, -3.22))
+	# The Twin's head sits 13 cm higher since the v3 rebuild; the old -3.22
+	# cropped his clock face out of the top of the reveal shots.
+	var face_c := bpos(Vector3(14.7, 106.65, -3.10))
 	var key := SpotLight3D.new()
 	key.name = "FaceKey"
 	key.light_color = Color(1.0, 0.88, 0.75)
