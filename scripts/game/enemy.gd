@@ -33,6 +33,11 @@ const ATTACK_WAIT := 2.0
 ## range, blast and line-of-sight test.
 const CENTER_HEIGHT := 1.1
 
+## Hit flinch: how far the model leans away from a shot (radians, about 8
+## degrees) and how long it takes to spring back. Visual only.
+const FLINCH_ANGLE := 0.14
+const FLINCH_TIME := 0.15
+
 const HIT_FLASH := preload("res://assets/materials/fx_hit_flash.tres")
 const MARK_OUTLINE := preload("res://assets/materials/fx_marked_outline.tres")
 const TRACKER := "res://scenes/effects/tracking_indicator.tscn"
@@ -61,6 +66,8 @@ var _flash_mat: ShaderMaterial
 var _gravity: float = ProjectSettings.get_setting("physics/3d/default_gravity", 9.8)
 var _body_shape: CollisionShape3D
 var _head_shape: CollisionShape3D
+var _model_rest := Basis.IDENTITY
+var _flinch_tween: Tween
 
 var head_min_y := 1.65
 var head_center := Vector3(0, 1.8, 0)
@@ -83,6 +90,8 @@ func _ready() -> void:
 		add_child(model)
 		_anim = model.find_child("AnimationPlayer", true, false)
 	_build_hitboxes()
+	if model:
+		_model_rest = model.basis
 	_play("idle")
 
 
@@ -334,6 +343,26 @@ func take_hit(amount: float, _hit_position: Vector3 = Vector3.INF, _headshot := 
 	apply_damage(amount)
 
 
+## Hit reaction, visual only: the model leans away from `from` and springs
+## back. The body, hitboxes, AI state and wind-up never move, so there is no
+## knockback and no timing change. A suspended enemy stays frozen.
+func flinch(from: Vector3) -> void:
+	if model == null or state == State.DEAD or suspended:
+		return
+	var away := global_position - from
+	away.y = 0.0
+	if away.length() < 0.01:
+		return
+	# turning UP about UP x away leans the top toward `away`; in our own frame
+	var axis := (global_basis.inverse() * Vector3.UP.cross(away.normalized())).normalized()
+	if _flinch_tween:
+		_flinch_tween.kill()
+	var lean := func(a: float): model.basis = Basis(axis, a) * _model_rest
+	_flinch_tween = create_tween()
+	_flinch_tween.tween_method(lean, 0.0, FLINCH_ANGLE, FLINCH_TIME * 0.3).set_ease(Tween.EASE_OUT)
+	_flinch_tween.tween_method(lean, FLINCH_ANGLE, 0.0, FLINCH_TIME * 0.7).set_ease(Tween.EASE_IN_OUT)
+
+
 ## Marking owns the timer; the enemy only carries the flag and the visuals.
 func set_marked(on: bool) -> void:
 	if on and state == State.DEAD:
@@ -408,6 +437,11 @@ func _die() -> void:
 	defeated.emit(self)
 	_on_death()
 	_play("react")
+	# the fall starts from the rest pose, not from halfway through a flinch
+	if _flinch_tween:
+		_flinch_tween.kill()
+	if model:
+		model.basis = _model_rest
 	var tw := create_tween()
 	if model:
 		tw.tween_property(model, "rotation:x", -PI / 2, 0.6).set_ease(Tween.EASE_IN)
