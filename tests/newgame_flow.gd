@@ -52,7 +52,7 @@ func _run() -> void:
 		player = get_first_node_in_group("player")
 	check(player != null, "New Game reaches the game scene with a player, after %d frames" % waited)
 	check(current_scene != null and current_scene.get_node_or_null("HUD") != null, "the HUD came up with it")
-	check(get_nodes_in_group("enemy").size() == 9, "all 9 required targets are present after New Game")
+	check(get_nodes_in_group("enemy").size() == 16, "all 16 required targets (15 patients and the Twin) are present after New Game")
 	await frames(60)
 	check(player != null and not player.dead, "the player is alive and the scene is running")
 
