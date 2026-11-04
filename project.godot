@@ -72,6 +72,12 @@ pause={
 ]
 }
 
+[layer_names]
+
+3d_physics/layer_1="Level geometry"
+3d_physics/layer_2="Player"
+3d_physics/layer_3="Targets"
+
 [physics]
 
 3d/physics_engine="Jolt Physics"
