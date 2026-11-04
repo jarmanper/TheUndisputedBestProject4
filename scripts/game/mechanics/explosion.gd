@@ -1,4 +1,6 @@
 extends Node
+## Daniel: instantaneous, geometry-occluded blast; feedback never changes damage.
+signal detonated(origin: Vector3, hits: int)
 const RANGE := 15.0
 const RADIUS := 4.0
 const DAMAGE := 40
@@ -17,16 +19,21 @@ func _physics_process(delta: float) -> void:
 func is_ready() -> bool:
 	return cooldown_left <= 0
 
-func detonate() -> bool:
-	if not is_ready() or player.dead:
+func can_detonate() -> bool:
+	if not is_ready() or player.dead or get_tree().paused:
 		return false
 	var marking := player.get_node("Marking")
 	var primary: TimbukEnemy = marking.current_target
 	if not is_instance_valid(primary) or primary.is_dead() or not primary.is_marked():
 		return false
-	var origin := primary.center()
-	if player.upper_body_point().distance_squared_to(origin) > RANGE * RANGE or not player.visible_point(origin):
+	return player.upper_body_point().distance_squared_to(primary.center()) <= RANGE * RANGE and player.visible_point(primary.center())
+
+func detonate() -> bool:
+	if not can_detonate():
 		return false
+	var marking := player.get_node("Marking")
+	var primary: TimbukEnemy = marking.current_target
+	var origin := primary.center()
 	var affected: Array[TimbukEnemy] = []
 	var suspended: Array[bool] = []
 	for node in get_tree().get_nodes_in_group("enemy"):
@@ -46,6 +53,8 @@ func detonate() -> bool:
 	for target in affected:
 		target.finish_defeat()
 	cooldown_left = COOLDOWN
-	if primary.model != null:
+	detonated.emit(origin, affected.size())
+	# Visuals also work for collider-only targets, independently of their model.
+	if DisplayServer.get_name() != "headless":
 		TimbukFx.spawn(get_tree(), "res://scenes/effects/explosion_blue.tscn", origin)
 	return true

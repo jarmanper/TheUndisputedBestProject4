@@ -1,4 +1,5 @@
 extends Node
+signal hit_confirmed
 const DAMAGE := 20
 const RANGE := 3.0
 const COOLDOWN := 0.6
@@ -16,7 +17,7 @@ func is_ready() -> bool:
 	return cooldown_left <= 0
 
 func fire() -> bool:
-	if not is_ready() or player.dead:
+	if not is_ready() or player.dead or get_tree().paused:
 		return false
 	var target := player.crosshair_target(RANGE)
 	if target == null:
@@ -28,6 +29,7 @@ func fire() -> bool:
 	if was_marked:
 		player.get_node("Suspend").reduce_cooldown(1.0)
 	target.finish_defeat()
+	hit_confirmed.emit()
 	if target.model != null:
 		TimbukFx.spawn(get_tree(), "res://scenes/effects/impact_sparks.tscn", target.center())
 	return true

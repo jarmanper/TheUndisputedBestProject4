@@ -184,7 +184,14 @@ func _run() -> void:
 	aim(first)
 	await settle()
 	mark.try_mark()
+	var visual := player.get_node("Visual")
+	check(visual.explosion_pose_elapsed < 0, "explosion gesture starts inactive")
 	check(explosion.detonate(), "Explosion succeeds using existing mark")
+	check(visual.explosion_pose_elapsed == 0 and first.health == 60 and explosion.cooldown_left == 5, "damage and cooldown apply immediately before explosion gesture advances")
+	visual._process(0.10)
+	check(is_equal_approx(visual.arms[1].rotation.x, PI * 0.5) and first.health == 60 and explosion.cooldown_left == 5, "arm extends without advancing or applying explosion gameplay")
+	visual._process(0.35)
+	check(visual.explosion_pose_elapsed < 0 and is_zero_approx(visual.arms[1].rotation.x), "arm returns to idle after cosmetic gesture")
 	check(first.health == 60 and second.health == 60 and frozen.health == 40 and outside.health == 100, "Explosion includes primary and exactly 4 m, excludes 4.001 m; 40 normal / 60 TOTAL suspended")
 	check(not first.marked and mark.current_target == null and not frozen.suspended, "Explosion consumes mark and ends affected suspension")
 	check(explosion.cooldown_left == 5 and player.health == 100 and frozen.velocity == Vector3.ZERO, "Explosion 5 s cooldown, no player damage or knockback")
@@ -265,6 +272,11 @@ func _run() -> void:
 	aim(first)
 	await settle()
 	mark.try_mark()
+	paused = true
+	check(not combat.fire() and combat.cooldown_left == 0 and first.health == 100, "paused direct Combat activation is rejected")
+	check(not explosion.can_detonate() and not explosion.detonate() and first.marked and explosion.cooldown_left == 0, "paused Explosion preserves mark, HP and cooldown")
+	paused = false
+	check(explosion.can_detonate() and first.marked and first.health == 100 and explosion.cooldown_left == 0, "Explosion eligibility preview has no gameplay side effects")
 	mark.set_physics_process(true)
 	var duration_before: float = mark.duration_left
 	var cooldown_before: float = mark.cooldown_left

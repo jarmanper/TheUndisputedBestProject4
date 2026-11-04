@@ -302,3 +302,13 @@ Full guide: [docs/GRAPHICS.md](docs/GRAPHICS.md). Effects: instance from `scenes
 - **Story revision:** sections 1–4 and 6 can be revised once. One member emails it before **4:00 pm, Wednesday November 4, 2026**. The clarity rating is final.
 - **Game due:** **Wednesday, November 4, 2026.** The final playtest uses the latest story version.
 - After the build, the team writes a post-build PDF (core loop; exact file, function and value for 2–3 key mechanics; one AI output we changed; what Wednesday's changes did; what's fragile). Record real results as they happen. Never invent them.
+
+## November 4: Daniel gameplay request
+
+Daniel explicitly requested combat, marking, explosion improvements and on-screen instructions, authorizing the Combat/HUD integration edits for this task. Existing Marking behavior is retained. Explosion exposes a shared eligibility check for HUD feedback, rejects paused activation, and emits detonation feedback. Combat rejects paused activation and confirms successful hits visually. No mechanic numbers change.
+
+The prior wordless-HUD default is superseded by this request. Persistent HUD controls add 58 whitespace-separated words (including key names, numbers, and separators conservatively counted). Implemented total: **106 / 150** (48 environmental + 58 controls). Cooldown labels add LMB, Q, E, R: **110 / 150** total. Feedback uses shapes/colors with no additional words.
+
+Daniel also requested replacing the player placeholder with a hooded man. `scenes/game/player.tscn` now uses the cosmetic `scripts/game/hooded_player_visual.gd` character (hoodie, face, trousers, boots and walking motion). This request authorizes those shared-player visual edits. Player physics, camera, targeting and mechanic values are unchanged; no generated scenes or new on-screen words are involved.
+
+The requested explosion activation gesture listens to the existing post-damage `detonated` signal in the cosmetic player visual. The right arm extends for 0.10 s, holds for 0.12 s and lowers for 0.23 s, blending over walking. It never delays damage, changes cooldowns, locks movement or calls gameplay methods. Invalid activations do not emit the signal or play the gesture.
