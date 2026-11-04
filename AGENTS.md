@@ -34,6 +34,7 @@ Edit only the files you own. If you need a change in someone else's file, ask th
 | Graphics, audio, map | Jarman | `assets/`, `source/`, `tools/`, `scripts/visual/`, all generated scenes |
 | Shared core: player, target base class, targeting, HUD, level manager, input map, physics layers | **Unassigned. Claim it before starting.** | `scripts/core/`, `scenes/game/` *(proposed)* |
 | Story text and word budget | **Unassigned** | Label3D text, `source/audio/voice_lines.txt`, section 4.5 here |
+| Found-story props (wordless) | Rickey | `scenes/game/found_story.tscn`, `scenes/game/story/`, `scripts/game/story_recorder.gd`, `tests/found_story.gd` |
 
 **Git:** one branch per person, merged into `main` through a pull request (as `graphics-v2` was). Pull before you start. `project.godot` is shared: change it (input map, layer names, autoloads, main scene) in one small commit and tell the team. Never let two people edit the same `.tscn`.
 
@@ -427,6 +428,7 @@ Full guide: [docs/GRAPHICS.md](docs/GRAPHICS.md). Effects: instance from `scenes
 | Twin reveal | `scenes/cinematics/twin_reveal.tscn`, `scripts/visual/reveal_sequence.gd` (set `auto_loop = false` in game) | It speaks "you found me" (3 words). The Twin must already exist at level start |
 | Readable text | Paper and newspaper props are blank. Add `Label3D` in your own scene | Every word counts |
 | Story props | `failed_containment_device`, `photo_frame`, `teddy_bear`, `papers_scattered`, `containment_tank(_broken)`, `cell_bars`, `clock_workbench`, `grandfather_clock`, `wall_clock`, `old_key`, `keycard`, `pistol` | Keys and weapons are set dressing only (rule 2) |
+| Found story (built) | `scenes/game/found_story.tscn`, instanced in `main.tscn`: Mom's recorder (`scenes/game/story/recorder.tscn`) in each room a `Mom:` line plays, which blinks until its trigger fires and then turns its reels; Dad's lit flashlight on the lower stairs, pointing down; the family photo and 12 growth marks in the twins' room; two covered bodies, the photo and a dead recorder under the chamber clock | Zero words, no interaction, and only the two gurneys collide. A new `Mom:` line needs a recorder with its `trigger_id`, or `tests/found_story.gd` fails |
 
 **Map areas** (`scenes/environments/`):
 | Scene | Rooms |
@@ -457,8 +459,8 @@ Full guide: [docs/GRAPHICS.md](docs/GRAPHICS.md). Effects: instance from `scenes
 - [ ] The Combat weapon
 - [ ] Levels: how many, and which areas each one uses
 - [ ] Progression between areas (section 9, key row)
-- [ ] What the twin did to the parents (killed or ate)
-- [ ] What the player finds after the Twin dies (the Reconciliation beat needs a found moment)
+- [ ] What the twin did to the parents (killed or ate). The chamber props (Nov 4) show two covered bodies, which reads as killed. Change `found_story.tscn` if the team picks the other
+- [ ] What the player finds after the Twin dies (the Reconciliation beat needs a found moment). Proposed (Nov 4): the parents under the giant clock, with the family photo and Mom's last recorder, in the same warm light as the lobby photo. It is visible during the fight because the ending screen comes the instant the Twin dies
 - [ ] Locations for the beats and found moments (needed for the story revision)
 - [x] Trim the voice lines to fit 150 words — done Oct 29 2026, and the whole game
   re-audited: 656 → 134, then **129 / 150** after the story text was rewritten to
