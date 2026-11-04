@@ -3,6 +3,7 @@
 [ext_resource type="Script" path="res://scripts/game/main.gd" id="main"]
 [ext_resource type="PackedScene" path="res://scenes/environments/timbuk_facility.tscn" id="facility"]
 [ext_resource type="PackedScene" path="res://scenes/game/entrance_dressing.tscn" id="dress"]
+[ext_resource type="PackedScene" path="res://scenes/game/found_story.tscn" id="found"]
 [ext_resource type="PackedScene" path="res://scenes/game/player.tscn" id="player_scene"]
 [ext_resource type="Script" path="res://scripts/game/hud.gd" id="hud"]
 [ext_resource type="Script" path="res://scripts/game/enemy.gd" id="enemy"]
@@ -21,6 +22,8 @@ script = ExtResource("main")
 [node name="TimbukFacility" parent="." instance=ExtResource("facility")]
 
 [node name="EntranceDressing" parent="." instance=ExtResource("dress")]
+
+[node name="FoundStory" parent="." instance=ExtResource("found")]
 
 [node name="Player" parent="." instance=ExtResource("player_scene")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 3)

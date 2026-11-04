@@ -1,0 +1,158 @@
+[gd_scene format=3]
+
+; Mom's portable cassette recorder (scripts/game/story_recorder.gd).
+; Built from primitives because scenes/props/ has no recorder and generated
+; prop scenes must not be edited. Front faces +Z, the base sits at y = 0.
+; Scenery only: no collision, no text, no interaction.
+
+[ext_resource type="Script" path="res://scripts/game/story_recorder.gd" id="1_rec"]
+[ext_resource type="Material" path="res://assets/materials/gunmetal.tres" id="2_body"]
+[ext_resource type="Material" path="res://assets/materials/black_cavity.tres" id="3_dark"]
+[ext_resource type="Material" path="res://assets/materials/painted_white.tres" id="4_white"]
+[ext_resource type="Material" path="res://assets/materials/painted_metal.tres" id="5_key"]
+[ext_resource type="Material" path="res://assets/materials/paper_old.tres" id="6_label"]
+[ext_resource type="Material" path="res://assets/materials/light_red.tres" id="7_led"]
+[ext_resource type="AudioStream" path="res://scenes/game/story/tape_hiss_loop.wav" id="8_hiss"]
+[ext_resource type="AudioStream" path="res://scenes/game/story/tape_clunk.wav" id="9_clunk"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_body"]
+material = ExtResource("2_body")
+size = Vector3(0.3, 0.075, 0.19)
+
+[sub_resource type="BoxMesh" id="BoxMesh_well"]
+material = ExtResource("3_dark")
+size = Vector3(0.17, 0.004, 0.09)
+
+[sub_resource type="BoxMesh" id="BoxMesh_label"]
+material = ExtResource("6_label")
+size = Vector3(0.15, 0.002, 0.022)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_hub"]
+material = ExtResource("4_white")
+top_radius = 0.019
+bottom_radius = 0.019
+height = 0.004
+radial_segments = 16
+rings = 1
+
+[sub_resource type="BoxMesh" id="BoxMesh_spoke"]
+material = ExtResource("3_dark")
+size = Vector3(0.032, 0.006, 0.006)
+
+[sub_resource type="BoxMesh" id="BoxMesh_key"]
+material = ExtResource("5_key")
+size = Vector3(0.03, 0.014, 0.03)
+
+[sub_resource type="BoxMesh" id="BoxMesh_play"]
+material = ExtResource("4_white")
+size = Vector3(0.03, 0.014, 0.03)
+
+[sub_resource type="BoxMesh" id="BoxMesh_grille"]
+material = ExtResource("3_dark")
+size = Vector3(0.085, 0.002, 0.12)
+
+[sub_resource type="SphereMesh" id="SphereMesh_led"]
+material = ExtResource("7_led")
+radius = 0.008
+height = 0.016
+radial_segments = 8
+rings = 4
+
+[node name="Recorder" type="Node3D"]
+script = ExtResource("1_rec")
+
+[node name="Body" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0375, 0)
+mesh = SubResource("BoxMesh_body")
+
+[node name="TapeWell" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.03, 0.0755, -0.02)
+mesh = SubResource("BoxMesh_well")
+
+[node name="CassetteLabel" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.03, 0.0775, -0.052)
+mesh = SubResource("BoxMesh_label")
+
+[node name="ReelLeft" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.07, 0.0785, -0.012)
+
+[node name="Hub" type="MeshInstance3D" parent="ReelLeft"]
+mesh = SubResource("CylinderMesh_hub")
+
+[node name="Spoke" type="MeshInstance3D" parent="ReelLeft"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.001, 0)
+mesh = SubResource("BoxMesh_spoke")
+
+[node name="Spoke2" type="MeshInstance3D" parent="ReelLeft"]
+transform = Transform3D(0.5, 0, 0.866025, 0, 1, 0, -0.866025, 0, 0.5, 0, 0.001, 0)
+mesh = SubResource("BoxMesh_spoke")
+
+[node name="Spoke3" type="MeshInstance3D" parent="ReelLeft"]
+transform = Transform3D(-0.5, 0, 0.866025, 0, 1, 0, -0.866025, 0, -0.5, 0, 0.001, 0)
+mesh = SubResource("BoxMesh_spoke")
+
+[node name="ReelRight" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.01, 0.0785, -0.012)
+
+[node name="Hub" type="MeshInstance3D" parent="ReelRight"]
+mesh = SubResource("CylinderMesh_hub")
+
+[node name="Spoke" type="MeshInstance3D" parent="ReelRight"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.001, 0)
+mesh = SubResource("BoxMesh_spoke")
+
+[node name="Spoke2" type="MeshInstance3D" parent="ReelRight"]
+transform = Transform3D(0.5, 0, 0.866025, 0, 1, 0, -0.866025, 0, 0.5, 0, 0.001, 0)
+mesh = SubResource("BoxMesh_spoke")
+
+[node name="Spoke3" type="MeshInstance3D" parent="ReelRight"]
+transform = Transform3D(-0.5, 0, 0.866025, 0, 1, 0, -0.866025, 0, -0.5, 0, 0.001, 0)
+mesh = SubResource("BoxMesh_spoke")
+
+[node name="Keys" type="Node3D" parent="."]
+
+[node name="Rewind" type="MeshInstance3D" parent="Keys"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.115, 0.081, 0.068)
+mesh = SubResource("BoxMesh_key")
+
+[node name="Stop" type="MeshInstance3D" parent="Keys"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.045, 0.081, 0.068)
+mesh = SubResource("BoxMesh_key")
+
+[node name="Forward" type="MeshInstance3D" parent="Keys"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.01, 0.081, 0.068)
+mesh = SubResource("BoxMesh_key")
+
+[node name="PlayKey" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.08, 0.081, 0.068)
+mesh = SubResource("BoxMesh_play")
+
+[node name="Grille" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.095, 0.0755, -0.01)
+mesh = SubResource("BoxMesh_grille")
+
+[node name="Led" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.115, 0.077, 0.072)
+mesh = SubResource("SphereMesh_led")
+
+[node name="Glow" type="OmniLight3D" parent="Led"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.03, 0)
+light_color = Color(1, 0.12, 0.05, 1)
+light_energy = 1.4
+light_volumetric_fog_energy = 0.0
+omni_range = 1.1
+omni_attenuation = 1.6
+
+[node name="Tape" type="AudioStreamPlayer3D" parent="."]
+stream = ExtResource("8_hiss")
+volume_db = -8.0
+unit_size = 2.0
+max_distance = 14.0
+bus = &"SFX"
+
+[node name="Clunk" type="AudioStreamPlayer3D" parent="."]
+stream = ExtResource("9_clunk")
+volume_db = -2.0
+unit_size = 2.5
+max_distance = 16.0
+bus = &"SFX"
