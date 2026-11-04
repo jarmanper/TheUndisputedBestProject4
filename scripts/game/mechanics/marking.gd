@@ -64,14 +64,19 @@ func _tick_duration(delta: float) -> void:
 
 ## Marks the crosshair target. Returns true only when a mark was applied.
 func try_mark() -> bool:
-	if player.dead or not is_ready():
+	# a direct call while paused must not mark either (Rhaiyn, PR #3)
+	if player.dead or not is_ready() or get_tree().paused:
 		return false
 	var target := player.crosshair_target(RANGE)
 	if target == null:
 		return false
 	var refresh := target == current_target
 	if not refresh:
-		_release_current()
+		clear_mark()
+		# drop the reference the moment the target dies or leaves the level,
+		# so Explosion can never read a defeated or freed target
+		target.defeated.connect(_on_target_gone)
+		target.tree_exiting.connect(_on_target_gone.bind(target))
 	current_target = target
 	duration_left = DURATION
 	cooldown_left = COOLDOWN
@@ -89,15 +94,32 @@ func consume_mark() -> void:
 
 
 func clear_mark() -> void:
-	_release_current()
+	# Drop our reference before notifying the target, including on teardown.
+	var previous: Node = current_target
 	current_target = null
 	duration_left = 0.0
+	_release(previous)
 	mark_changed.emit(null)
 
 
-func _release_current() -> void:
-	if current_target != null and is_instance_valid(current_target):
-		current_target.set_marked(false)
+func _release(target: Node) -> void:
+	if target == null or not is_instance_valid(target):
+		return
+	if target.defeated.is_connected(_on_target_gone):
+		target.defeated.disconnect(_on_target_gone)
+	for c in target.tree_exiting.get_connections():
+		if c.callable.get_object() == self:
+			target.tree_exiting.disconnect(c.callable)
+	target.set_marked(false)
+
+
+func _on_target_gone(target: Node) -> void:
+	if target == current_target:
+		clear_mark()
+
+
+func _exit_tree() -> void:
+	clear_mark()
 
 
 func has_mark() -> bool:
