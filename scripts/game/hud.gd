@@ -35,6 +35,12 @@ var _health_bar: ProgressBar
 var _health_lag: ProgressBar
 var _health_label: Label
 var _ability_bars := {}
+var _ability_glows := {}
+## Screen flash after a blast, seconds left (Daniel, main 7c20a81).
+var _blast := 0.0
+var _blast_rect: ColorRect
+var _glow_t := 0.0
+const BLAST_FLASH := 0.35
 var _pips: Array[ColorRect] = []
 var _pip_row: HBoxContainer
 var _pips_total := 0
@@ -187,10 +193,28 @@ func _build_abilities() -> void:
 		stack.custom_minimum_size = Vector2(192, 10)
 		stack.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		box.add_child(stack)
+		# a soft halo behind the bar, lit while the ability has something to
+		# act on (a live mark, a blast R would land) - a cue with no words
+		var glow := ColorRect.new()
+		glow.set_anchors_preset(Control.PRESET_FULL_RECT)
+		glow.offset_left = -3
+		glow.offset_top = -3
+		glow.offset_right = 3
+		glow.offset_bottom = 3
+		glow.color = Color(ABILITY_COLORS[name], 0.0)
+		glow.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		stack.add_child(glow)
+		_ability_glows[name] = glow
 		var bar := _bar(ABILITY_COLORS[name], Color(0.03, 0.03, 0.03, 0.75))
 		bar.max_value = 1.0
 		stack.add_child(bar)
 		_ability_bars[name] = bar
+	_blast_rect = ColorRect.new()
+	_blast_rect.set_anchors_preset(Control.PRESET_FULL_RECT)
+	_blast_rect.color = Color(0.35, 0.65, 1.0, 0.0)
+	_blast_rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_root.add_child(_blast_rect)
+	_root.move_child(_blast_rect, 0)
 
 
 func _build_pause() -> void:
@@ -240,6 +264,31 @@ func pulse_crosshair(amount: float = 1.0) -> void:
 
 func flash_damage() -> void:
 	_hurt = 1.0
+
+
+## True while an ability's meter is lit: Marking with a live mark, Explosion
+## when R would detonate right now. Combat and Suspend never glow.
+func is_glowing(ability: String) -> bool:
+	if player == null or not is_instance_valid(player):
+		return false
+	var node: Node = player.get_node_or_null(ability)
+	if node == null:
+		return false
+	match ability:
+		"Marking":
+			return node.call("has_mark")
+		"Explosion":
+			return node.call("can_detonate")
+	return false
+
+
+## Seconds of blast flash left on screen.
+func blast_flash() -> float:
+	return _blast
+
+
+func _on_detonated(_where: Vector3) -> void:
+	_blast = BLAST_FLASH
 
 
 func is_paused() -> bool:
@@ -321,6 +370,13 @@ func _process(delta: float) -> void:
 			return
 	var over := _game_over() or player.dead
 	_root.visible = not _pause.visible and not (over and player.dead)
+	if not get_tree().paused:
+		_blast = maxf(0.0, _blast - delta)
+		_glow_t += delta
+	_blast_rect.color.a = (_blast / BLAST_FLASH) * 0.3
+	var explosion: Node = player.get_node_or_null("Explosion")
+	if explosion and not explosion.detonated.is_connected(_on_detonated):
+		explosion.detonated.connect(_on_detonated)
 	_update_health(delta)
 	_update_abilities()
 	_update_pips()
@@ -404,6 +460,8 @@ func _update_abilities() -> void:
 			frac = node.call("duration_fraction")
 		bar.value = clampf(frac, 0.0, 1.0)
 		bar.modulate.a = 1.0 if frac >= 1.0 else 0.65
+		var glow: ColorRect = _ability_glows[name]
+		glow.color.a = (0.35 + 0.15 * sin(_glow_t * 6.0)) if is_glowing(name) else 0.0
 
 
 static func _make_vignette() -> GradientTexture2D:

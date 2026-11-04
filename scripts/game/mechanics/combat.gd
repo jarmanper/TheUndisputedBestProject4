@@ -76,7 +76,8 @@ func _physics_process(delta: float) -> void:
 
 ## Fires at the crosshair target. Returns true only when a shot landed.
 func fire() -> bool:
-	if player.dead or not is_ready():
+	# a direct call while paused does nothing either (Daniel, main 7c20a81)
+	if player.dead or not is_ready() or get_tree().paused:
 		return false
 	var target := player.crosshair_target(RANGE)
 	if target == null:
