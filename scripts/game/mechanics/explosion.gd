@@ -38,20 +38,35 @@ func _physics_process(delta: float) -> void:
 		detonate()
 
 
-## Detonates on the marked target. Returns true only when a blast resolved.
-func detonate() -> bool:
-	if player.dead or not is_ready():
-		return false
+## Would R detonate right now? Every rule check, no side effects: the HUD
+## reads it every frame to light the Explosion meter (Daniel, main 7c20a81).
+func can_detonate() -> bool:
+	return _primary() != null
+
+
+## The marked target a blast would centre on, or null if activation is invalid.
+func _primary() -> Node:
+	if player.dead or not is_ready() or get_tree().paused:
+		return null
 	var marking: Node = player.get_node_or_null("Marking")
 	if marking == null:
-		return false
+		return null
 	var target: Node = marking.current_target
 	if target == null or not is_instance_valid(target) or target.is_dead():
-		return false
+		return null
 	if player.upper_body_point().distance_to(target.center()) > RANGE:
-		return false
+		return null
 	if not player.has_clear_line(target.center()):
+		return null
+	return target
+
+
+## Detonates on the marked target. Returns true only when a blast resolved.
+func detonate() -> bool:
+	var target := _primary()
+	if target == null:
 		return false
+	var marking: Node = player.get_node("Marking")
 
 	var where: Vector3 = target.center()
 	# every target the blast will touch, with its suspension read BEFORE

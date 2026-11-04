@@ -290,6 +290,13 @@ func _run() -> void:
 	paused = true
 	await settle()
 	check(mark.duration_left == dur and mark.cooldown_left == cd, "pausing freezes the live timers")
+	# Daniel's guards (main 7c20a81): a direct call while paused does nothing
+	check(not combat.fire() and combat.cooldown_left == 0 and first.health == 100, "paused direct Combat activation is rejected")
+	check(not explosion.can_detonate() and not explosion.detonate() and first.marked and explosion.cooldown_left == 0, "paused Explosion preserves mark, HP and cooldown")
+	paused = false
+	check(explosion.can_detonate() and first.marked and first.health == 100 and explosion.cooldown_left == 0, "the Explosion eligibility preview has no gameplay side effects")
+	paused = true
+	await settle()
 	paused = false
 	mark.set_physics_process(false)
 	player.damage(100)

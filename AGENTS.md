@@ -401,6 +401,39 @@ rather than fixed paths. Each ability also exposes `cooldown_total()`,
 `effective_range()` and `ready_fraction()` so the HUD never has to reach for a
 script constant (`Object.get()` cannot read GDScript constants).
 
+**Nov 4 2026: `main` and `visual-rehaul` became one build.** They had been two
+separate integrations of the whole game since PR #4, with 27 files in conflict.
+`main` was Rhaiyn's `playtest-integration` line (PR #3) plus Daniel's `7c20a81`.
+The team kept `visual-rehaul` as the shipped build, because it carries the story,
+the found-story props, Combat feel and first person. `main` was merged into it
+with its tree kept (`git merge -s ours`), so all of `main`'s history is still
+there. Then these parts were ported by hand:
+- **Marking (Rhaiyn):** `try_mark()` refuses while paused, and the mark drops
+  its target the moment the target is defeated, leaves the level, or Marking is
+  torn down. Her `tests/marking_complete.gd` runs unchanged: 36/36.
+- **Combat and Explosion (Daniel):** direct calls are rejected while paused.
+  `Explosion.can_detonate()` runs every activation rule with no side effects.
+  The HUD lights the Explosion meter exactly when R would detonate and the
+  Marking meter while a mark is live, and tints the screen for 0.35 s on a
+  blast. Covered by 3 new checks in `tests/assignment_mechanics.gd` (62) and
+  by `tests/hud_glow.gd` (11).
+- **Project:** the physics layer names.
+
+Deliberately **not** ported. Each is still in `main`'s history if the team wants
+it back:
+- **Daniel's instruction panel and key labels.** He asked for them on purpose,
+  and on `main` (no story text) they fit at 106/150. Here they add about 62
+  words to 131, which is about 193 and over the cap. Key bindings alone could go
+  on the controls screen, which is exempt.
+- **The hooded player body and arm gesture.** They are built for a camera that
+  can see the player, and this build is first person.
+- **`main`'s rewritten player, enemy, HUD and level**, the separate
+  `final_chamber.tscn`, its navmeshes, and the export preset for that
+  two-level layout. `visual-rehaul`'s versions replace them.
+  `tests/marking_final_game.gd` depends on that layout, so it was not ported.
+- **The `gl_compatibility` project renderer.** It crashes the editor (see
+  below). The web build is Compatibility on its own.
+
 ### Godot gotchas
 - **Timers:** count down with `delta` in `_physics_process` (or use Timer nodes). Both freeze when `get_tree().paused = true`. Never use wall-clock time. The pause menu node needs `PROCESS_MODE_WHEN_PAUSED`.
 - **Navigation:** there's no navmesh yet. The enemy owner adds a `NavigationRegion3D` to each game level and bakes it from layer 1 colliders.
