@@ -1,0 +1,10 @@
+[gd_scene format=3]
+
+[ext_resource type="Texture2D" path="res://scenes/game/fx/blood_splat.png" id="1_splat"]
+
+[node name="BloodSplat" type="Decal"]
+size = Vector3(1, 0.6, 1)
+texture_albedo = ExtResource("1_splat")
+upper_fade = 0.2
+lower_fade = 0.2
+cull_mask = 1

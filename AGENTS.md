@@ -418,7 +418,7 @@ Full guide: [docs/GRAPHICS.md](docs/GRAPHICS.md). Effects: instance from `scenes
 
 | Need | Use | Watch out |
 | --- | --- | --- |
-| Combat hit | `impact_sparks`, `assets/materials/fx_hit_flash.tres` (`material_overlay`, animate `flash` 1 → 0) | `muzzle_flash` and `bullet_hole` are gun effects. Combat is a 3 m attack |
+| Combat hit | `assets/materials/fx_hit_flash.tres` (`material_overlay`, animate `flash` 1 → 0); on flesh, `scenes/game/fx/blood_spray.tscn` and the floor decal `scenes/game/fx/blood_splat.tscn`; `TimbukEnemy.flinch(from)` leans the model only; `impact_sparks` for misses on walls | `muzzle_flash` and `bullet_hole` are gun effects. Combat is a 3 m attack. Feedback runs after the rules resolve and never moves the body. `tests/combat_feel.gd` guards it |
 | Mark | `assets/materials/fx_marked_outline.tres` (`material_overlay`; depth-tested, so it hides behind walls as required), `tracking_indicator`, `fx_tracker_hologram.tres`; handheld model `scenes/props/tracker_device.tscn` | `tracking_indicator` is built for the feet; the submitted answer puts the icon above the target |
 | Suspend | `suspend_field` (animate material `strength` 0–1), `suspended_particles`, `scripts/visual/afterimage_spawner.gd`, `fx_temporal_distortion.tres` | Don't move or disable the collider |
 | Explosion | `explosion_{orange,green,blue,purple}`; the `Shockwave` ring grows to exactly 4 m radius in 0.45 s; `scorch_mark` | `fire_*` loops forever. Team 3 forbids lingering areas, so fire is cosmetic only, short, and never does damage |
